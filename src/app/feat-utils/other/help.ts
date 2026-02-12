@@ -171,7 +171,7 @@ export async function handleHelp(interaction: ChatInputCommandInteraction<CacheT
                         },
                         {
                             name: '/別ゲー募集 overwatch',
-                            value: '```Overwatch2の募集```',
+                            value: '```Overwatchの募集```',
                             inline: true,
                         },
                         {
