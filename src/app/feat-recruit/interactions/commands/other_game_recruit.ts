@@ -155,12 +155,12 @@ async function overwatch(
         await sendErrorMessage(recruitChannel);
         return;
     }
-    const title = 'Overwatch2';
+    const title = 'Overwatch';
     const recruitNumText = interaction.options.getString('募集人数', true);
     const mention = role.toString();
-    const txt = `### <@${member.user.id}>` + 'たんのOverwatch2募集\n';
+    const txt = `### <@${member.user.id}>` + 'たんのOverwatch募集\n';
     const color = '#ED6516';
-    const image = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/Overwatch2.png';
+    const image = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/Overwatch.jpg';
     const logo =
         'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/Overwatch_logo.png';
     await sendOtherGames(
