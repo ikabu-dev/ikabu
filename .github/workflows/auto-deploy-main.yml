@@ -31,8 +31,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.SERVER_DEPLOY_DIR }}
-            ${{ secrets.NPM_PATH }} install
-            ${{ secrets.NPM_PATH }} run compile
+            pnpm install --frozen-lockfile
+            pnpm run compile
 
       - name: restart-service
         uses: appleboy/ssh-action@master
