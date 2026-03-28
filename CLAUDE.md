@@ -6,7 +6,7 @@ ikabu は Discord Bot アプリケーション。Node.js + TypeScript + discord.
 
 ## 技術スタック
 
-- **Runtime**: Node.js 24.x (Volta で管理)
+- **Runtime**: Node.js 24.x (mise で管理)
 - **Language**: TypeScript
 - **Framework**: discord.js v14, Express
 - **DB**: SQLite (better-sqlite3 + Prisma)
@@ -16,12 +16,12 @@ ikabu は Discord Bot アプリケーション。Node.js + TypeScript + discord.
 ## コマンド
 
 ```bash
-npm run compile    # prisma generate && tsc && prisma migrate deploy
-npm start          # compile してからサーバー起動
-npm test           # Vitest でテスト実行
-npm run lint       # ESLint
-npm run fix        # ESLint 自動修正
-npm run create-migrate  # Prisma マイグレーションファイル作成
+pnpm run compile    # prisma generate && tsc && prisma migrate deploy
+pnpm start          # compile してからサーバー起動
+pnpm test           # Vitest でテスト実行
+pnpm run lint       # ESLint
+pnpm run fix        # ESLint 自動修正
+pnpm run create-migrate  # Prisma マイグレーションファイル作成
 ```
 
 ## ディレクトリ構成
