@@ -44,7 +44,7 @@ export async function anarchyRecruit(
     let recruitRoleId: string | null;
     let rank: string;
 
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         const recruitRankRole = await getAnarchyRecruitRole(interaction);
         recruitRoleId = recruitRankRole.recruitRoleId;
         rank = recruitRankRole.rank;

@@ -35,7 +35,7 @@ export async function regularRecruit(
     );
 
     let recruitData: RecruitData;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
         } catch (error) {

@@ -1,7 +1,7 @@
 import { CacheType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 export async function handleHelp(interaction: ChatInputCommandInteraction<CacheType>) {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
     // 'インタラクションに失敗'が出ないようにするため
     await interaction.deferReply();
     const { options } = interaction;

@@ -39,7 +39,7 @@ export async function festRecruit(
     const teamName = recruitRole.name; // フェスのチーム名
 
     let recruitData: RecruitData;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
         } catch (error) {

@@ -24,7 +24,7 @@ import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
 const logger = log4js_obj.getLogger();
 
 export async function handleFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
     // 'インタラクションに失敗'が出ないようにするため
 
     const options = interaction.options;
