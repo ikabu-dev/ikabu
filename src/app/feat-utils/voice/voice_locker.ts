@@ -74,7 +74,6 @@ export async function voiceLocker(interaction: ChatInputCommandInteraction<'cach
             .reply({
                 embeds: [embed],
                 components: [button],
-                fetchReply: true,
             })
             .catch(async (error) => {
                 await sendErrorLogs(logger, error);
@@ -169,7 +168,6 @@ export async function voiceLockCommandUpdate(
                 .reply({
                     content: '今はロックされてないでし！',
                     ephemeral: true,
-                    fetchReply: true,
                 })
                 .catch(async (error) => {
                     await sendErrorLogs(logger, error);
@@ -182,7 +180,6 @@ export async function voiceLockCommandUpdate(
         .update({
             embeds: [createVCLEmbed(channelState)],
             components: [createVCLButton(channelState)],
-            fetchReply: true,
         })
         .catch(async (error) => {
             await sendErrorLogs(logger, error);

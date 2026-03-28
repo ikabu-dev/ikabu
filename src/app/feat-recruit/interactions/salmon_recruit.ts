@@ -41,7 +41,7 @@ export async function salmonRecruit(
     );
 
     let recruitData: RecruitData;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         recruitType = getRecruitType(interaction);
         try {
             recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
