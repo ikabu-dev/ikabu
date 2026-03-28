@@ -1,4 +1,8 @@
-import { MessageContextMenuCommandInteraction, PermissionsBitField } from 'discord.js';
+import {
+    MessageContextMenuCommandInteraction,
+    MessageFlags,
+    PermissionsBitField,
+} from 'discord.js';
 
 import { log4js_obj } from '../../../log4js_settings';
 import { setButtonEnable } from '../../common/button_components';
@@ -19,12 +23,12 @@ export async function buttonEnable(
     if (!member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
         return await interaction.reply({
             content: '操作を実行する権限がないでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
 
         const message = interaction.targetMessage;
 

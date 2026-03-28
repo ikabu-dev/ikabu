@@ -1,7 +1,8 @@
 import {
-    Message,
-    ChatInputCommandInteraction,
     AttachmentBuilder,
+    ChatInputCommandInteraction,
+    Message,
+    MessageFlags,
     ModalSubmitInteraction,
 } from 'discord.js';
 
@@ -64,7 +65,7 @@ export async function sendRecruitCanvas(
 
     await interaction.followUp({
         content: '募集完了でし！参加者が来るまで待つでし！\n15秒間は募集を取り消せるでし！',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
     });
 
     return {

@@ -1,14 +1,15 @@
 import { setTimeout } from 'timers/promises';
 
 import {
-    EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle,
     ButtonInteraction,
+    ButtonStyle,
     ChatInputCommandInteraction,
-    VoiceBasedChannel,
+    EmbedBuilder,
+    MessageFlags,
     TextBasedChannel,
+    VoiceBasedChannel,
 } from 'discord.js';
 
 import { log4js_obj } from '../../../log4js_settings';
@@ -33,7 +34,7 @@ export async function voiceLocker(interaction: ChatInputCommandInteraction<'cach
     if (notExists(member.voice.channel) || member.voice.channel.id != channel.id) {
         await interaction.reply({
             content: '接続中のボイスチャンネルでコマンドを打つでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
         return;
     }
@@ -45,7 +46,7 @@ export async function voiceLocker(interaction: ChatInputCommandInteraction<'cach
         if (limitNum < 0 || limitNum > 99) {
             await interaction.reply({
                 content: '制限人数は0～99の間で指定するでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
@@ -74,7 +75,6 @@ export async function voiceLocker(interaction: ChatInputCommandInteraction<'cach
             .reply({
                 embeds: [embed],
                 components: [button],
-                fetchReply: true,
             })
             .catch(async (error) => {
                 await sendErrorLogs(logger, error);
@@ -107,7 +107,7 @@ export async function voiceLockCommandUpdate(
     if (!channel.isVoiceBased()) {
         return await interaction.reply({
             content: 'ボイスチャンネルでないと操作できないでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 
@@ -118,7 +118,7 @@ export async function voiceLockCommandUpdate(
     if (notExists(member.voice.channel) || member.voice.channel.id != channel.id) {
         await interaction.reply({
             content: '対象のボイスチャンネルに接続する必要があるでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
         return;
     }
@@ -168,8 +168,7 @@ export async function voiceLockCommandUpdate(
             await interaction
                 .reply({
                     content: '今はロックされてないでし！',
-                    ephemeral: true,
-                    fetchReply: true,
+                    flags: MessageFlags.Ephemeral,
                 })
                 .catch(async (error) => {
                     await sendErrorLogs(logger, error);
@@ -182,7 +181,6 @@ export async function voiceLockCommandUpdate(
         .update({
             embeds: [createVCLEmbed(channelState)],
             components: [createVCLButton(channelState)],
-            fetchReply: true,
         })
         .catch(async (error) => {
             await sendErrorLogs(logger, error);

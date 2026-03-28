@@ -14,9 +14,10 @@ import {
     GuildScheduledEventPrivacyLevel,
     GuildScheduledEventStatus,
     Message,
-    time,
+    MessageFlags,
     TimestampStyles,
     VoiceBasedChannel,
+    time,
 } from 'discord.js';
 
 import { log4js_obj } from '../../../../log4js_settings';
@@ -198,7 +199,7 @@ export async function endRecruitEventButton(
         if (userId !== recruiterId) {
             await interaction.followUp({
                 content: '募集者以外はイベントを終了できないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return await interaction.editReply({
                 components: recoveryThinkingButton(interaction, 'イベント終了'),
@@ -208,7 +209,7 @@ export async function endRecruitEventButton(
         if (notExists(eventId)) {
             await interaction.followUp({
                 content: 'イベントが見つからないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             return await interaction.message.delete();
@@ -220,7 +221,7 @@ export async function endRecruitEventButton(
             if (error instanceof RecruitEventError) {
                 await interaction.followUp({
                     content: error.getErrorMessage(),
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
                 throw error;

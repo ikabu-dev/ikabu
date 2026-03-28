@@ -1,6 +1,6 @@
 import { URLSearchParams } from 'url';
 
-import { ButtonInteraction, CacheType } from 'discord.js';
+import { ButtonInteraction, CacheType, MessageFlags } from 'discord.js';
 
 import { exists } from '../common/others';
 import {
@@ -42,10 +42,10 @@ export async function call(interaction: ButtonInteraction<CacheType>) {
         } else if (isVCLockButton(customId)) {
             await voiceLockUpdate(interaction, customId);
         } else if (customId === VCToolsButton.VoiceJoin) {
-            await interaction.deferReply({ ephemeral: true });
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
             await joinTTS(interaction);
         } else if (customId === VCToolsButton.VoiceKill) {
-            await interaction.deferReply({ ephemeral: true });
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
             await killTTS(interaction);
         } else if (customId === VCToolsButton.RequestRadio) {
             await sendRadioRequest(interaction);

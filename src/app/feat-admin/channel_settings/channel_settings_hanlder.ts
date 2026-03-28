@@ -17,7 +17,7 @@ const logger = log4js_obj.getLogger('interaction');
 
 export async function channelSettingsHandler(interaction: ChatInputCommandInteraction<'cached'>) {
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
 
         const guild = interaction.guild;
         const member = interaction.member;

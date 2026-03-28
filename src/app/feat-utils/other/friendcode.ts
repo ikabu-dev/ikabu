@@ -8,6 +8,7 @@ import {
     ChatInputCommandInteraction,
     EmbedBuilder,
     Message,
+    MessageFlags,
     User,
 } from 'discord.js';
 
@@ -24,7 +25,7 @@ import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
 const logger = log4js_obj.getLogger();
 
 export async function handleFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
     // 'インタラクションに失敗'が出ないようにするため
 
     const options = interaction.options;
@@ -37,7 +38,7 @@ export async function handleFriendCode(interaction: ChatInputCommandInteraction<
 }
 
 export async function selectFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     let targetUser: Member | User | null;
     let userId: string;
@@ -163,7 +164,7 @@ function composeEmbed(user: User | Member, fc: string, isDatabase: boolean) {
 }
 
 async function insertFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     let userId;
     if (interaction.inGuild()) {

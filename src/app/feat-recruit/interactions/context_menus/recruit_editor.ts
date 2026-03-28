@@ -1,6 +1,7 @@
 import {
     ActionRowBuilder,
     MessageContextMenuCommandInteraction,
+    MessageFlags,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
@@ -29,13 +30,16 @@ export async function createRecruitEditor(
             await interaction.reply({
                 content:
                     '該当の募集が見つからなかったでし！\n参加条件が表示されている画像のメッセージに対して使用するでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
 
         if (recruitData.authorId !== userId) {
-            await interaction.reply({ content: '他人の募集は編集できないでし！', ephemeral: true });
+            await interaction.reply({
+                content: '他人の募集は編集できないでし！',
+                flags: MessageFlags.Ephemeral,
+            });
             return;
         }
 

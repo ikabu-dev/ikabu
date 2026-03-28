@@ -43,7 +43,6 @@ export async function cancelNotify(interaction: ButtonInteraction<'cached' | 'ra
             });
             await interaction.followUp({
                 content: '募集データが存在しないでし！',
-                ephemeral: false,
             });
             return;
         }
@@ -97,7 +96,7 @@ export async function cancelNotify(interaction: ButtonInteraction<'cached' | 'ra
                 content: `<@${recruiterId}>たんの募集はキャンセルされたでし！`,
                 components: disableThinkingButton(interaction, 'キャンセル'),
             });
-            await interaction.followUp({ embeds: [embed], ephemeral: false });
+            await interaction.followUp({ embeds: [embed] });
 
             if (recruitChannel.isThread()) {
                 // フォーラムやスレッドの場合は、テキストの募集チャンネルにSticky Messageを送信する
@@ -140,7 +139,7 @@ export async function cancelNotify(interaction: ButtonInteraction<'cached' | 'ra
             } else {
                 await interaction.followUp({
                     content: '他人の募集は勝手にキャンセルできないでし！！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
                 await interaction.editReply({
                     components: recoveryThinkingButton(interaction, 'キャンセル'),

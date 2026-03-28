@@ -31,7 +31,7 @@ export async function festRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'フェス募集';
     const recruitType = RecruitType.FestivalRecruit;
@@ -39,7 +39,7 @@ export async function festRecruit(
     const teamName = recruitRole.name; // フェスのチーム名
 
     let recruitData: RecruitData;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
         } catch (error) {

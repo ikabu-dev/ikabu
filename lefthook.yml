@@ -1,0 +1,12 @@
+pre-push:
+  commands:
+    fix:
+      run: |
+        echo "ESLint/Prettier を実行中..."
+        mise exec -- pnpm exec eslint . --fix
+        if ! git diff --exit-code --quiet; then
+          echo ""
+          echo "自動修正が発生しました。変更をコミットしてから再度 push してください。"
+          exit 1
+        fi
+        echo "lint OK"

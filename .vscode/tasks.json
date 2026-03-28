@@ -3,13 +3,13 @@
   "tasks": [
     {
       "label": "Compile TypeScript",
-      "type": "typescript",
-      "tsconfig": "tsconfig.json",
+      "type": "shell",
+      "command": "mise exec -- pnpm run compile",
       "problemMatcher": ["$tsc"],
       "presentation": {
         "reveal": "silent",
         "clear": true
-      },
+      }
     }
   ]
 }

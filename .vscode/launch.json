@@ -9,12 +9,12 @@
       "request": "launch",
       "name": "Botを起動 - TypeScript",
       "preLaunchTask": "Compile TypeScript",
-      "args": [
-        "-r",
-        "dotenv/config",
-        "${workspaceFolder}/build/server.js",
-        "dotenv_config_path=./.env"
-      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "program": "${workspaceFolder}/build/server.js",
+      "args": ["dotenv_config_path=./.env"],
+      "env": {
+        "PATH": "${env:HOME}/.local/share/mise/shims:${env:PATH}"
+      },
       "outputCapture": "std"
     }
   ]

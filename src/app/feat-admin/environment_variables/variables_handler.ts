@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
+import { ChatInputCommandInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
 
 import { deleteVariables } from './delete_variables';
 import { setVariables } from './set_variables';
@@ -7,7 +7,7 @@ import { ChannelService } from '../../../db/channel_service';
 import { notExists } from '../../common/others';
 
 export async function variablesHandler(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     const guild = interaction.guild;
     const member = interaction.member;
 

@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction, MessageFlags } from 'discord.js';
 
 import { memberListText } from './other_events.js';
 import { sendJoinNotifyToHost } from './send_notify_to_host.js';
@@ -34,7 +34,6 @@ export async function joinNotify(interaction: ButtonInteraction<'cached' | 'raw'
             await interaction.editReply({ components: disableThinkingButton(interaction, '参加') });
             await interaction.followUp({
                 content: '募集データが存在しないでし！',
-                ephemeral: false,
             });
             return;
         }
@@ -69,7 +68,7 @@ export async function joinNotify(interaction: ButtonInteraction<'cached' | 'raw'
         if (member.userId === recruiterId) {
             await interaction.followUp({
                 content: '募集主は参加表明できないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             await interaction.editReply({
@@ -83,7 +82,7 @@ export async function joinNotify(interaction: ButtonInteraction<'cached' | 'raw'
             if (applicantIdList.includes(member.userId)) {
                 await interaction.followUp({
                     content: 'すでに参加ボタンを押してるでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
 
                 await interaction.editReply({
@@ -121,7 +120,7 @@ export async function joinNotify(interaction: ButtonInteraction<'cached' | 'raw'
 
             await interaction.followUp({
                 content: `<@${recruiterId}>からの返答を待つでし！\n条件を満たさない場合は参加を断られる場合があるでし！`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             await interaction.editReply({

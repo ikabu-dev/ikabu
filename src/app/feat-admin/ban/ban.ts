@@ -9,7 +9,7 @@ const logger = log4js_obj.getLogger('ban');
 
 export async function handleBan(interaction: ChatInputCommandInteraction<'cached'>) {
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const guild = interaction.guild;
     const member = interaction.member;

@@ -25,7 +25,7 @@ export async function eventRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'イベマ募集';
     const recruitType = RecruitType.EventRecruit;
@@ -35,7 +35,7 @@ export async function eventRecruit(
     );
 
     let recruitData: RecruitData;
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
         } catch (error) {
