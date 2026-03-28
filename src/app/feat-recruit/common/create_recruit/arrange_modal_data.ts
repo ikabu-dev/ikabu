@@ -1,4 +1,4 @@
-import { ModalSubmitInteraction } from 'discord.js';
+import { MessageFlags, ModalSubmitInteraction } from 'discord.js';
 
 import { RecruitType } from '../../../../db/recruit_service';
 import { log4js_obj } from '../../../../log4js_settings';
@@ -116,7 +116,7 @@ export async function arrangeModalRecruitData(
             await interaction.deleteReply();
             await interaction.followUp({
                 content: `${error.getErrorMessage()}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else {
             await recruitChannel.send(ErrorTexts.UndefinedError);

@@ -1,4 +1,4 @@
-import { CacheType, ChatInputCommandInteraction } from 'discord.js';
+import { CacheType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
 import { notExists } from '../../common/others';
 import { ErrorTexts } from '../../constant/error_texts';
@@ -14,7 +14,7 @@ export async function handleTimer(interaction: ChatInputCommandInteraction<Cache
     if (count > 10 || count <= 0) {
         return await interaction.reply({
             content: '10分以内しか入力できないでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 

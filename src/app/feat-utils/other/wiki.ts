@@ -1,4 +1,9 @@
-import { CacheType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+    CacheType,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    MessageFlags,
+} from 'discord.js';
 import wiki from 'wikijs';
 
 import { log4js_obj } from '../../../log4js_settings';
@@ -14,7 +19,7 @@ export async function handleWiki(interaction: ChatInputCommandInteraction<CacheT
         if (notExists(word)) {
             return await interaction.reply({
                 content: 'キーワードが読み取れなかったでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 

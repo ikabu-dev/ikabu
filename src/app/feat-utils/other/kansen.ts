@@ -1,4 +1,9 @@
-import { CacheType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+    CacheType,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    MessageFlags,
+} from 'discord.js';
 import { Combination } from 'js-combinatorics';
 
 export async function handleKansen(interaction: ChatInputCommandInteraction<CacheType>) {
@@ -11,14 +16,14 @@ export async function handleKansen(interaction: ChatInputCommandInteraction<Cach
     if (numOfTimes > 20) {
         await interaction.reply({
             content: '20回以下じゃないとダメでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
         return;
     }
     if (numOfTimes <= 0) {
         await interaction.reply({
             content: '1以上じゃないとダメでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
         return;
     }

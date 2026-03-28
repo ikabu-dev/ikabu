@@ -154,7 +154,7 @@ export async function cancel(
             } else {
                 await interaction.followUp({
                     content: '他人の募集は勝手にキャンセルできないでし！！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
                 await interaction.editReply({
                     components: recoveryThinkingButton(interaction, 'キャンセル'),

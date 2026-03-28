@@ -48,7 +48,7 @@ export async function confirmJoinRequest(
             await interaction.followUp({
                 content:
                     '参加承認/拒否の操作は募集主か募集時に参加確定していた人しかできないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             if (recuritPram === RecruitParam.Approve) {
                 return await interaction.editReply({

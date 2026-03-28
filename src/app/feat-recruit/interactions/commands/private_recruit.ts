@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
 import { ParticipantService } from '../../../../db/participant_service';
 import { RecruitService, RecruitType } from '../../../../db/recruit_service';
@@ -31,7 +31,7 @@ export async function privateRecruit(interaction: ChatInputCommandInteraction<'c
         await interaction.deleteReply();
         return await interaction.followUp({
             content: `\`${roomUrl}\`はヘヤタテURLではないでし！`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 
@@ -131,7 +131,7 @@ export async function privateRecruit(interaction: ChatInputCommandInteraction<'c
         await interaction.followUp({
             content:
                 '募集完了でし！参加者が来るまで気長に待つでし！\n15秒間は募集を取り消せるでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         // 募集リスト更新

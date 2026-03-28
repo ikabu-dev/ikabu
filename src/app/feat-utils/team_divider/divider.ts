@@ -1,13 +1,14 @@
 import { TeamDivider } from '@prisma/client';
 import {
-    EmbedBuilder,
-    ButtonBuilder,
-    ActionRowBuilder,
-    ButtonStyle,
     APIEmbedField,
+    ActionRowBuilder,
+    ButtonBuilder,
     ButtonInteraction,
+    ButtonStyle,
     ChatInputCommandInteraction,
+    EmbedBuilder,
     GuildMember,
+    MessageFlags,
 } from 'discord.js';
 
 import { TeamDividerService, TeamMember } from '../../../db/team_divider_service';
@@ -47,7 +48,7 @@ export async function dividerInitialMessage(interaction: ChatInputCommandInterac
             await interaction.reply({
                 content:
                     '各チームのメンバー数は2～8人まででし！\n観戦を含む参加者上限は20人まででし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
@@ -55,7 +56,7 @@ export async function dividerInitialMessage(interaction: ChatInputCommandInterac
         if (notExists(member.voice.channelId)) {
             await interaction.reply({
                 content: 'このコマンドはVC参加中しか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
@@ -124,7 +125,7 @@ export async function joinButton(
         if (member.voice.channelId != hostMember.voice.channelId) {
             await interaction.followUp({
                 content: 'ホストと同じVC参加者のみ参加できるでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '参加'),
@@ -135,7 +136,7 @@ export async function joinButton(
         if (exists(await TeamDividerService.selectMemberFromDB(messageId, 0, member.id))) {
             await interaction.followUp({
                 content: '参加登録済みでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '参加'),
@@ -185,7 +186,7 @@ export async function joinButton(
             embeds: [embed],
             components: recoveryThinkingButton(interaction, '参加'),
         });
-        await interaction.followUp({ content: '登録したでし！', ephemeral: true });
+        await interaction.followUp({ content: '登録したでし！', flags: MessageFlags.Ephemeral });
     } catch (error) {
         await sendErrorLogs(logger, error);
         if (exists(interaction.channel)) {
@@ -250,19 +251,19 @@ export async function cancelButton(
             });
             await interaction.followUp({
                 content: '参加をキャンセルしたでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else if (hostId == interaction.member.user.id) {
             await TeamDividerService.deleteAllMemberFromDB(messageId);
             await interaction.message.delete();
             await interaction.followUp({
                 content: 'チーム分けをキャンセルしたでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else {
             await interaction.followUp({
                 content: 'チーム分けをキャンセルできるのはホストだけでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, 'キャンセル'),
@@ -304,7 +305,7 @@ export async function registerButton(
         if (hostId != member.id) {
             await interaction.followUp({
                 content: '登録完了ボタンはコマンドを使用したユーザーしか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '登録完了'),
@@ -317,7 +318,7 @@ export async function registerButton(
         if (memberList.length < teamNum * 2) {
             await interaction.followUp({
                 content: '参加メンバーが少なすぎるでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '登録完了'),
@@ -363,7 +364,7 @@ export async function registerButton(
             } else {
                 await interaction.followUp({
                     content: 'チーム分けエラー',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
                 await interaction.message.edit({
                     components: recoveryThinkingButton(interaction, '登録完了'),
@@ -392,7 +393,7 @@ export async function registerButton(
         });
         await interaction.followUp({
             content: 'チームを更新したでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     } catch (error) {
         await sendErrorLogs(logger, error);
@@ -469,7 +470,7 @@ async function matching(
         if (member.id != hostId) {
             await interaction.followUp({
                 content: 'このボタンはコマンドを使用したユーザーしか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, winTeamName),
@@ -640,7 +641,7 @@ export async function spectateButton(
         if (!fullIdList.includes(member.id)) {
             await interaction.followUp({
                 content: 'このチーム分けに参加してないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '観戦希望'),
@@ -669,13 +670,13 @@ export async function spectateButton(
 
             await interaction.followUp({
                 content: '観戦希望を取り下げたでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else {
             if (wantSpectateIdList.length > fullMembers.length - teamNum * 2 - 1) {
                 await interaction.followUp({
                     content: '観戦席はもう空いてないでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
                 await interaction.message.edit({
                     components: recoveryThinkingButton(interaction, '観戦希望'),
@@ -700,7 +701,7 @@ export async function spectateButton(
 
             await interaction.followUp({
                 content: '観戦希望を申し込んだでし！\nもう一度押すと希望を取り下げられるでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     } catch (error) {
@@ -736,7 +737,7 @@ export async function endButton(
         if (member.id != hostId) {
             await interaction.followUp({
                 content: 'このボタンはコマンドを使用したユーザーしか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '終了'),
@@ -789,7 +790,7 @@ export async function correctButton(
         if (member.id != hostId) {
             await interaction.followUp({
                 content: 'このボタンはコマンドを使用したユーザーしか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '直前訂正'),
@@ -808,7 +809,7 @@ export async function correctButton(
         await interaction.followUp({
             content:
                 '最新のチーム分けを削除したでし！\nもう一度同じ操作をしても違うチーム分けになる場合があるでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     } catch (error) {
         await sendErrorLogs(logger, error);
@@ -849,7 +850,7 @@ export async function hideButton(
         if (member.id != hostId) {
             await interaction.followUp({
                 content: 'このボタンはコマンドを使用したユーザーしか使えないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '戦績表示切替'),
@@ -867,13 +868,13 @@ export async function hideButton(
             await TeamDividerService.setHideWin(messageId, false);
             await interaction.followUp({
                 content: '`【戦績表示】: 表示`',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else {
             await TeamDividerService.setHideWin(messageId, true);
             await interaction.followUp({
                 content: '`【戦績表示】: 非表示`',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
         const embed = await loadTeamEmbed(messageId, count, hostMember);

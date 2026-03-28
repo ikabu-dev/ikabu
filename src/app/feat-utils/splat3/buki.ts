@@ -1,5 +1,11 @@
 import { Member } from '@prisma/client';
-import { CacheType, ChatInputCommandInteraction, EmbedBuilder, User } from 'discord.js';
+import {
+    CacheType,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    MessageFlags,
+    User,
+} from 'discord.js';
 import fetch from 'node-fetch';
 
 import { log4js_obj } from '../../../log4js_settings';
@@ -54,13 +60,13 @@ export async function handleBuki(interaction: ChatInputCommandInteraction<CacheT
     if (amount > 10) {
         return await interaction.reply({
             content: '一度に指定できるのは10個まででし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
     if (amount <= 0) {
         return await interaction.reply({
             content: '1以上の数を指定するでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 

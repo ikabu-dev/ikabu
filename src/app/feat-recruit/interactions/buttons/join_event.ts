@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction, MessageFlags } from 'discord.js';
 
 import { memberListText } from './other_events.js';
 import { sendJoinNotifyToHost } from './send_notify_to_host.js';
@@ -83,7 +83,7 @@ export async function join(
         if (confirmedMemberIDList.includes(member.userId)) {
             await interaction.followUp({
                 content: '募集メンバーは参加表明できないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             await interaction.editReply({
@@ -96,7 +96,7 @@ export async function join(
             if (applicantIdList.includes(member.userId)) {
                 await interaction.followUp({
                     content: '既に参加ボタンを押してるでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
 
                 await interaction.editReply({
@@ -137,13 +137,13 @@ export async function join(
                 await interaction.followUp({
                     content: `<@${recruiterId}>からの返答を待つでし！\n条件を満たさない場合は参加を断られる場合があるでし！`,
                     // components: [channelLinkButtons(interaction.guildId, thread_message.url)], TODO: スレッド内へのリンクボタンを作る
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
                 await interaction.followUp({
                     content: `<@${recruiterId}>からの返答を待つでし！\n条件を満たさない場合は参加を断られる場合があるでし！`,
                     components: [channelLinkButtons(guild.id, channelId)],
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -154,7 +154,7 @@ export async function join(
                 await interaction.followUp({
                     content: `ボタンを押すとヘヤタテ機能を使ってプライベートマッチの部屋に参加できるでし！`,
                     components: [nsoRoomLinkButton(recruitData.option)],
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 

@@ -24,7 +24,7 @@ export async function recruitEdit(
         const messageId = params.get('mid');
         assertExistCheck(messageId, "params.get('mid')");
 
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const guild = await getGuildByInteraction(interaction);
 

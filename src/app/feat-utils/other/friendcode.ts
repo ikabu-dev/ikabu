@@ -8,6 +8,7 @@ import {
     ChatInputCommandInteraction,
     EmbedBuilder,
     Message,
+    MessageFlags,
     User,
 } from 'discord.js';
 
@@ -163,7 +164,7 @@ function composeEmbed(user: User | Member, fc: string, isDatabase: boolean) {
 }
 
 async function insertFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     let userId;
     if (interaction.inGuild()) {

@@ -1,4 +1,4 @@
-import { ButtonInteraction, EmbedBuilder } from 'discord.js';
+import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
 import { getMemberMentions } from './other_events.js';
 import { increaseRecruitCount, increaseJoinCount } from './recruit_count.js';
@@ -153,7 +153,7 @@ export async function closeNotify(interaction: ButtonInteraction<'cached' | 'raw
         } else {
             await interaction.followUp({
                 content: '募集主以外は募集を〆られないでし。',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.editReply({
                 components: recoveryThinkingButton(interaction, '〆'),

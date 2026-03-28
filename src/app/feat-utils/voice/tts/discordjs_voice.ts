@@ -10,7 +10,13 @@ import {
     AudioPlayer,
     VoiceConnection,
 } from '@discordjs/voice';
-import { ButtonInteraction, ChatInputCommandInteraction, Message, VoiceState } from 'discord.js';
+import {
+    ButtonInteraction,
+    ChatInputCommandInteraction,
+    Message,
+    MessageFlags,
+    VoiceState,
+} from 'discord.js';
 
 import { modeApi, bufferToStream, setting } from './voice_bot_node';
 import { log4js_obj } from '../../../../log4js_settings';
@@ -152,7 +158,7 @@ export async function autokill(oldState: VoiceState) {
 export async function handleTTSCommand(interaction: ChatInputCommandInteraction<'cached'>) {
     try {
         // 'インタラクションに失敗'が出ないようにするため
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const subCommand = interaction.options.getSubcommand();
 
