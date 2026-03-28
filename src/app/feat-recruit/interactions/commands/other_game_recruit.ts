@@ -1,14 +1,15 @@
 import {
-    ChatInputCommandInteraction,
     CacheType,
-    Guild,
-    GuildMember,
+    ChannelType,
+    ChatInputCommandInteraction,
     Collection,
-    Role,
     ColorResolvable,
     EmbedBuilder,
-    ChannelType,
+    Guild,
+    GuildMember,
     GuildTextBasedChannel,
+    MessageFlags,
+    Role,
 } from 'discord.js';
 
 import { ParticipantService } from '../../../../db/participant_service';
@@ -30,7 +31,7 @@ const logger = log4js_obj.getLogger('recruit');
 export async function otherGameRecruit(interaction: ChatInputCommandInteraction<'cached'>) {
     assertExistCheck(interaction.channel, 'channel');
 
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const guild = interaction.guild;
     const options = interaction.options;
@@ -365,7 +366,7 @@ async function sendOtherGames(
 
         await interaction.followUp({
             content: '募集完了でし！参加者が来るまで待つでし！\n15秒間は募集を取り消せるでし！',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         // 募集リスト更新

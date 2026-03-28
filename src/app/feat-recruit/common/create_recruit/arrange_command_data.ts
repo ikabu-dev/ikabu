@@ -1,4 +1,4 @@
-import { ChannelType, ChatInputCommandInteraction } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
 import { RecruitType } from '../../../../db/recruit_service';
 import { log4js_obj } from '../../../../log4js_settings';
@@ -147,7 +147,7 @@ export async function arrangeRecruitData(
             await interaction.deleteReply();
             await interaction.followUp({
                 content: `\`${interaction.toString()}\`\n${error.getErrorMessage()}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } else {
             await recruitChannel.send(ErrorTexts.UndefinedError);

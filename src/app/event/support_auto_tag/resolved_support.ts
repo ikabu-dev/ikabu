@@ -1,4 +1,4 @@
-import { ButtonInteraction, PermissionsBitField } from 'discord.js';
+import { ButtonInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
 
 import { tagIdsEmbed } from './tag_ids_embed';
 import { log4js_obj } from '../../../log4js_settings';
@@ -22,7 +22,7 @@ export async function setResolvedTag(interaction: ButtonInteraction<'cached' | '
         if (!member.permissions.has(PermissionsBitField.Flags.ManageThreads)) {
             return await interaction.reply({
                 content: '権限がないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -36,7 +36,7 @@ export async function setResolvedTag(interaction: ButtonInteraction<'cached' | '
             } else {
                 return await interaction.reply({
                     content: '想定されていないチャンネルでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }

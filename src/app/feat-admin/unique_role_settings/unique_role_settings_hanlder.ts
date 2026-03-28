@@ -12,7 +12,7 @@ export async function uniqueRoleSettingsHandler(
     interaction: ChatInputCommandInteraction<'cached'>,
 ) {
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
 
         const member = interaction.member;
 

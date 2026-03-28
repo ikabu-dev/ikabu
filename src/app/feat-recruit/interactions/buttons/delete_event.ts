@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction, MessageFlags } from 'discord.js';
 
 import { sendRecruitButtonLog } from '../.././../logs/buttons/recruit_button_log';
 import { ParticipantService, ParticipantMember } from '../../../../db/participant_service.js';
@@ -51,7 +51,7 @@ export async function del(
             });
             await interaction.followUp({
                 content: 'この募集はもう削除できないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
@@ -114,7 +114,7 @@ export async function del(
             if (notExists(recruitData)) {
                 return await interaction.followUp({
                     content: '募集データが存在しないでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 
@@ -130,7 +130,7 @@ export async function del(
 
             await interaction.followUp({
                 content: '募集を削除したでし！\n次回は内容をしっかり確認してから送信するでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
 
             // テキストの募集チャンネルにSticky Messageを送信
@@ -143,7 +143,7 @@ export async function del(
             });
             await interaction.followUp({
                 content: '他人の募集は消せる訳無いでし！！！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     } catch (error) {

@@ -31,7 +31,7 @@ export async function salmonRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'バイト募集';
     let recruitType;

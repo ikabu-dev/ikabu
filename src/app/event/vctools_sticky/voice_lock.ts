@@ -5,6 +5,7 @@ import {
     ButtonStyle,
     ChannelType,
     DiscordAPIError,
+    MessageFlags,
     TextBasedChannel,
     VoiceBasedChannel,
     VoiceState,
@@ -34,7 +35,7 @@ export async function voiceLockUpdate(
         if (notExists(channel) || !channel.isVoiceBased()) {
             return await interaction.reply({
                 content: 'ボイスチャンネルでないと操作できないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -44,7 +45,7 @@ export async function voiceLockUpdate(
         if (notExists(member.voice.channel) || member.voice.channel.id != channel.id) {
             return await interaction.reply({
                 content: '対象のボイスチャンネルに接続する必要があるでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
         let limit = channel.userLimit;
@@ -92,7 +93,7 @@ export async function voiceLockUpdate(
             ) {
                 return await interaction.reply({
                     content: '今はロックされてないでし！',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }

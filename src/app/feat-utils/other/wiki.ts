@@ -1,4 +1,4 @@
-import { CacheType, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { CacheType, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import wiki from 'wikijs';
 
 import { log4js_obj } from '../../../log4js_settings';
@@ -14,12 +14,12 @@ export async function handleWiki(interaction: ChatInputCommandInteraction<CacheT
         if (notExists(word)) {
             return await interaction.reply({
                 content: 'キーワードが読み取れなかったでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
         // 'インタラクションに失敗'が出ないようにするため
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
         const wikipedia = wiki({ apiUrl: 'http://ja.wikipedia.org/w/api.php' });
         const data = await wikipedia.search(word);
         const page = await wikipedia.page(data.results[0]);

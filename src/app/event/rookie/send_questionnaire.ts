@@ -5,6 +5,7 @@ import {
     ButtonStyle,
     DiscordAPIError,
     Message,
+    MessageFlags,
 } from 'discord.js';
 import log4js from 'log4js';
 
@@ -124,7 +125,7 @@ export async function sendQuestionnaireFollowUp(
         if (interaction.member.user.id !== params.get('uid')) {
             await interaction.followUp({
                 content: '他人のアンケートに答えることはできないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '答える'),
@@ -150,7 +151,7 @@ export async function sendQuestionnaireFollowUp(
                 'このメッセージはDiscordの再起動や画面遷移等によって消える場合があるでし！\n' +
                 'すぐに答えない場合は先に回答画面に飛んでおくことをおすすめするでし！',
             components: [urlButton],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         await interaction.message.edit({
@@ -175,7 +176,7 @@ export async function disableQuestionnaireButtons(
         if (interaction.member.user.id !== params.get('uid')) {
             await interaction.followUp({
                 content: 'あなたにこのボタンを押す権限はないでし！',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.message.edit({
                 components: recoveryThinkingButton(interaction, '答えない'),

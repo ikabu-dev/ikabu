@@ -8,7 +8,7 @@ import { notExists } from '../../common/others';
 import { ChannelKeySet } from '../../constant/channel_key';
 
 export async function festSettingHandler(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const guild = interaction.guild;
     const member = interaction.member;

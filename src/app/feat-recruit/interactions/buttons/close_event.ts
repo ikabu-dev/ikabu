@@ -1,4 +1,4 @@
-import { ButtonInteraction, EmbedBuilder } from 'discord.js';
+import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
 import { getMemberMentions } from './other_events.js';
 import { increaseJoinCount, increaseRecruitCount } from './recruit_count.js';
@@ -47,7 +47,6 @@ export async function close(
             await interaction.editReply({ components: disableThinkingButton(interaction, '〆') });
             await interaction.followUp({
                 content: '募集データが存在しないでし！',
-                ephemeral: false,
             });
             return;
         }
@@ -110,7 +109,7 @@ export async function close(
                 content: `<@${recruiterId}>たんの募集は〆！\n${memberList}`,
                 components: disableThinkingButton(interaction, '〆'),
             });
-            await interaction.followUp({ embeds: [embed], ephemeral: false });
+            await interaction.followUp({ embeds: [embed] });
 
             if (recruitChannel.isThread()) {
                 // フォーラムやスレッドの場合は、テキストの募集チャンネルにSticky Messageを送信する
@@ -147,7 +146,7 @@ export async function close(
             const embed = new EmbedBuilder().setDescription(
                 `<@${recruiterId}>たんの募集〆 \n <@${member.userId}>たんが代理〆`,
             );
-            await interaction.followUp({ embeds: [embed], ephemeral: false });
+            await interaction.followUp({ embeds: [embed] });
 
             if (recruitChannel.isThread()) {
                 // フォーラムやスレッドの場合は、テキストの募集チャンネルにSticky Messageを送信する
@@ -163,7 +162,7 @@ export async function close(
         } else {
             await interaction.followUp({
                 content: '募集主以外は募集を〆られないでし。',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             await interaction.editReply({
                 components: recoveryThinkingButton(interaction, '〆'),

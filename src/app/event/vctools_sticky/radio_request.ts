@@ -1,5 +1,5 @@
 import { Member } from '@prisma/client';
-import { ButtonInteraction, EmbedBuilder } from 'discord.js';
+import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
 import { log4js_obj } from '../../../log4js_settings';
 import { getGuildByInteraction } from '../../common/manager/guild_manager';
@@ -11,7 +11,7 @@ const logger = log4js_obj.getLogger('interaction');
 
 export async function sendRadioRequest(interaction: ButtonInteraction<'cached' | 'raw'>) {
     try {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const guild = await getGuildByInteraction(interaction);
         const sender = await searchDBMemberById(guild, interaction.member.user.id);

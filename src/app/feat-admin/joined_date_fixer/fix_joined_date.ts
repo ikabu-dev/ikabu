@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
 import { MemberService } from '../../../db/member_service';
 import { UniqueRoleService } from '../../../db/unique_role_service';
@@ -26,7 +26,7 @@ export async function joinedAtFixer(interaction: ChatInputCommandInteraction<'ca
             return await interaction.reply('開発者のみが実行できるコマンドでし！');
         }
 
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const targetUser = interaction.options.getUser('ユーザー', true);
         const year = interaction.options.getInteger('年', true);
