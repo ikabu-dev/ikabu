@@ -1,9 +1,4 @@
-import {
-    CacheType,
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    MessageFlags,
-} from 'discord.js';
+import { CacheType, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import { Combination } from 'js-combinatorics';
 
 export async function handleKansen(interaction: ChatInputCommandInteraction<CacheType>) {

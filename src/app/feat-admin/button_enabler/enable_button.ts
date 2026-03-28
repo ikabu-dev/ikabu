@@ -1,4 +1,8 @@
-import { MessageContextMenuCommandInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
+import {
+    MessageContextMenuCommandInteraction,
+    MessageFlags,
+    PermissionsBitField,
+} from 'discord.js';
 
 import { log4js_obj } from '../../../log4js_settings';
 import { setButtonEnable } from '../../common/button_components';

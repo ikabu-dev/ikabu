@@ -1,9 +1,4 @@
-import {
-    CacheType,
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    MessageFlags,
-} from 'discord.js';
+import { CacheType, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import wiki from 'wikijs';
 
 import { log4js_obj } from '../../../log4js_settings';

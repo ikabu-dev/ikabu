@@ -24,6 +24,7 @@ import {
     VoiceState,
 } from 'discord.js';
 
+import { MemberService } from '../db/member_service';
 import {
     inFallbackMode,
     updateLocale,
@@ -33,6 +34,10 @@ import { searchChannelById } from './common/manager/channel_manager';
 import { searchAPIMemberById } from './common/manager/member_manager';
 import { assertExistCheck, exists, getDeveloperMention, notExists } from './common/others';
 import { ChannelKeySet } from './constant/channel_key';
+import { ParticipantService } from '../db/participant_service';
+import { UniqueChannelService } from '../db/unique_channel_service';
+import { log4js_obj } from '../log4js_settings';
+import { registerSlashCommands } from '../register';
 import {
     deleteChannel,
     saveChannel,
@@ -58,11 +63,6 @@ import * as messageHandler from './handlers/message_handler';
 import * as modalHandler from './handlers/modal_handler';
 import * as vcStateUpdateHandler from './handlers/vcState_update_handler';
 import { sendErrorLogs } from './logs/error/send_error_logs';
-import { MemberService } from '../db/member_service';
-import { ParticipantService } from '../db/participant_service';
-import { UniqueChannelService } from '../db/unique_channel_service';
-import { log4js_obj } from '../log4js_settings';
-import { registerSlashCommands } from '../register';
 
 export const client = new Client({
     intents: [

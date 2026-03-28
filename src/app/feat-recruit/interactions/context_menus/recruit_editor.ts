@@ -36,7 +36,10 @@ export async function createRecruitEditor(
         }
 
         if (recruitData.authorId !== userId) {
-            await interaction.reply({ content: '他人の募集は編集できないでし！', flags: MessageFlags.Ephemeral });
+            await interaction.reply({
+                content: '他人の募集は編集できないでし！',
+                flags: MessageFlags.Ephemeral,
+            });
             return;
         }
 
