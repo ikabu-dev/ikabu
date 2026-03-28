@@ -15,13 +15,15 @@ ikabu は Discord Bot アプリケーション。Node.js + TypeScript + discord.
 
 ## コマンド
 
+Node.js と pnpm は mise で管理されているため、シェルで mise が有効化されていない環境（CI・エディタのターミナルなど）では `mise exec --` を前置して実行する。
+
 ```bash
-pnpm run compile    # prisma generate && tsc && prisma migrate deploy
-pnpm start          # compile してからサーバー起動
-pnpm test           # Vitest でテスト実行
-pnpm run lint       # ESLint
-pnpm run fix        # ESLint 自動修正
-pnpm run create-migrate  # Prisma マイグレーションファイル作成
+mise exec -- pnpm run compile    # prisma generate && tsc && prisma migrate deploy
+mise exec -- pnpm start          # compile してからサーバー起動
+mise exec -- pnpm test           # Vitest でテスト実行
+mise exec -- pnpm run lint       # ESLint
+mise exec -- pnpm run fix        # ESLint 自動修正
+mise exec -- pnpm run create-migrate  # Prisma マイグレーションファイル作成
 ```
 
 ## ディレクトリ構成
