@@ -221,7 +221,7 @@ client.on('userUpdate', async (oldUser: User | PartialUser, newUser: User) => {
     }
 });
 
-client.on('ready', async (client: Client<true>) => {
+client.on('clientReady', async (client: Client<true>) => {
     try {
         assertExistCheck(client.user);
         logger.info(`Logged in as ${client.user.tag}!`);
