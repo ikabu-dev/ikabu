@@ -24,7 +24,7 @@ export async function buttonEnable(
     }
 
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
 
         const message = interaction.targetMessage;
 

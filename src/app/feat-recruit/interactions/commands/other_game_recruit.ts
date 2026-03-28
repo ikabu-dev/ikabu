@@ -31,7 +31,7 @@ const logger = log4js_obj.getLogger('recruit');
 export async function otherGameRecruit(interaction: ChatInputCommandInteraction<'cached'>) {
     assertExistCheck(interaction.channel, 'channel');
 
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const guild = interaction.guild;
     const options = interaction.options;

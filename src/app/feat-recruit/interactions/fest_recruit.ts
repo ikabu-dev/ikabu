@@ -31,7 +31,7 @@ export async function festRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'フェス募集';
     const recruitType = RecruitType.FestivalRecruit;

@@ -380,7 +380,6 @@ export async function registerButton(
         if (notExists(embed) || notExists(buttons) || notExists(correctButton)) {
             return await interaction.followUp({
                 content: ErrorTexts.UndefinedError,
-                ephemeral: false,
             });
         }
 
@@ -597,7 +596,6 @@ async function matching(
         } else {
             return await interaction.followUp({
                 content: ErrorTexts.UndefinedError,
-                ephemeral: false,
             });
         }
     } catch (error) {
@@ -659,7 +657,6 @@ export async function spectateButton(
             if (notExists(embed)) {
                 return await interaction.followUp({
                     content: ErrorTexts.UndefinedError,
-                    ephemeral: false,
                 });
             }
 
@@ -690,7 +687,6 @@ export async function spectateButton(
             if (notExists(embed)) {
                 return await interaction.followUp({
                     content: ErrorTexts.UndefinedError,
-                    ephemeral: false,
                 });
             }
 
@@ -881,7 +877,6 @@ export async function hideButton(
         if (notExists(embed)) {
             return await interaction.followUp({
                 content: ErrorTexts.UndefinedError,
-                ephemeral: false,
             });
         }
         await interaction.message.edit({

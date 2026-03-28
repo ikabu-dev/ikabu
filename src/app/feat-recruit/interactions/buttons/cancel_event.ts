@@ -52,7 +52,6 @@ export async function cancel(
             });
             await interaction.followUp({
                 content: '募集データが存在しないでし！',
-                ephemeral: false,
             });
             return;
         }
@@ -109,7 +108,7 @@ export async function cancel(
                 content: `<@${recruiterId}>たんの募集はキャンセルされたでし！`,
                 components: disableThinkingButton(interaction, 'キャンセル'),
             });
-            await interaction.followUp({ embeds: [embed], ephemeral: false });
+            await interaction.followUp({ embeds: [embed] });
 
             if (recruitChannel.isThread()) {
                 // フォーラムやスレッドの場合は、テキストの募集チャンネルにSticky Messageを送信する

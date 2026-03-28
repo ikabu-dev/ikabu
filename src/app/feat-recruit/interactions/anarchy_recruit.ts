@@ -36,7 +36,7 @@ export async function anarchyRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'バンカラ募集';
     const recruitType = RecruitType.AnarchyRecruit;

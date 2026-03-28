@@ -25,7 +25,7 @@ export async function regularRecruit(
 ) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const recruitName = 'ナワバリ募集';
     const recruitType = RecruitType.RegularRecruit;

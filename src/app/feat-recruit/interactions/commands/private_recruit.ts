@@ -16,7 +16,7 @@ import { getMemberMentions } from '../buttons/other_events';
 const logger = log4js_obj.getLogger('recruit');
 
 export async function privateRecruit(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     const options = interaction.options;
     const startTime = options.getString('開始時刻', true);

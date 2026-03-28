@@ -38,7 +38,7 @@ export async function handleFriendCode(interaction: ChatInputCommandInteraction<
 }
 
 export async function selectFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({});
 
     let targetUser: Member | User | null;
     let userId: string;

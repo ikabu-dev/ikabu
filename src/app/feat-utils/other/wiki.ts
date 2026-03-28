@@ -24,7 +24,7 @@ export async function handleWiki(interaction: ChatInputCommandInteraction<CacheT
         }
 
         // 'インタラクションに失敗'が出ないようにするため
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({});
         const wikipedia = wiki({ apiUrl: 'http://ja.wikipedia.org/w/api.php' });
         const data = await wikipedia.search(word);
         const page = await wikipedia.page(data.results[0]);

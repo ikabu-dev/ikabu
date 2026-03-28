@@ -34,7 +34,6 @@ export async function joinNotify(interaction: ButtonInteraction<'cached' | 'raw'
             await interaction.editReply({ components: disableThinkingButton(interaction, '参加') });
             await interaction.followUp({
                 content: '募集データが存在しないでし！',
-                ephemeral: false,
             });
             return;
         }
