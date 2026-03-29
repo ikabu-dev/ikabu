@@ -1,17 +1,34 @@
+import path from 'path';
+
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
-import { RecruitOpCode } from './regenerate_canvas.js';
-import { modalRecruit, placeHold } from '../../../constant.js';
-import { SalmonInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink.js';
-import { createRoundRect, drawArcImage, fillTextWithStroke } from '../../common/canvas_components';
-import { dateformat, formatDatetime } from '../../common/convert_datetime';
-import { exists, notExists } from '../../common/others.js';
+import { RecruitOpCode } from './regenerate_canvas';
+import { modalRecruit } from '../../../../constant';
+import { MatchInfo } from '../../../common/apis/splatoon3.ink/splatoon3_ink';
+import {
+    createRoundRect,
+    drawArcImage,
+    fillTextWithStroke,
+} from '../../../common/canvas_components';
+import { dateformat, formatDatetime } from '../../../common/convert_datetime';
+import { exists, notExists } from '../../../common/others';
+
+Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
+    family: 'Splatfont',
+});
+Canvas.registerFont(path.resolve('./fonts/GenShinGothic-P-Medium.ttf'), {
+    family: 'Genshin',
+});
+Canvas.registerFont(path.resolve('./fonts/GenShinGothic-P-Bold.ttf'), {
+    family: 'Genshin-Bold',
+});
+Canvas.registerFont(path.resolve('./fonts/SEGUISYM.TTF'), { family: 'SEGUI' });
 
 /*
  * 募集用のキャンバス(1枚目)を作成する
  */
-export async function recruitBigRunCanvas(
+export async function recruitAnarchyCanvas(
     opCode: number,
     remaining: number,
     count: number,
@@ -20,6 +37,7 @@ export async function recruitBigRunCanvas(
     user2: Member | null,
     user3: Member | null,
     condition: string,
+    rank: string | null,
     channelName: string | null,
 ) {
     const blankAvatarUrl =
@@ -36,10 +54,21 @@ export async function recruitBigRunCanvas(
     recruitCtx.lineWidth = 4;
     recruitCtx.stroke();
 
-    const bigRunLogo = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/BIGRUN_logo.png',
+    const anarchyIcon = await Canvas.loadImage(
+        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/anarchy_icon.png',
     );
-    recruitCtx.drawImage(bigRunLogo, 25, 32, 400, 60);
+    recruitCtx.drawImage(anarchyIcon, 18, 15, 86, 86);
+
+    fillTextWithStroke(
+        recruitCtx,
+        'バンカラマッチ',
+        '51px Splatfont',
+        '#000000',
+        '#F14400',
+        3,
+        115,
+        80,
+    );
 
     // 募集主の画像
     const recruiterImage = await Canvas.loadImage(recruiter.iconUrl ?? modalRecruit.placeHold);
@@ -188,6 +217,20 @@ export async function recruitBigRunCanvas(
         520,
     );
 
+    recruitCtx.save();
+    recruitCtx.textAlign = 'right';
+    fillTextWithStroke(
+        recruitCtx,
+        '募集ウデマエ: ' + (rank ?? 'ERROR'),
+        '38px "Splatfont"',
+        '#FFFFFF',
+        '#2D3130',
+        1,
+        690,
+        520,
+    );
+    recruitCtx.restore();
+
     if (opCode === RecruitOpCode.cancel) {
         recruitCtx.save();
         recruitCtx.translate(220, -110);
@@ -206,7 +249,7 @@ export async function recruitBigRunCanvas(
             600,
             600,
         );
-        recruitCtx.restore;
+        recruitCtx.restore();
     } else if (opCode === RecruitOpCode.close) {
         recruitCtx.save();
         const cancelStamp = await Canvas.loadImage(
@@ -223,7 +266,7 @@ export async function recruitBigRunCanvas(
             500,
             340,
         );
-        recruitCtx.restore;
+        recruitCtx.restore();
     }
 
     const recruit = recruitCanvas.toBuffer();
@@ -233,22 +276,19 @@ export async function recruitBigRunCanvas(
 /*
  * ルール情報のキャンバス(2枚目)を作成する
  */
-export async function ruleBigRunCanvas(data: SalmonInfo | null) {
+export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconURL: string) {
     const ruleCanvas = Canvas.createCanvas(720, 550);
     const ruleCtx = ruleCanvas.getContext('2d');
-    const errorWeaponImage = await Canvas.loadImage(placeHold.error100x100);
 
-    const datetime = data
-        ? formatDatetime(data.startTime, dateformat.mdwhm) +
+    const date = anarchyData ? formatDatetime(anarchyData.startTime, dateformat.ymdw) : 'えらー';
+    const time = anarchyData
+        ? formatDatetime(anarchyData.startTime, dateformat.hm) +
           ' - ' +
-          formatDatetime(data.endTime, dateformat.mdwhm)
+          formatDatetime(anarchyData.endTime, dateformat.hm)
         : 'えらー';
-
-    const stage = data ? data.stage : 'えらー';
-    const weapon1Image = data ? await Canvas.loadImage(data.weapon1) : errorWeaponImage;
-    const weapon2Image = data ? await Canvas.loadImage(data.weapon2) : errorWeaponImage;
-    const weapon3Image = data ? await Canvas.loadImage(data.weapon3) : errorWeaponImage;
-    const weapon4Image = data ? await Canvas.loadImage(data.weapon4) : errorWeaponImage;
+    const rule = anarchyData && anarchyData.rule ? anarchyData.rule : 'えらー';
+    const stage1 = anarchyData && anarchyData.stage1 ? anarchyData.stage1 : 'えらー';
+    const stage2 = anarchyData && anarchyData.stage2 ? anarchyData.stage2 : 'えらー';
 
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.fillStyle = '#2F3136';
@@ -257,68 +297,104 @@ export async function ruleBigRunCanvas(data: SalmonInfo | null) {
     ruleCtx.lineWidth = 4;
     ruleCtx.stroke();
 
-    fillTextWithStroke(ruleCtx, '日時', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 60);
+    fillTextWithStroke(ruleCtx, 'ルール', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 80);
 
-    const dateWidth = ruleCtx.measureText(datetime).width;
+    const ruleWidth = ruleCtx.measureText(rule).width;
     fillTextWithStroke(
         ruleCtx,
-        datetime,
-        '37px Splatfont',
+        rule,
+        '45px Splatfont',
         '#FFFFFF',
         '#2D3130',
         1,
-        (650 - dateWidth) / 2,
-        120,
-    );
+        (320 - ruleWidth) / 2,
+        145,
+    ); // 中央寄せ
 
-    fillTextWithStroke(ruleCtx, '武器', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 180);
+    fillTextWithStroke(ruleCtx, '日時', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 220);
 
-    ruleCtx.drawImage(weapon1Image, 50, 205, 85, 85);
-    ruleCtx.drawImage(weapon2Image, 150, 205, 85, 85);
-    ruleCtx.drawImage(weapon3Image, 50, 305, 85, 85);
-    ruleCtx.drawImage(weapon4Image, 150, 305, 85, 85);
-
-    fillTextWithStroke(ruleCtx, 'ステージ', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 310, 180);
-
-    const stageWidth = ruleCtx.measureText(stage).width;
+    const dateWidth = ruleCtx.measureText(date).width;
     fillTextWithStroke(
         ruleCtx,
-        stage,
-        '38px Splatfont',
+        date,
+        '35px Splatfont',
         '#FFFFFF',
         '#2D3130',
         1,
-        110 + (700 - stageWidth) / 2,
-        235,
-    );
+        (350 - dateWidth) / 2,
+        270,
+    ); // 中央寄せ
+    const timeWidth = ruleCtx.measureText(time).width;
+    fillTextWithStroke(
+        ruleCtx,
+        time,
+        '35px Splatfont',
+        '#FFFFFF',
+        '#2D3130',
+        1,
+        15 + (350 - timeWidth) / 2,
+        320,
+    ); // 中央寄せ
 
-    const illust = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/BIGRUN_illust.png',
-    );
-    ruleCtx.drawImage(illust, 380, 240, 330, 160);
-
+    fillTextWithStroke(ruleCtx, 'ステージ', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 390);
     ruleCtx.save();
-    ruleCtx.beginPath();
-    ruleCtx.rect(240, 410, 250, 135);
-    if (exists(data) && exists(data.stageImage)) {
+    ruleCtx.textAlign = 'center';
+    fillTextWithStroke(ruleCtx, stage1, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 440);
+    fillTextWithStroke(ruleCtx, stage2, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 490);
+
+    ruleCtx.restore();
+
+    if (exists(anarchyData) && exists(anarchyData.stageImage1) && exists(anarchyData.stageImage2)) {
+        const stage1Image = await Canvas.loadImage(anarchyData.stageImage1);
+        ruleCtx.save();
+        ruleCtx.beginPath();
+        createRoundRect(ruleCtx, 370, 130, 308, 176, 10);
         ruleCtx.clip();
-        const stageImage = await Canvas.loadImage(data.stageImage);
-        ruleCtx.drawImage(stageImage, 240, 410, 250, 135);
+        ruleCtx.drawImage(stage1Image, 370, 130, 308, 176);
+        ruleCtx.strokeStyle = '#FFFFFF';
+        ruleCtx.lineWidth = 6.0;
+        ruleCtx.stroke();
+        ruleCtx.restore();
+
+        const stage2Image = await Canvas.loadImage(anarchyData.stageImage2);
+        ruleCtx.save();
+        ruleCtx.beginPath();
+        createRoundRect(ruleCtx, 370, 340, 308, 176, 10);
+        ruleCtx.clip();
+        ruleCtx.drawImage(stage2Image, 370, 340, 308, 176);
+        ruleCtx.strokeStyle = '#FFFFFF';
+        ruleCtx.lineWidth = 6.0;
+        ruleCtx.stroke();
+        ruleCtx.restore();
     } else {
+        ruleCtx.save();
+        ruleCtx.beginPath();
+        createRoundRect(ruleCtx, 370, 130, 308, 176, 10);
         ruleCtx.fillStyle = '#000000';
         ruleCtx.fill();
+        ruleCtx.strokeStyle = '#FFFFFF';
+        ruleCtx.lineWidth = 6.0;
+        ruleCtx.stroke();
+        ruleCtx.restore();
+
+        ruleCtx.save();
+        ruleCtx.beginPath();
+        createRoundRect(ruleCtx, 370, 340, 308, 176, 10);
+        ruleCtx.fillStyle = '#000000';
+        ruleCtx.fill();
+        ruleCtx.strokeStyle = '#FFFFFF';
+        ruleCtx.lineWidth = 6.0;
+        ruleCtx.stroke();
+        ruleCtx.restore();
     }
-    ruleCtx.restore();
 
     ruleCtx.save();
-    ruleCtx.beginPath();
+    const ruleImage = await Canvas.loadImage(ruleIconURL);
+    ruleCtx.drawImage(ruleImage, 0, 0, ruleImage.width, ruleImage.height, 570, 10, 120, 120);
+    ruleCtx.restore();
+
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.clip();
-    const bigRunFotter = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/BIGRUN_footer.png',
-    );
-    ruleCtx.drawImage(bigRunFotter, -5, 400, 730, 160);
-    ruleCtx.restore();
 
     const buffer = ruleCanvas.toBuffer();
     return buffer;

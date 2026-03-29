@@ -4,11 +4,15 @@ import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
 import { RecruitOpCode } from './regenerate_canvas';
-import { modalRecruit } from '../../../constant';
-import { MatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink';
-import { createRoundRect, drawArcImage, fillTextWithStroke } from '../../common/canvas_components';
-import { dateformat, formatDatetime } from '../../common/convert_datetime';
-import { exists, notExists } from '../../common/others';
+import { modalRecruit } from '../../../../constant';
+import { EventMatchInfo } from '../../../common/apis/splatoon3.ink/splatoon3_ink';
+import {
+    createRoundRect,
+    drawArcImage,
+    fillTextWithStroke,
+} from '../../../common/canvas_components';
+import { dateformat, formatDatetime } from '../../../common/convert_datetime';
+import { exists, notExists } from '../../../common/others';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',
@@ -24,7 +28,7 @@ Canvas.registerFont(path.resolve('./fonts/SEGUISYM.TTF'), { family: 'SEGUI' });
 /*
  * 募集用のキャンバス(1枚目)を作成する
  */
-export async function recruitAnarchyCanvas(
+export async function recruitEventCanvas(
     opCode: number,
     remaining: number,
     count: number,
@@ -33,7 +37,6 @@ export async function recruitAnarchyCanvas(
     user2: Member | null,
     user3: Member | null,
     condition: string,
-    rank: string | null,
     channelName: string | null,
 ) {
     const blankAvatarUrl =
@@ -50,19 +53,19 @@ export async function recruitAnarchyCanvas(
     recruitCtx.lineWidth = 4;
     recruitCtx.stroke();
 
-    const anarchyIcon = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/anarchy_icon.png',
+    const eventIcon = await Canvas.loadImage(
+        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/event_icon.png',
     );
-    recruitCtx.drawImage(anarchyIcon, 18, 15, 86, 86);
+    recruitCtx.drawImage(eventIcon, 19, 19, 77, 77);
 
     fillTextWithStroke(
         recruitCtx,
-        'バンカラマッチ',
+        'イベントマッチ',
         '51px Splatfont',
         '#000000',
-        '#F14400',
+        '#FF2F82',
         3,
-        115,
+        112,
         80,
     );
 
@@ -213,20 +216,6 @@ export async function recruitAnarchyCanvas(
         520,
     );
 
-    recruitCtx.save();
-    recruitCtx.textAlign = 'right';
-    fillTextWithStroke(
-        recruitCtx,
-        '募集ウデマエ: ' + (rank ?? 'ERROR'),
-        '38px "Splatfont"',
-        '#FFFFFF',
-        '#2D3130',
-        1,
-        690,
-        520,
-    );
-    recruitCtx.restore();
-
     if (opCode === RecruitOpCode.cancel) {
         recruitCtx.save();
         recruitCtx.translate(220, -110);
@@ -245,7 +234,7 @@ export async function recruitAnarchyCanvas(
             600,
             600,
         );
-        recruitCtx.restore();
+        recruitCtx.restore;
     } else if (opCode === RecruitOpCode.close) {
         recruitCtx.save();
         const cancelStamp = await Canvas.loadImage(
@@ -262,7 +251,7 @@ export async function recruitAnarchyCanvas(
             500,
             340,
         );
-        recruitCtx.restore();
+        recruitCtx.restore;
     }
 
     const recruit = recruitCanvas.toBuffer();
@@ -272,19 +261,20 @@ export async function recruitAnarchyCanvas(
 /*
  * ルール情報のキャンバス(2枚目)を作成する
  */
-export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconURL: string) {
+export async function ruleEventCanvas(eventData: EventMatchInfo | null) {
     const ruleCanvas = Canvas.createCanvas(720, 550);
     const ruleCtx = ruleCanvas.getContext('2d');
 
-    const date = anarchyData ? formatDatetime(anarchyData.startTime, dateformat.ymdw) : 'えらー';
-    const time = anarchyData
-        ? formatDatetime(anarchyData.startTime, dateformat.hm) +
+    const title = eventData ? eventData.title : 'えらー';
+    const rule = eventData ? eventData.rule : 'えらー';
+    const date = eventData ? formatDatetime(eventData.startTime, dateformat.ymdw) : 'えらー';
+    const time = eventData
+        ? formatDatetime(eventData.startTime, dateformat.hm) +
           ' - ' +
-          formatDatetime(anarchyData.endTime, dateformat.hm)
+          formatDatetime(eventData.endTime, dateformat.hm)
         : 'えらー';
-    const rule = anarchyData && anarchyData.rule ? anarchyData.rule : 'えらー';
-    const stage1 = anarchyData && anarchyData.stage1 ? anarchyData.stage1 : 'えらー';
-    const stage2 = anarchyData && anarchyData.stage2 ? anarchyData.stage2 : 'えらー';
+    const stage1 = eventData ? eventData.stage1 : 'えらー';
+    const stage2 = eventData ? eventData.stage2 : 'えらー';
 
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.fillStyle = '#2F3136';
@@ -292,6 +282,11 @@ export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconU
     ruleCtx.strokeStyle = '#FFFFFF';
     ruleCtx.lineWidth = 4;
     ruleCtx.stroke();
+
+    ruleCtx.save();
+    ruleCtx.textAlign = 'right';
+    fillTextWithStroke(ruleCtx, title, '38px Splatfont', '#FFE02EFB', '#2D3130', 1, 690, 65);
+    ruleCtx.restore();
 
     fillTextWithStroke(ruleCtx, 'ルール', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 80);
 
@@ -320,6 +315,7 @@ export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconU
         (350 - dateWidth) / 2,
         270,
     ); // 中央寄せ
+
     const timeWidth = ruleCtx.measureText(time).width;
     fillTextWithStroke(
         ruleCtx,
@@ -333,15 +329,15 @@ export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconU
     ); // 中央寄せ
 
     fillTextWithStroke(ruleCtx, 'ステージ', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 390);
+
     ruleCtx.save();
     ruleCtx.textAlign = 'center';
     fillTextWithStroke(ruleCtx, stage1, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 440);
     fillTextWithStroke(ruleCtx, stage2, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 490);
-
     ruleCtx.restore();
 
-    if (exists(anarchyData) && exists(anarchyData.stageImage1) && exists(anarchyData.stageImage2)) {
-        const stage1Image = await Canvas.loadImage(anarchyData.stageImage1);
+    if (exists(eventData) && exists(eventData.stageImage1) && exists(eventData.stageImage2)) {
+        const stage1Image = await Canvas.loadImage(eventData.stageImage1);
         ruleCtx.save();
         ruleCtx.beginPath();
         createRoundRect(ruleCtx, 370, 130, 308, 176, 10);
@@ -352,7 +348,7 @@ export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconU
         ruleCtx.stroke();
         ruleCtx.restore();
 
-        const stage2Image = await Canvas.loadImage(anarchyData.stageImage2);
+        const stage2Image = await Canvas.loadImage(eventData.stageImage2);
         ruleCtx.save();
         ruleCtx.beginPath();
         createRoundRect(ruleCtx, 370, 340, 308, 176, 10);
@@ -383,11 +379,6 @@ export async function ruleAnarchyCanvas(anarchyData: MatchInfo | null, ruleIconU
         ruleCtx.stroke();
         ruleCtx.restore();
     }
-
-    ruleCtx.save();
-    const ruleImage = await Canvas.loadImage(ruleIconURL);
-    ruleCtx.drawImage(ruleImage, 0, 0, ruleImage.width, ruleImage.height, 570, 10, 120, 120);
-    ruleCtx.restore();
 
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.clip();

@@ -4,11 +4,15 @@ import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
 import { RecruitOpCode } from './regenerate_canvas.js';
-import { modalRecruit } from '../../../constant.js';
-import { MatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink.js';
-import { createRoundRect, drawArcImage, fillTextWithStroke } from '../../common/canvas_components';
-import { dateformat, formatDatetime } from '../../common/convert_datetime';
-import { exists, notExists } from '../../common/others.js';
+import { modalRecruit, placeHold } from '../../../../constant.js';
+import { SalmonInfo } from '../../../common/apis/splatoon3.ink/splatoon3_ink.js';
+import {
+    createRoundRect,
+    drawArcImage,
+    fillTextWithStroke,
+} from '../../../common/canvas_components';
+import { dateformat, formatDatetime } from '../../../common/convert_datetime';
+import { exists, notExists } from '../../../common/others.js';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',
@@ -24,7 +28,7 @@ Canvas.registerFont(path.resolve('./fonts/SEGUISYM.TTF'), { family: 'SEGUI' });
 /*
  * 募集用のキャンバス(1枚目)を作成する
  */
-export async function recruitFestCanvas(
+export async function recruitSalmonCanvas(
     opCode: number,
     remaining: number,
     count: number,
@@ -32,10 +36,9 @@ export async function recruitFestCanvas(
     user1: Member | null,
     user2: Member | null,
     user3: Member | null,
-    team: string,
-    color: string,
     condition: string,
     channelName: string | null,
+    subTitle?: string,
 ) {
     const blankAvatarUrl =
         'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/blank_avatar.png'; // blankのアバター画像URL
@@ -51,17 +54,26 @@ export async function recruitFestCanvas(
     recruitCtx.lineWidth = 4;
     recruitCtx.stroke();
 
-    const fesIcon = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/fes_icon.png',
+    const salmonIcon = await Canvas.loadImage(
+        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/salmon_black_icon.png',
     );
-    recruitCtx.drawImage(fesIcon, 17, 20, 85, 85);
+    recruitCtx.drawImage(salmonIcon, 22, 32, 82, 60);
 
-    fillTextWithStroke(recruitCtx, 'フェスマッチ', '51px Splatfont', '#000000', color, 3, 115, 80);
+    fillTextWithStroke(recruitCtx, 'SALMON', '51px Splatfont', '#000000', '#FF9900', 3, 115, 80);
+    fillTextWithStroke(recruitCtx, 'RUN', '51px Splatfont', '#000000', '#00FF00DA', 3, 350, 80);
 
-    recruitCtx.save();
-    recruitCtx.textAlign = 'right';
-    fillTextWithStroke(recruitCtx, team, '48px Splatfont', color, '#222222', 1.7, 690, 80);
-    recruitCtx.restore();
+    if (typeof subTitle === 'string') {
+        fillTextWithStroke(
+            recruitCtx,
+            subTitle,
+            '49px Splatfont',
+            '#000000',
+            '#FFD900FB',
+            3,
+            510,
+            80,
+        );
+    }
 
     // 募集主の画像
     const recruiterImage = await Canvas.loadImage(recruiter.iconUrl ?? modalRecruit.placeHold);
@@ -255,19 +267,22 @@ export async function recruitFestCanvas(
 /*
  * ルール情報のキャンバス(2枚目)を作成する
  */
-export async function ruleFestCanvas(fesData: MatchInfo | null) {
+export async function ruleSalmonCanvas(data: SalmonInfo | null) {
     const ruleCanvas = Canvas.createCanvas(720, 550);
     const ruleCtx = ruleCanvas.getContext('2d');
+    const errorWeaponImage = await Canvas.loadImage(placeHold.error100x100);
 
-    const date = fesData ? formatDatetime(fesData.startTime, dateformat.ymdw) : 'えらー';
-    const time = fesData
-        ? formatDatetime(fesData.startTime, dateformat.hm) +
+    const datetime = data
+        ? formatDatetime(data.startTime, dateformat.mdwhm) +
           ' - ' +
-          formatDatetime(fesData.endTime, dateformat.hm)
+          formatDatetime(data.endTime, dateformat.mdwhm)
         : 'えらー';
-    const rule = fesData && fesData.rule ? fesData.rule : 'えらー';
-    const stage1 = fesData && fesData.stage1 ? fesData.stage1 : 'えらー';
-    const stage2 = fesData && fesData.stage2 ? fesData.stage2 : 'えらー';
+
+    const stage = data ? data.stage : 'えらー';
+    const weapon1Image = data ? await Canvas.loadImage(data.weapon1) : errorWeaponImage;
+    const weapon2Image = data ? await Canvas.loadImage(data.weapon2) : errorWeaponImage;
+    const weapon3Image = data ? await Canvas.loadImage(data.weapon3) : errorWeaponImage;
+    const weapon4Image = data ? await Canvas.loadImage(data.weapon4) : errorWeaponImage;
 
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.fillStyle = '#2F3136';
@@ -276,87 +291,53 @@ export async function ruleFestCanvas(fesData: MatchInfo | null) {
     ruleCtx.lineWidth = 4;
     ruleCtx.stroke();
 
-    fillTextWithStroke(ruleCtx, 'ルール', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 80);
+    fillTextWithStroke(ruleCtx, '日時', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 80);
 
-    const ruleWidth = ruleCtx.measureText(rule).width;
+    const dateWidth = ruleCtx.measureText(datetime).width;
     fillTextWithStroke(
         ruleCtx,
-        rule,
-        '45px Splatfont',
+        datetime,
+        '37px Splatfont',
         '#FFFFFF',
         '#2D3130',
         1,
-        (320 - ruleWidth) / 2,
+        (650 - dateWidth) / 2,
         145,
-    ); // 中央寄せ
+    );
 
-    fillTextWithStroke(ruleCtx, '日時', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 220);
+    fillTextWithStroke(ruleCtx, '武器', '32px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 245);
 
-    const dateWidth = ruleCtx.measureText(date).width;
+    ruleCtx.drawImage(weapon1Image, 50, 280, 110, 110);
+    ruleCtx.drawImage(weapon2Image, 190, 280, 110, 110);
+    ruleCtx.drawImage(weapon3Image, 50, 410, 110, 110);
+    ruleCtx.drawImage(weapon4Image, 190, 410, 110, 110);
+
+    fillTextWithStroke(ruleCtx, 'ステージ', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 350, 245);
+
+    const stageWidth = ruleCtx.measureText(stage).width;
     fillTextWithStroke(
         ruleCtx,
-        date,
-        '35px Splatfont',
+        stage,
+        '38px Splatfont',
         '#FFFFFF',
         '#2D3130',
         1,
-        (350 - dateWidth) / 2,
-        270,
-    ); // 中央寄せ
+        150 + (700 - stageWidth) / 2,
+        300,
+    );
 
-    const timeWidth = ruleCtx.measureText(time).width;
-    fillTextWithStroke(
-        ruleCtx,
-        time,
-        '35px Splatfont',
-        '#FFFFFF',
-        '#2D3130',
-        1,
-        15 + (350 - timeWidth) / 2,
-        320,
-    ); // 中央寄せ
-
-    fillTextWithStroke(ruleCtx, 'ステージ', '33px Splatfont', '#FFFFFF', '#2D3130', 1, 35, 390);
-    ruleCtx.save();
-    ruleCtx.textAlign = 'center';
-    fillTextWithStroke(ruleCtx, stage1, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 440);
-    fillTextWithStroke(ruleCtx, stage2, '32px Splatfont', '#FFFFFF', '#2D3130', 1, 190, 490);
-
-    ruleCtx.restore();
-
-    if (exists(fesData) && exists(fesData.stageImage1) && exists(fesData.stageImage2)) {
-        const stage1Image = await Canvas.loadImage(fesData.stageImage1);
-        ruleCtx.save();
-        ruleCtx.beginPath();
-        createRoundRect(ruleCtx, 370, 130, 308, 176, 10);
-        ruleCtx.clip();
-        ruleCtx.drawImage(stage1Image, 370, 130, 308, 176);
-        ruleCtx.strokeStyle = '#FFFFFF';
-        ruleCtx.lineWidth = 6.0;
-        ruleCtx.stroke();
-        ruleCtx.restore();
-
-        const stage2Image = await Canvas.loadImage(fesData.stageImage2);
+    if (exists(data) && exists(data.stageImage)) {
+        const stageImage = await Canvas.loadImage(data.stageImage);
         ruleCtx.save();
         ruleCtx.beginPath();
         createRoundRect(ruleCtx, 370, 340, 308, 176, 10);
         ruleCtx.clip();
-        ruleCtx.drawImage(stage2Image, 370, 340, 308, 176);
+        ruleCtx.drawImage(stageImage, 370, 340, 308, 176);
         ruleCtx.strokeStyle = '#FFFFFF';
         ruleCtx.lineWidth = 6.0;
         ruleCtx.stroke();
         ruleCtx.restore();
     } else {
-        ruleCtx.save();
-        ruleCtx.beginPath();
-        createRoundRect(ruleCtx, 370, 130, 308, 176, 10);
-        ruleCtx.fillStyle = '#000000';
-        ruleCtx.fill();
-        ruleCtx.strokeStyle = '#FFFFFF';
-        ruleCtx.lineWidth = 6.0;
-        ruleCtx.stroke();
-        ruleCtx.restore();
-
         ruleCtx.save();
         ruleCtx.beginPath();
         createRoundRect(ruleCtx, 370, 340, 308, 176, 10);
