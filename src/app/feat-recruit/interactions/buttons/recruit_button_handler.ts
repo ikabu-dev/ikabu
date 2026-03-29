@@ -2,10 +2,7 @@ import { ButtonInteraction } from 'discord.js';
 
 import { cancel } from './cancel_event';
 import { cancelNotify } from './cancel_notify_event';
-import { confirmJoinRequest } from './confirm_join_request';
 import { del } from './delete_event';
-import { join } from './join_event';
-import { joinNotify } from './join_notify_event';
 import { log4js_obj } from '../../../../log4js_settings';
 import { setButtonDisable } from '../../../common/button_components';
 import { exists } from '../../../common/others';
@@ -14,6 +11,9 @@ import { sendErrorLogs } from '../../../logs/error/send_error_logs';
 import { close } from '../../close_recruit/close_event';
 import { closeNotify } from '../../close_recruit/close_notify_event';
 import { handleCreateModal } from '../../create_recruit/modals/create_recruit_modals';
+import { confirmJoinRequest } from '../../join_request/confirm_join_request';
+import { join } from '../../join_request/join_event';
+import { joinNotify } from '../../join_request/join_notify_event';
 import { endRecruitEventButton } from '../../vc_reservation/recruit_event';
 
 const logger = log4js_obj.getLogger('recruitButton');

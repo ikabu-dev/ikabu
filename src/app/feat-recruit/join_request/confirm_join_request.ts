@@ -1,22 +1,22 @@
 import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
-import { memberListText } from './other_events';
-import { ParticipantMember, ParticipantService } from '../../../../db/participant_service';
-import { RecruitService } from '../../../../db/recruit_service';
-import { log4js_obj } from '../../../../log4js_settings';
-import { recoveryThinkingButton } from '../../../common/button_components';
-import { searchChannelById } from '../../../common/manager/channel_manager';
-import { getGuildByInteraction } from '../../../common/manager/guild_manager';
-import { searchAPIMemberById, searchDBMemberById } from '../../../common/manager/member_manager';
-import { searchMessageById } from '../../../common/manager/message_manager';
-import { assertExistCheck, exists, notExists } from '../../../common/others';
-import { sendStickyMessage } from '../../../common/sticky_message';
-import { RecruitParam } from '../../../constant/button_id';
-import { ErrorTexts } from '../../../constant/error_texts';
-import { StickyKey } from '../../../constant/sticky_key';
-import { sendErrorLogs } from '../../../logs/error/send_error_logs';
-import { RecruitOpCode, regenerateCanvas } from '../../canvases/regenerate_canvas';
-import { availableRecruitString } from '../../sticky/recruit_sticky_messages';
+import { memberListText } from '../interactions/buttons/other_events';
+import { ParticipantMember, ParticipantService } from '../../../db/participant_service';
+import { RecruitService } from '../../../db/recruit_service';
+import { log4js_obj } from '../../../log4js_settings';
+import { recoveryThinkingButton } from '../../common/button_components';
+import { searchChannelById } from '../../common/manager/channel_manager';
+import { getGuildByInteraction } from '../../common/manager/guild_manager';
+import { searchAPIMemberById, searchDBMemberById } from '../../common/manager/member_manager';
+import { searchMessageById } from '../../common/manager/message_manager';
+import { assertExistCheck, exists, notExists } from '../../common/others';
+import { sendStickyMessage } from '../../common/sticky_message';
+import { RecruitParam } from '../../constant/button_id';
+import { ErrorTexts } from '../../constant/error_texts';
+import { StickyKey } from '../../constant/sticky_key';
+import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { RecruitOpCode, regenerateCanvas } from '../canvases/regenerate_canvas';
+import { availableRecruitString } from '../sticky/recruit_sticky_messages';
 
 const logger = log4js_obj.getLogger('recruitButton');
 
