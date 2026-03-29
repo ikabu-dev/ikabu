@@ -14,7 +14,7 @@ import {
 import { recruitFestCanvas, ruleFestCanvas } from '../canvases/fest_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
 import { recruitAutoClose } from '../common/auto_close';
-import { arrangeRecruitData } from '../common/create_recruit/arrange_command_data';
+import { arrangeCommandRecruitData } from '../common/create_recruit/arrange_command_data';
 import { arrangeModalRecruitData } from '../common/create_recruit/arrange_modal_data';
 import { registerRecruitData } from '../common/create_recruit/register_recruit_data';
 import { removeDeleteButton } from '../common/create_recruit/remove_delete_button';
@@ -41,7 +41,7 @@ export async function festRecruit(
     let recruitData: RecruitData;
     if (interaction.isChatInputCommand()) {
         try {
-            recruitData = await arrangeRecruitData(interaction, recruitName, recruitType);
+            recruitData = await arrangeCommandRecruitData(interaction, recruitName, recruitType);
         } catch (error) {
             return;
         }
