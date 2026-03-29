@@ -20,12 +20,12 @@ import {
     time,
 } from 'discord.js';
 
-import { log4js_obj } from '../../../../log4js_settings';
-import { recoveryThinkingButton } from '../../../common/button_components';
-import { exists, notExists, sleep } from '../../../common/others';
-import { RecruitParam } from '../../../constant/button_id';
-import { ErrorTexts } from '../../../constant/error_texts';
-import { sendErrorLogs } from '../../../logs/error/send_error_logs';
+import { log4js_obj } from '../../../log4js_settings';
+import { recoveryThinkingButton } from '../../common/button_components';
+import { exists, notExists, sleep } from '../../common/others';
+import { RecruitParam } from '../../constant/button_id';
+import { ErrorTexts } from '../../constant/error_texts';
+import { sendErrorLogs } from '../../logs/error/send_error_logs';
 const logger = log4js_obj.getLogger();
 
 const activeJobs: Map<string, CronJob> = new Map();

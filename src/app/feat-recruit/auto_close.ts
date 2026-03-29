@@ -1,13 +1,13 @@
 import { Message } from 'discord.js';
 
-import { ParticipantService } from '../../../db/participant_service';
-import { RecruitService } from '../../../db/recruit_service';
-import { setButtonDisable } from '../../common/button_components';
-import { notExists } from '../../common/others';
-import { regenerateCanvas, RecruitOpCode } from '../canvases/regenerate_canvas';
-import { getMemberMentions } from '../interactions/buttons/other_events';
-import { sendCloseEmbedSticky } from '../sticky/recruit_sticky_messages';
-import { RecruitData } from '../types/recruit_data';
+import { ParticipantService } from '../../db/participant_service';
+import { RecruitService } from '../../db/recruit_service';
+import { setButtonDisable } from '../common/button_components';
+import { notExists } from '../common/others';
+import { regenerateCanvas, RecruitOpCode } from './canvases/regenerate_canvas';
+import { getMemberMentions } from './interactions/buttons/other_events';
+import { sendCloseEmbedSticky } from './sticky/recruit_sticky_messages';
+import { RecruitData } from './types/recruit_data';
 
 export async function recruitAutoClose(
     recruitData: RecruitData,
