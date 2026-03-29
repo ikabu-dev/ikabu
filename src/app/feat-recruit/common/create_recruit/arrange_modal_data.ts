@@ -1,4 +1,4 @@
-import { MessageFlags, ModalSubmitInteraction } from 'discord.js';
+import { ChannelType, MessageFlags, ModalSubmitInteraction, VoiceBasedChannel } from 'discord.js';
 
 import { RecruitType } from '../../../../db/recruit_service';
 import { log4js_obj } from '../../../../log4js_settings';
@@ -21,6 +21,7 @@ import {
     checkRegularRecruitNum,
 } from '../../common/condition_checks/recruit_num_check';
 import { checkRecruitSchedule } from '../../common/condition_checks/schedule_check';
+import { getVCReserveErrorMessage } from '../../common/condition_checks/vc_reserve_check';
 import { RecruitConditionError } from '../../types/recruit_condition_error';
 import { RecruitData } from '../../types/recruit_data';
 
@@ -36,7 +37,6 @@ export async function arrangeModalRecruitData(
     const recruitChannel = interaction.channel;
     assertExistCheck(interactionMember, 'GuildMember');
     assertExistCheck(recruitChannel, 'interaction.channel');
-    const scheduleNum = 0;
 
     try {
         await sendRecruitModalLog(interaction);
@@ -48,17 +48,33 @@ export async function arrangeModalRecruitData(
             );
         }
 
+        // スケジュール番号（StringSelect がある場合は読み取る）
+        const scheduleNum = interaction.fields.fields.has('scheduleNum')
+            ? interaction.fields.getStringSelectValues('scheduleNum')[0] === 'next'
+                ? 1
+                : 0
+            : 0;
+
         const checkScheduleResponse = await checkRecruitSchedule(
             guild.id,
             schedule,
             scheduleNum,
             recruitType,
-        ); // 対象の日時に募集を建てられるかチェック
+        );
         if (!checkScheduleResponse.canRecruit) {
             throw new RecruitConditionError(checkScheduleResponse.recruitDateErrorMessage);
         }
 
-        const voiceChannel = null;
+        // ボイスチャンネル（ChannelSelect がある場合は読み取る）
+        const voiceChannelCollection = interaction.fields.fields.has('voiceChannel')
+            ? interaction.fields.getSelectedChannels('voiceChannel', false, [
+                  ChannelType.GuildVoice,
+              ])
+            : null;
+        const voiceChannel = voiceChannelCollection
+            ? ([...voiceChannelCollection.values()][0] as VoiceBasedChannel) ?? null
+            : null;
+
         const recruitNum = Number(interaction.fields.getTextInputValue('rNum'));
 
         if (Number.isNaN(recruitNum)) {
@@ -71,9 +87,20 @@ export async function arrangeModalRecruitData(
         const recruiter = await searchDBMemberById(guild, interactionMember.id);
         assertExistCheck(recruiter, 'Member');
 
-        const attendee1 = null;
-        const attendee2 = null;
-        const attendee3 = null;
+        // 参加者（UserSelect がある場合は読み取る）
+        const attendeeUsersCollection = interaction.fields.fields.has('attendees')
+            ? interaction.fields.getSelectedUsers('attendees')
+            : null;
+        const attendeeUsers = attendeeUsersCollection ? [...attendeeUsersCollection.values()] : [];
+        const attendee1 = attendeeUsers[0]
+            ? await searchDBMemberById(guild, attendeeUsers[0].id)
+            : null;
+        const attendee2 = attendeeUsers[1]
+            ? await searchDBMemberById(guild, attendeeUsers[1].id)
+            : null;
+        const attendee3 = attendeeUsers[2]
+            ? await searchDBMemberById(guild, attendeeUsers[2].id)
+            : null;
 
         let recruitNumCheckResponse;
         if (recruitType === RecruitType.RegularRecruit) {
@@ -91,7 +118,41 @@ export async function arrangeModalRecruitData(
             throw new RecruitConditionError(recruitNumCheckResponse.recruitNumErrorMessage);
         }
 
+        if (exists(voiceChannel)) {
+            const voiceChannelReserveErrorMessage = await getVCReserveErrorMessage(
+                guild.id,
+                voiceChannel,
+                recruiter.userId,
+            );
+            if (exists(voiceChannelReserveErrorMessage)) {
+                throw new RecruitConditionError(voiceChannelReserveErrorMessage);
+            }
+        }
+
         let txt = `### ${recruiter.mention}たんの${recruitName}\n`;
+        const members: string[] = [];
+
+        if (exists(attendee1)) {
+            members.push(attendee1.mention + 'たん');
+        }
+        if (exists(attendee2)) {
+            members.push(attendee2.mention + 'たん');
+        }
+        if (exists(attendee3)) {
+            members.push(attendee3.mention + 'たん');
+        }
+
+        if (members.length !== 0) {
+            for (const i in members) {
+                if (parseInt(i) === 0) {
+                    txt = txt + members[i];
+                } else {
+                    txt = txt + 'と' + members[i];
+                }
+            }
+            txt += 'の参加が既に決定しているでし！\n';
+        }
+
         txt += 'よければ合流しませんか？';
 
         return {

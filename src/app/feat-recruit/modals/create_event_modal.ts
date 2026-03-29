@@ -1,9 +1,15 @@
 import {
     ActionRowBuilder,
     ButtonInteraction,
+    ChannelSelectMenuBuilder,
+    ChannelType,
+    LabelBuilder,
     ModalBuilder,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
     TextInputBuilder,
     TextInputStyle,
+    UserSelectMenuBuilder,
 } from 'discord.js';
 
 export async function createEventModal(interaction: ButtonInteraction<'cached' | 'raw'>) {
@@ -30,10 +36,49 @@ export async function createEventModal(interaction: ButtonInteraction<'cached' |
         .setMaxLength(120)
         .setRequired(true);
 
+    const scheduleNumLabel = new LabelBuilder()
+        .setLabel('スケジュール')
+        .setStringSelectMenuComponent(
+            new StringSelectMenuBuilder()
+                .setCustomId('scheduleNum')
+                .setMinValues(1)
+                .setMaxValues(1)
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('現在のスケジュール')
+                        .setValue('now')
+                        .setDefault(true),
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('次のスケジュール')
+                        .setValue('next'),
+                ),
+        );
+
+    const attendeesLabel = new LabelBuilder()
+        .setLabel('既にに決まっている参加者(最大2人)')
+        .setUserSelectMenuComponent(
+            new UserSelectMenuBuilder()
+                .setCustomId('attendees')
+                .setMinValues(0)
+                .setMaxValues(2)
+                .setRequired(false),
+        );
+
+    const voiceChannelLabel = new LabelBuilder()
+        .setLabel('使用するボイスチャンネル')
+        .setChannelSelectMenuComponent(
+            new ChannelSelectMenuBuilder()
+                .setCustomId('voiceChannel')
+                .setChannelTypes(ChannelType.GuildVoice)
+                .setMinValues(0)
+                .setMaxValues(1)
+                .setRequired(false),
+        );
+
     const row1 = new ActionRowBuilder<TextInputBuilder>().addComponents(recruitNumInput);
     const row2 = new ActionRowBuilder<TextInputBuilder>().addComponents(conditionInput);
 
-    modal.addComponents(row1, row2);
+    modal.addComponents(row1, row2, scheduleNumLabel, attendeesLabel, voiceChannelLabel);
 
     await interaction.showModal(modal);
 }
