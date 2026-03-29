@@ -1,7 +1,6 @@
 import { ButtonInteraction } from 'discord.js';
 
-import { cancel } from './cancel_event';
-import { cancelNotify } from './cancel_notify_event';
+import { cancelButtonHandler, cancelNotifyButtonHandler } from './cancel_button_handler';
 import { del } from './delete_event';
 import { log4js_obj } from '../../../../log4js_settings';
 import { setButtonDisable } from '../../../common/button_components';
@@ -51,7 +50,7 @@ export async function recruitButtonHandler(
             await join(interaction, params);
             break;
         case RecruitParam.Cancel:
-            await cancel(interaction, params);
+            await cancelButtonHandler(interaction, params);
             break;
         case RecruitParam.Delete:
             await del(interaction, params);
@@ -66,7 +65,7 @@ export async function recruitButtonHandler(
             await joinNotify(interaction);
             break;
         case RecruitParam.CancelNotify:
-            await cancelNotify(interaction);
+            await cancelNotifyButtonHandler(interaction);
             break;
         case RecruitParam.CloseNotify:
             await closeNotify(interaction);
