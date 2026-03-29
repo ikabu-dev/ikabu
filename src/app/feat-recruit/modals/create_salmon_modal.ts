@@ -1,9 +1,13 @@
 import {
     ActionRowBuilder,
     ButtonInteraction,
+    ChannelSelectMenuBuilder,
+    ChannelType,
+    LabelBuilder,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
+    UserSelectMenuBuilder,
 } from 'discord.js';
 
 export async function createSalmonModal(interaction: ButtonInteraction<'cached' | 'raw'>) {
@@ -30,10 +34,31 @@ export async function createSalmonModal(interaction: ButtonInteraction<'cached' 
         .setMaxLength(120)
         .setRequired(true);
 
+    const attendeesLabel = new LabelBuilder()
+        .setLabel('既に決まっている参加者(最大2人)')
+        .setUserSelectMenuComponent(
+            new UserSelectMenuBuilder()
+                .setCustomId('attendees')
+                .setMinValues(0)
+                .setMaxValues(2)
+                .setRequired(false),
+        );
+
+    const voiceChannelLabel = new LabelBuilder()
+        .setLabel('使用するボイスチャンネル')
+        .setChannelSelectMenuComponent(
+            new ChannelSelectMenuBuilder()
+                .setCustomId('voiceChannel')
+                .setChannelTypes(ChannelType.GuildVoice)
+                .setMinValues(0)
+                .setMaxValues(1)
+                .setRequired(false),
+        );
+
     const actionRow1 = new ActionRowBuilder<TextInputBuilder>().addComponents(recruitNumInput);
     const actionRow2 = new ActionRowBuilder<TextInputBuilder>().addComponents(conditionInput);
 
-    modal.addComponents(actionRow1, actionRow2);
+    modal.addComponents(actionRow1, actionRow2, attendeesLabel, voiceChannelLabel);
 
     await interaction.showModal(modal);
 }

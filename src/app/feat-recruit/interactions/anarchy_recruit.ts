@@ -55,11 +55,9 @@ export async function anarchyRecruit(
             return;
         }
     } else if (interaction.isModalSubmit()) {
-        recruitRoleId = await UniqueRoleService.getRoleIdByKey(
-            interaction.guildId,
-            RoleKeySet.AnarchyRecruit.key,
-        );
-        rank = '指定なし';
+        const recruitRankRole = await getAnarchyRecruitRoleFromModal(interaction);
+        recruitRoleId = recruitRankRole.recruitRoleId;
+        rank = recruitRankRole.rank;
 
         try {
             recruitData = await arrangeModalRecruitData(interaction, recruitName, recruitType);
@@ -156,6 +154,25 @@ type AnarchyRecruitRankRole = {
     recruitRoleId: string | null;
     rank: string;
 };
+async function getAnarchyRecruitRoleFromModal(
+    interaction: ModalSubmitInteraction<'cached' | 'raw'>,
+): Promise<AnarchyRecruitRankRole> {
+    assertExistCheck(interaction.channel, 'channel');
+    const anarchyRecruitRoleId = await UniqueRoleService.getRoleIdByKey(
+        interaction.guildId,
+        RoleKeySet.AnarchyRecruit.key,
+    );
+    if (notExists(anarchyRecruitRoleId)) {
+        await interaction.channel.send(
+            (await getDeveloperMention(interaction.guildId)) +
+                `\nバンカラ募集ロールが設定されていないでし！`,
+        );
+        return { recruitRoleId: null, rank: 'えらー' };
+    }
+
+    return { recruitRoleId: anarchyRecruitRoleId, rank: '指定なし' };
+}
+
 async function getAnarchyRecruitRole(
     interaction: ChatInputCommandInteraction<'cached' | 'raw'>,
 ): Promise<AnarchyRecruitRankRole> {

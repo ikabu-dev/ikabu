@@ -119,7 +119,7 @@ export function createNewRecruitButton(channelName: string) {
         button.addComponents([
             new ButtonBuilder()
                 .setCustomId(buttonParams.toString())
-                .setLabel('簡易' + channelName + 'をする')
+                .setLabel(channelName + 'をする')
                 .setStyle(ButtonStyle.Success),
         ]);
     }
