@@ -14,9 +14,9 @@ import {
 } from '../../common/others';
 import { RoleKeySet, isRoleKey, getUniqueRoleNameByKey } from '../../constant/role_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
-import { recruitAutoClose } from '../auto_close';
 import { recruitAnarchyCanvas, ruleAnarchyCanvas } from '../canvases/anarchy_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
+import { recruitAutoClose } from '../close_recruit/auto_close';
 import { arrangeCommandRecruitData } from './common/arrange_command_data';
 import { arrangeModalRecruitData } from './common/arrange_modal_data';
 import { registerRecruitData } from './common/register_recruit_data';

@@ -11,9 +11,9 @@ import {
     getDeveloperMention,
     exists,
 } from '../../common/others';
-import { recruitAutoClose } from '../auto_close';
 import { recruitFestCanvas, ruleFestCanvas } from '../canvases/fest_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
+import { recruitAutoClose } from '../close_recruit/auto_close';
 import { arrangeCommandRecruitData } from './common/arrange_command_data';
 import { arrangeModalRecruitData } from './common/arrange_modal_data';
 import { registerRecruitData } from './common/register_recruit_data';

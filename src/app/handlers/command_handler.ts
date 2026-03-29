@@ -13,6 +13,7 @@ import { joinedAtFixer } from '../feat-admin/joined_date_fixer/fix_joined_date.j
 import { shutdown } from '../feat-admin/shutdown/shutdown_process';
 import { uniqueChannelSettingsHandler } from '../feat-admin/unique_channel_settings/unique_channel_settings_hanlder.js';
 import { uniqueRoleSettingsHandler } from '../feat-admin/unique_role_settings/unique_role_settings_hanlder.js';
+import { closeCommand } from '../feat-recruit/close_recruit/close_command.js';
 import { anarchyRecruit } from '../feat-recruit/create_recruit/anarchy_recruit.js';
 import { buttonRecruit } from '../feat-recruit/create_recruit/button_recruit.js';
 import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit.js';
@@ -21,7 +22,6 @@ import { otherGameRecruit } from '../feat-recruit/create_recruit/other_game_recr
 import { privateRecruit } from '../feat-recruit/create_recruit/private_recruit';
 import { regularRecruit } from '../feat-recruit/create_recruit/regular_recruit.js';
 import { salmonRecruit } from '../feat-recruit/create_recruit/salmon_recruit.js';
-import { closeCommand } from '../feat-recruit/interactions/commands/close.js';
 import { handleIkabuExperience } from '../feat-utils/other/experience.js';
 import { handleFriendCode } from '../feat-utils/other/friendcode';
 import { handleHelp } from '../feat-utils/other/help.js';
