@@ -55,7 +55,7 @@ export async function createAnarchyModal(interaction: ButtonInteraction<'cached'
         );
 
     const attendeesLabel = new LabelBuilder()
-        .setLabel('既にに決まっている参加者(最大2人)')
+        .setLabel('既に決まっている参加者(最大2人)')
         .setUserSelectMenuComponent(
             new UserSelectMenuBuilder()
                 .setCustomId('attendees')

@@ -55,7 +55,7 @@ export async function createRegularModal(interaction: ButtonInteraction<'cached'
         );
 
     const attendeesLabel = new LabelBuilder()
-        .setLabel('既にに決まっている参加者(最大3人)')
+        .setLabel('既に決まっている参加者(最大3人)')
         .setUserSelectMenuComponent(
             new UserSelectMenuBuilder()
                 .setCustomId('attendees')
