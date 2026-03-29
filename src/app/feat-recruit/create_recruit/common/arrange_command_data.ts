@@ -1,9 +1,9 @@
 import { ChannelType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
 import { buildRecruitText } from './recruit_text';
-import { validateRecruitNum } from './validators/recruit_num_validator';
-import { getScheduleNumFromString, validateSchedule } from './validators/schedule_validator';
-import { validateVoiceChannel } from './validators/vc_validator';
+import { validateRecruitNum } from '../validators/recruit_num_validator';
+import { getScheduleNumFromString, validateSchedule } from '../validators/schedule_validator';
+import { validateVoiceChannel } from '../validators/vc_validator';
 import { RecruitType } from '../../../../db/recruit_service';
 import { log4js_obj } from '../../../../log4js_settings';
 import { searchDBMemberById } from '../../../common/manager/member_manager';

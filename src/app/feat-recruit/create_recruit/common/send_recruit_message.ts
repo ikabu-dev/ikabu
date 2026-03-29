@@ -6,7 +6,7 @@ import {
     ModalSubmitInteraction,
 } from 'discord.js';
 
-import { recruitActionRow, recruitDeleteButton } from '../../buttons/create_recruit_buttons';
+import { recruitActionRow, recruitDeleteButton } from './create_recruit_buttons';
 import { getMemberMentions } from '../../interactions/buttons/other_events';
 import { RecruitData } from '../../types/recruit_data';
 

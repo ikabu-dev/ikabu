@@ -4,10 +4,10 @@ import {
     checkRecruitNum,
     checkRegularRecruitNum,
 } from '../condition_checks/recruit_num_check';
-import { RecruitType } from '../../../../../db/recruit_service';
-import { exists } from '../../../../common/others';
-import { RecruitAlertTexts } from '../../../alert_texts/alert_texts';
-import { RecruitConditionError } from '../../../types/recruit_condition_error';
+import { RecruitType } from '../../../../db/recruit_service';
+import { exists } from '../../../common/others';
+import { RecruitAlertTexts } from '../../alert_texts/alert_texts';
+import { RecruitConditionError } from '../../types/recruit_condition_error';
 
 export function validateRecruitNum(
     recruitNum: number,
