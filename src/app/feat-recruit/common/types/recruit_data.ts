@@ -1,7 +1,7 @@
 import { Member } from '@prisma/client';
 import { Guild, GuildMember, GuildTextBasedChannel, VoiceBasedChannel } from 'discord.js';
 
-import { Sp3Schedule } from '../../common/apis/splatoon3.ink/types/schedule';
+import { Sp3Schedule } from '../../../common/apis/splatoon3.ink/types/schedule';
 
 export type RecruitData = {
     guild: Guild;
