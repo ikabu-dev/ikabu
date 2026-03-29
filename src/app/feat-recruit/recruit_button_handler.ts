@@ -9,7 +9,7 @@ import { close } from './close_recruit/close_event';
 import { closeNotify } from './close_recruit/close_notify_event';
 import { sendErrorLogs } from '../logs/error/send_error_logs';
 import { handleCreateModal } from './create_recruit/modals/create_recruit_modals';
-import { del } from './interactions/buttons/delete_event';
+import { del } from './delete_recruit/delete_event';
 import { confirmJoinRequest } from './join_request/confirm_join_request';
 import { join } from './join_request/join_event';
 import { joinNotify } from './join_request/join_notify_event';
