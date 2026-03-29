@@ -195,8 +195,6 @@ export async function recruitFestCanvas(
     let channelString;
     if (notExists(channelName)) {
         channelString = '🔉 VC指定なし';
-    } else if (channelName === '[簡易版募集]') {
-        channelString = channelName;
     } else {
         channelString = '🔉 ' + channelName;
     }
