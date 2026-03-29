@@ -1,15 +1,15 @@
-import { RecruitType } from '../../../../db/recruit_service';
+import { RecruitType } from '../../../../../db/recruit_service';
 import {
     checkFes,
     checkBigRun,
     checkTeamContest,
     getEventData,
     inFallbackMode,
-} from '../../../common/apis/splatoon3.ink/splatoon3_ink';
-import { Sp3Schedule } from '../../../common/apis/splatoon3.ink/types/schedule';
-import { notExists } from '../../../common/others';
-import { RecruitAlertTexts } from '../../alert_texts/alert_texts';
-import { getFestPeriodAlertText } from '../../alert_texts/schedule_related_alerts';
+} from '../../../../common/apis/splatoon3.ink/splatoon3_ink';
+import { Sp3Schedule } from '../../../../common/apis/splatoon3.ink/types/schedule';
+import { notExists } from '../../../../common/others';
+import { RecruitAlertTexts } from '../../../alert_texts/alert_texts';
+import { getFestPeriodAlertText } from '../../../alert_texts/schedule_related_alerts';
 
 type checkRecruitScheduleResponse = {
     canRecruit: boolean;

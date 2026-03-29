@@ -1,7 +1,7 @@
 import { Member } from '@prisma/client';
 
-import { exists } from '../../../common/others';
-import { RecruitAlertTexts } from '../../alert_texts/alert_texts';
+import { exists } from '../../../../common/others';
+import { RecruitAlertTexts } from '../../../alert_texts/alert_texts';
 
 // 募集人数が問題ない場合の返答用のオブジェクト
 type recruitNumCheckResponse = {
