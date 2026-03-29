@@ -12,8 +12,8 @@ import { ErrorTexts } from '../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
 import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas.js';
-import { getMemberMentions } from '../interactions/buttons/other_events.js';
-import { increaseJoinCount, increaseRecruitCount } from '../interactions/buttons/recruit_count.js';
+import { getMemberMentions } from '../common/member_list';
+import { increaseJoinCount, increaseRecruitCount } from '../common/recruit_count';
 import {
     getStickyChannelId,
     sendCloseEmbedSticky,

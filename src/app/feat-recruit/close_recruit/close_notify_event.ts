@@ -10,8 +10,8 @@ import { assertExistCheck, datetimeDiff, exists, notExists } from '../../common/
 import { ErrorTexts } from '../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log';
 import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
-import { getMemberMentions } from '../interactions/buttons/other_events.js';
-import { increaseRecruitCount, increaseJoinCount } from '../interactions/buttons/recruit_count.js';
+import { getMemberMentions } from '../common/member_list';
+import { increaseRecruitCount, increaseJoinCount } from '../common/recruit_count';
 import {
     getStickyChannelId,
     sendCloseEmbedSticky,
