@@ -9,7 +9,7 @@ import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit';
 import { festRecruit } from '../feat-recruit/create_recruit/fest_recruit';
 import { regularRecruit } from '../feat-recruit/create_recruit/regular_recruit';
 import { salmonRecruit } from '../feat-recruit/create_recruit/salmon_recruit';
-import { recruitEdit } from '../feat-recruit/interactions/modals/recruit_edit';
+import { recruitEdit } from '../feat-recruit/edit_recruit/recruit_edit';
 
 export async function call(interaction: ModalSubmitInteraction<CacheType>) {
     if (interaction.inGuild()) {
