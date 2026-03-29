@@ -13,8 +13,8 @@ import { setButtonDisable } from '../../../common/button_components';
 import { exists } from '../../../common/others';
 import { RecruitParam } from '../../../constant/button_id';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs';
-import { endRecruitEventButton } from '../../common/vc_reservation/recruit_event';
-import { handleCreateModal } from '../../modals/create_recruit_modals';
+import { endRecruitEventButton } from '../../vc_reservation/recruit_event';
+import { handleCreateModal } from '../../create_recruit/modals/create_recruit_modals';
 
 const logger = log4js_obj.getLogger('recruitButton');
 

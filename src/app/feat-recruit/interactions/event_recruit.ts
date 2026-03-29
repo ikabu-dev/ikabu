@@ -5,20 +5,20 @@ import { UniqueRoleService } from '../../../db/unique_role_service';
 import { getEventData, EventMatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink';
 import { assertExistCheck, exists, sleep } from '../../common/others';
 import { RoleKeySet } from '../../constant/role_key';
+import { recruitAutoClose } from '../auto_close';
 import { recruitEventCanvas, ruleEventCanvas } from '../canvases/event_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
-import { recruitAutoClose } from '../common/auto_close';
-import { arrangeCommandRecruitData } from '../common/create_recruit/arrange_command_data';
-import { arrangeModalRecruitData } from '../common/create_recruit/arrange_modal_data';
-import { registerRecruitData } from '../common/create_recruit/register_recruit_data';
-import { removeDeleteButton } from '../common/create_recruit/remove_delete_button';
+import { arrangeCommandRecruitData } from '../create_recruit/common/arrange_command_data';
+import { arrangeModalRecruitData } from '../create_recruit/common/arrange_modal_data';
+import { registerRecruitData } from '../create_recruit/common/register_recruit_data';
+import { removeDeleteButton } from '../create_recruit/common/remove_delete_button';
 import {
     sendRecruitCanvas,
     RecruitImageBuffers,
-} from '../common/create_recruit/send_recruit_message';
-import { createRecruitEvent } from '../common/vc_reservation/recruit_event';
+} from '../create_recruit/common/send_recruit_message';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 import { RecruitData } from '../types/recruit_data';
+import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
 export async function eventRecruit(
     interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,

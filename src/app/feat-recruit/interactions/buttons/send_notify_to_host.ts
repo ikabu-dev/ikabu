@@ -19,7 +19,7 @@ import { searchMessageById } from '../../../common/manager/message_manager';
 import { exists, sleep } from '../../../common/others';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs';
 import { joinRequestConfirmButtons } from '../../buttons/create_join_request_buttons';
-import { messageLinkButtons } from '../../buttons/create_recruit_buttons';
+import { messageLinkButtons } from '../../create_recruit/common/create_recruit_buttons';
 
 const logger = log4js_obj.getLogger('recruitButton');
 

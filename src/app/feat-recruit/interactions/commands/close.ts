@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
 import { assertExistCheck, getCloseEmbed, getCommandHelpEmbed } from '../../../common/others';
-import { createNewRecruitButton } from '../../buttons/create_recruit_buttons';
+import { createNewRecruitButton } from '../../create_recruit/common/create_recruit_buttons';
 
 export async function closeCommand(interaction: ChatInputCommandInteraction<'cached'>) {
     assertExistCheck(interaction.channel, 'channel');

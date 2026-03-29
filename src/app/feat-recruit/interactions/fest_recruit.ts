@@ -11,20 +11,20 @@ import {
     getDeveloperMention,
     exists,
 } from '../../common/others';
+import { recruitAutoClose } from '../auto_close';
 import { recruitFestCanvas, ruleFestCanvas } from '../canvases/fest_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
-import { recruitAutoClose } from '../common/auto_close';
-import { arrangeCommandRecruitData } from '../common/create_recruit/arrange_command_data';
-import { arrangeModalRecruitData } from '../common/create_recruit/arrange_modal_data';
-import { registerRecruitData } from '../common/create_recruit/register_recruit_data';
-import { removeDeleteButton } from '../common/create_recruit/remove_delete_button';
+import { arrangeCommandRecruitData } from '../create_recruit/common/arrange_command_data';
+import { arrangeModalRecruitData } from '../create_recruit/common/arrange_modal_data';
+import { registerRecruitData } from '../create_recruit/common/register_recruit_data';
+import { removeDeleteButton } from '../create_recruit/common/remove_delete_button';
 import {
     sendRecruitCanvas,
     RecruitImageBuffers,
-} from '../common/create_recruit/send_recruit_message';
-import { createRecruitEvent } from '../common/vc_reservation/recruit_event';
+} from '../create_recruit/common/send_recruit_message';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 import { RecruitData } from '../types/recruit_data';
+import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
 export async function festRecruit(
     interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,

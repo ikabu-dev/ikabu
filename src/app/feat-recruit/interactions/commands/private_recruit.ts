@@ -9,7 +9,7 @@ import { searchMessageById } from '../../../common/manager/message_manager';
 import { assertExistCheck, exists, sleep } from '../../../common/others';
 import { RoleKeySet } from '../../../constant/role_key';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs';
-import { embedRecruitDeleteButton, recruitActionRow } from '../../buttons/create_recruit_buttons';
+import { embedRecruitDeleteButton, recruitActionRow } from '../../create_recruit/common/create_recruit_buttons';
 import { sendRecruitSticky } from '../../sticky/recruit_sticky_messages';
 import { getMemberMentions } from '../buttons/other_events';
 

@@ -15,7 +15,7 @@ import { assertExistCheck, exists, notExists } from '../../../common/others.js';
 import { ErrorTexts } from '../../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../../logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs.js';
-import { channelLinkButtons, nsoRoomLinkButton } from '../../buttons/create_recruit_buttons.js';
+import { channelLinkButtons, nsoRoomLinkButton } from '../../create_recruit/common/create_recruit_buttons.js';
 import { RecruitOpCode, regenerateCanvas } from '../../canvases/regenerate_canvas.js';
 import { getStickyChannelId, sendRecruitSticky } from '../../sticky/recruit_sticky_messages.js';
 

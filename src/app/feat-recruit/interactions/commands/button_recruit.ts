@@ -9,7 +9,7 @@ import { searchDBMemberById } from '../../../common/manager/member_manager';
 import { assertExistCheck, exists, getDeveloperMention, notExists } from '../../../common/others';
 import { ChannelKeySet } from '../../../constant/channel_key';
 import { RoleKeySet } from '../../../constant/role_key';
-import { notifyActionRow } from '../../buttons/create_recruit_buttons';
+import { notifyActionRow } from '../../create_recruit/common/create_recruit_buttons';
 import { sendRecruitSticky } from '../../sticky/recruit_sticky_messages';
 import { getMemberMentions } from '../buttons/other_events';
 
