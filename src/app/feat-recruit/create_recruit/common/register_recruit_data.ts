@@ -1,7 +1,7 @@
 import { ParticipantService } from '../../../../db/participant_service';
 import { RecruitType, RecruitService } from '../../../../db/recruit_service';
 import { exists } from '../../../common/others';
-import { RecruitData } from '../../types/recruit_data';
+import { RecruitData } from '../../common/types/recruit_data';
 
 export async function registerRecruitData(
     recruitId: string,

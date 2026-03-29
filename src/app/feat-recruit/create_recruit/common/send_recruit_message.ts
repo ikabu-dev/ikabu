@@ -7,8 +7,8 @@ import {
 } from 'discord.js';
 
 import { recruitActionRow, recruitDeleteButton } from './create_recruit_buttons';
+import { RecruitData } from '../../common/types/recruit_data';
 import { getMemberMentions } from '../../interactions/buttons/other_events';
-import { RecruitData } from '../../types/recruit_data';
 
 type RecruitMessageList = {
     recruitMessage: Message<true>;

@@ -1,9 +1,6 @@
 import { ChannelType, MessageFlags, ModalSubmitInteraction, VoiceBasedChannel } from 'discord.js';
 
 import { buildRecruitText } from './recruit_text';
-import { validateRecruitNum } from '../validators/recruit_num_validator';
-import { getScheduleNumFromString, validateSchedule } from '../validators/schedule_validator';
-import { validateVoiceChannel } from '../validators/vc_validator';
 import { RecruitType } from '../../../../db/recruit_service';
 import { log4js_obj } from '../../../../log4js_settings';
 import { getGuildByInteraction } from '../../../common/manager/guild_manager';
@@ -12,8 +9,11 @@ import { assertExistCheck, isEmpty } from '../../../common/others';
 import { ErrorTexts } from '../../../constant/error_texts';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs';
 import { sendRecruitModalLog } from '../../../logs/modals/recruit_modal_log';
-import { RecruitConditionError } from '../../types/recruit_condition_error';
-import { RecruitData } from '../../types/recruit_data';
+import { RecruitConditionError } from '../../common/types/recruit_condition_error';
+import { RecruitData } from '../../common/types/recruit_data';
+import { validateRecruitNum } from '../validators/recruit_num_validator';
+import { getScheduleNumFromString, validateSchedule } from '../validators/schedule_validator';
+import { validateVoiceChannel } from '../validators/vc_validator';
 
 const logger = log4js_obj.getLogger('recruit');
 

@@ -1,7 +1,7 @@
 import { VoiceBasedChannel } from 'discord.js';
 
 import { exists } from '../../../common/others';
-import { RecruitConditionError } from '../../types/recruit_condition_error';
+import { RecruitConditionError } from '../../common/types/recruit_condition_error';
 import { getVCReserveErrorMessage } from '../condition_checks/vc_reserve_check';
 
 export async function validateVoiceChannel(

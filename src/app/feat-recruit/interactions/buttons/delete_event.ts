@@ -11,8 +11,8 @@ import { searchMessageById } from '../../../common/manager/message_manager.js';
 import { assertExistCheck, exists, notExists } from '../../../common/others.js';
 import { ErrorTexts } from '../../../constant/error_texts';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs';
-import { cancelRecruitEvent } from '../../vc_reservation/recruit_event';
 import { getStickyChannelId, sendRecruitSticky } from '../../sticky/recruit_sticky_messages';
+import { cancelRecruitEvent } from '../../vc_reservation/recruit_event';
 
 const logger = log4js_obj.getLogger('recruitButton');
 

@@ -1,6 +1,5 @@
 import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
-import { memberListText } from '../interactions/buttons/other_events';
 import { ParticipantMember, ParticipantService } from '../../../db/participant_service';
 import { RecruitService } from '../../../db/recruit_service';
 import { log4js_obj } from '../../../log4js_settings';
@@ -15,7 +14,8 @@ import { RecruitParam } from '../../constant/button_id';
 import { ErrorTexts } from '../../constant/error_texts';
 import { StickyKey } from '../../constant/sticky_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
-import { RecruitOpCode, regenerateCanvas } from '../canvases/regenerate_canvas';
+import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
+import { memberListText } from '../interactions/buttons/other_events';
 import { availableRecruitString } from '../sticky/recruit_sticky_messages';
 
 const logger = log4js_obj.getLogger('recruitButton');

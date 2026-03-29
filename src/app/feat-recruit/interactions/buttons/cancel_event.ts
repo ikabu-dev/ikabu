@@ -17,14 +17,14 @@ import { ErrorTexts } from '../../../constant/error_texts.js';
 import { StickyKey } from '../../../constant/sticky_key.js';
 import { sendRecruitButtonLog } from '../../../logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '../../../logs/error/send_error_logs.js';
-import { RecruitOpCode, regenerateCanvas } from '../../canvases/regenerate_canvas.js';
-import { cancelRecruitEvent } from '../../vc_reservation/recruit_event.js';
+import { RecruitOpCode, regenerateCanvas } from '../../common/canvases/regenerate_canvas.js';
 import {
     availableRecruitString,
     getStickyChannelId,
     sendCloseEmbedSticky,
     sendRecruitSticky,
 } from '../../sticky/recruit_sticky_messages.js';
+import { cancelRecruitEvent } from '../../vc_reservation/recruit_event.js';
 
 const logger = log4js_obj.getLogger('recruitButton');
 

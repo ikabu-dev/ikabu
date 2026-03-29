@@ -3,10 +3,7 @@ import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import { ParticipantService, ParticipantMember } from '../../../db/participant_service.js';
 import { RecruitService } from '../../../db/recruit_service.js';
 import { log4js_obj } from '../../../log4js_settings.js';
-import {
-    disableThinkingButton,
-    recoveryThinkingButton,
-} from '../../common/button_components.js';
+import { disableThinkingButton, recoveryThinkingButton } from '../../common/button_components.js';
 import { getGuildByInteraction } from '../../common/manager/guild_manager.js';
 import { searchDBMemberById } from '../../common/manager/member_manager.js';
 import { searchMessageById } from '../../common/manager/message_manager.js';
@@ -14,7 +11,7 @@ import { assertExistCheck, datetimeDiff, exists, notExists } from '../../common/
 import { ErrorTexts } from '../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
-import { regenerateCanvas, RecruitOpCode } from '../canvases/regenerate_canvas.js';
+import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas.js';
 import { getMemberMentions } from '../interactions/buttons/other_events.js';
 import { increaseJoinCount, increaseRecruitCount } from '../interactions/buttons/recruit_count.js';
 import {

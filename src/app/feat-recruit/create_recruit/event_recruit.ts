@@ -1,23 +1,20 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
+import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
 import { RecruitType } from '../../../db/recruit_service';
 import { UniqueRoleService } from '../../../db/unique_role_service';
 import { getEventData, EventMatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink';
 import { assertExistCheck, exists, sleep } from '../../common/others';
 import { RoleKeySet } from '../../constant/role_key';
-import { recruitEventCanvas, ruleEventCanvas } from '../canvases/event_canvas';
-import { RecruitOpCode } from '../canvases/regenerate_canvas';
 import { recruitAutoClose } from '../close_recruit/auto_close';
-import { arrangeCommandRecruitData } from './common/arrange_command_data';
-import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import {
-    sendRecruitCanvas,
-    RecruitImageBuffers,
-} from './common/send_recruit_message';
+import { recruitEventCanvas, ruleEventCanvas } from '../common/canvases/event_canvas';
+import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
+import { RecruitData } from '../common/types/recruit_data';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
-import { RecruitData } from '../types/recruit_data';
 import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
 export async function eventRecruit(

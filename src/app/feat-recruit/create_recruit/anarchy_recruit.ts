@@ -1,5 +1,10 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
+import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
 import { RecruitType } from '../../../db/recruit_service';
 import { UniqueRoleService } from '../../../db/unique_role_service';
 import { log4js_obj } from '../../../log4js_settings';
@@ -14,19 +19,11 @@ import {
 } from '../../common/others';
 import { RoleKeySet, isRoleKey, getUniqueRoleNameByKey } from '../../constant/role_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
-import { recruitAnarchyCanvas, ruleAnarchyCanvas } from '../canvases/anarchy_canvas';
-import { RecruitOpCode } from '../canvases/regenerate_canvas';
 import { recruitAutoClose } from '../close_recruit/auto_close';
-import { arrangeCommandRecruitData } from './common/arrange_command_data';
-import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import {
-    sendRecruitCanvas,
-    RecruitImageBuffers,
-} from './common/send_recruit_message';
+import { recruitAnarchyCanvas, ruleAnarchyCanvas } from '../common/canvases/anarchy_canvas';
+import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
+import { RecruitData } from '../common/types/recruit_data';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
-import { RecruitData } from '../types/recruit_data';
 import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
 const logger = log4js_obj.getLogger('recruit');

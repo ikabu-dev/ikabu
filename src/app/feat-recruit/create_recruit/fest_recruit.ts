@@ -1,6 +1,11 @@
 import { Role } from '@prisma/client';
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
+import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
 import { RecruitType } from '../../../db/recruit_service';
 import { RoleService } from '../../../db/role_service';
 import { getFesRegularData, MatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink';
@@ -11,19 +16,11 @@ import {
     getDeveloperMention,
     exists,
 } from '../../common/others';
-import { recruitFestCanvas, ruleFestCanvas } from '../canvases/fest_canvas';
-import { RecruitOpCode } from '../canvases/regenerate_canvas';
 import { recruitAutoClose } from '../close_recruit/auto_close';
-import { arrangeCommandRecruitData } from './common/arrange_command_data';
-import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import {
-    sendRecruitCanvas,
-    RecruitImageBuffers,
-} from './common/send_recruit_message';
+import { recruitFestCanvas, ruleFestCanvas } from '../common/canvases/fest_canvas';
+import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
+import { RecruitData } from '../common/types/recruit_data';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
-import { RecruitData } from '../types/recruit_data';
 import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
 export async function festRecruit(

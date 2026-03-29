@@ -1,12 +1,12 @@
 import { Guild } from 'discord.js';
 
-import { checkRecruitSchedule } from '../condition_checks/schedule_check';
 import { RecruitType } from '../../../../db/recruit_service';
 import { getSchedule } from '../../../common/apis/splatoon3.ink/splatoon3_ink';
 import { Sp3Schedule } from '../../../common/apis/splatoon3.ink/types/schedule';
 import { getDeveloperMention, notExists } from '../../../common/others';
-import { RecruitAlertTexts } from '../../alert_texts/alert_texts';
-import { RecruitConditionError } from '../../types/recruit_condition_error';
+import { RecruitAlertTexts } from '../../common/alert_texts/alert_texts';
+import { RecruitConditionError } from '../../common/types/recruit_condition_error';
+import { checkRecruitSchedule } from '../condition_checks/schedule_check';
 
 export function getScheduleNumFromString(scheduleString: string | undefined): number {
     if (notExists(scheduleString)) {
