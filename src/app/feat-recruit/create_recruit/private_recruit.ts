@@ -10,7 +10,7 @@ import { searchMessageById } from '../../common/manager/message_manager';
 import { assertExistCheck, exists, sleep } from '../../common/others';
 import { RoleKeySet } from '../../constant/role_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
-import { getMemberMentions } from '../interactions/buttons/other_events';
+import { getMemberMentions } from '../common/member_list';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 
 const logger = log4js_obj.getLogger('recruit');

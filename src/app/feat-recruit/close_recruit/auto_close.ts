@@ -5,8 +5,8 @@ import { RecruitService } from '../../../db/recruit_service';
 import { setButtonDisable } from '../../common/button_components';
 import { notExists } from '../../common/others';
 import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas';
+import { getMemberMentions } from '../common/member_list';
 import { RecruitData } from '../common/types/recruit_data';
-import { getMemberMentions } from '../interactions/buttons/other_events';
 import { sendCloseEmbedSticky } from '../sticky/recruit_sticky_messages';
 
 export async function recruitAutoClose(

@@ -15,7 +15,7 @@ import { ErrorTexts } from '../../constant/error_texts';
 import { StickyKey } from '../../constant/sticky_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
-import { memberListText } from '../interactions/buttons/other_events';
+import { memberListText } from '../common/member_list';
 import { availableRecruitString } from '../sticky/recruit_sticky_messages';
 
 const logger = log4js_obj.getLogger('recruitButton');

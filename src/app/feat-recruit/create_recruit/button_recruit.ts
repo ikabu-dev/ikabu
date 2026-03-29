@@ -10,7 +10,7 @@ import { searchDBMemberById } from '../../common/manager/member_manager';
 import { assertExistCheck, exists, getDeveloperMention, notExists } from '../../common/others';
 import { ChannelKeySet } from '../../constant/channel_key';
 import { RoleKeySet } from '../../constant/role_key';
-import { getMemberMentions } from '../interactions/buttons/other_events';
+import { getMemberMentions } from '../common/member_list';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 
 export async function buttonRecruit(interaction: ChatInputCommandInteraction<'cached'>) {
