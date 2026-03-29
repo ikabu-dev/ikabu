@@ -11,12 +11,12 @@ import { ErrorTexts } from '../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas.js';
+import { memberListText } from '../common/member_list';
+import { sendJoinNotifyToHost } from '../common/send_notify_to_host';
 import {
     channelLinkButtons,
     nsoRoomLinkButton,
 } from '../create_recruit/common/create_recruit_buttons.js';
-import { memberListText } from '../interactions/buttons/other_events.js';
-import { sendJoinNotifyToHost } from '../interactions/buttons/send_notify_to_host.js';
 import { getStickyChannelId, sendRecruitSticky } from '../sticky/recruit_sticky_messages.js';
 
 const logger = log4js_obj.getLogger('recruitButton');

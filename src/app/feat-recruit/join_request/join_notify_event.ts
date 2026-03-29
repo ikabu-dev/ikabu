@@ -10,8 +10,8 @@ import { assertExistCheck, notExists } from '../../common/others.js';
 import { ErrorTexts } from '../../constant/error_texts.js';
 import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log';
 import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
-import { memberListText } from '../interactions/buttons/other_events.js';
-import { sendJoinNotifyToHost } from '../interactions/buttons/send_notify_to_host.js';
+import { memberListText } from '../common/member_list';
+import { sendJoinNotifyToHost } from '../common/send_notify_to_host';
 import { getStickyChannelId, sendRecruitSticky } from '../sticky/recruit_sticky_messages.js';
 
 const logger = log4js_obj.getLogger('recruitButton');

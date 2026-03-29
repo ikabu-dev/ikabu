@@ -7,8 +7,8 @@ import { assertExistCheck } from '../../common/others';
 import { sendStickyMessage } from '../../common/sticky_message';
 import { StickyKey } from '../../constant/sticky_key';
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
-import { memberListText } from '../interactions/buttons/other_events';
-import { sendCancelNotifyToHost } from '../interactions/buttons/send_notify_to_host';
+import { memberListText } from '../common/member_list';
+import { sendCancelNotifyToHost } from '../common/send_notify_to_host';
 import { availableRecruitString } from '../sticky/recruit_sticky_messages';
 
 export async function cancelRequest(
