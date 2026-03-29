@@ -14,14 +14,14 @@ import {
 import { recruitAutoClose } from '../auto_close';
 import { recruitFestCanvas, ruleFestCanvas } from '../canvases/fest_canvas';
 import { RecruitOpCode } from '../canvases/regenerate_canvas';
-import { arrangeCommandRecruitData } from '../create_recruit/common/arrange_command_data';
-import { arrangeModalRecruitData } from '../create_recruit/common/arrange_modal_data';
-import { registerRecruitData } from '../create_recruit/common/register_recruit_data';
-import { removeDeleteButton } from '../create_recruit/common/remove_delete_button';
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
 import {
     sendRecruitCanvas,
     RecruitImageBuffers,
-} from '../create_recruit/common/send_recruit_message';
+} from './common/send_recruit_message';
 import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 import { RecruitData } from '../types/recruit_data';
 import { createRecruitEvent } from '../vc_reservation/recruit_event';

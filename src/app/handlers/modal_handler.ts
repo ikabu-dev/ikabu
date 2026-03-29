@@ -4,12 +4,12 @@ import { CacheType, ModalSubmitInteraction } from 'discord.js';
 
 import { MemberService } from '../../db/member_service';
 import { exists } from '../common/others';
-import { anarchyRecruit } from '../feat-recruit/interactions/anarchy_recruit';
-import { eventRecruit } from '../feat-recruit/interactions/event_recruit';
-import { festRecruit } from '../feat-recruit/interactions/fest_recruit';
+import { anarchyRecruit } from '../feat-recruit/create_recruit/anarchy_recruit';
+import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit';
+import { festRecruit } from '../feat-recruit/create_recruit/fest_recruit';
+import { regularRecruit } from '../feat-recruit/create_recruit/regular_recruit';
+import { salmonRecruit } from '../feat-recruit/create_recruit/salmon_recruit';
 import { recruitEdit } from '../feat-recruit/interactions/modals/recruit_edit';
-import { regularRecruit } from '../feat-recruit/interactions/regular_recruit';
-import { salmonRecruit } from '../feat-recruit/interactions/salmon_recruit';
 
 export async function call(interaction: ModalSubmitInteraction<CacheType>) {
     if (interaction.inGuild()) {
