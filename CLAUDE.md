@@ -56,6 +56,16 @@ images/            # Bot が生成する画像の素材
 - `DATABASE_URL` — SQLite ファイルパス（例: `file:./db.sqlite3`）
 - `SLASH_COMMAND_REGISTER_MODE` — `guild` または `global`
 
+## README の更新
+
+以下のような構成・設定の変更を行った場合は、`README.md` も合わせて更新する：
+
+- セットアップ手順に影響する変更（依存ツール・パッケージマネージャーの変更など）
+- スクリプト（`package.json` の `scripts`）の追加・変更・削除
+- 主要パッケージのバージョン変更（discord.js・Prisma・Node.js など）
+- 環境変数の追加・変更
+- git フック・CI など開発フローに関わるツールの追加・変更
+
 ## コミット規約
 
 `.cz-config.js` に基づき、以下のプレフィックスを使用する：
