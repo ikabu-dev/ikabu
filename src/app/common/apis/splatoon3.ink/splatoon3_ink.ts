@@ -111,11 +111,11 @@ export async function updateSchedule() {
 
 async function fetchScheduleAndCache() {
     const schedule = await fetch(schedule_url); // スケジュール情報のfetch
-    const schduleData = (await schedule.json()).data as Sp3Schedule;
+    const scheduleData = (await schedule.json()).data as Sp3Schedule;
 
-    storageCache.set('sp3_schedule', schduleData);
+    storageCache.set('sp3_schedule', scheduleData);
     logger.info('schedule fetched!');
-    return schduleData;
+    return scheduleData;
 }
 
 /**
