@@ -1,5 +1,6 @@
 const temporaryFetchErrorCodes = ['EAI_AGAIN', 'ENOTFOUND', 'ETIMEDOUT', 'ECONNRESET'] as const;
-const temporaryFetchRetryDelayMs = 1000 * 60 * 3;
+const DEFAULT_INITIAL_DELAY_MS = 1000 * 60;
+const DEFAULT_MAX_RETRIES = 3;
 
 type FetchErrorWithCode = Error & { code?: string; errno?: string };
 
@@ -26,18 +27,29 @@ function wait(delayMs: number) {
 type RetryOnTemporaryFetchErrorParams<T> = {
     error: unknown;
     retry: () => Promise<T>;
-    delayMs?: number;
+    initialDelayMs?: number;
+    maxRetries?: number;
 };
 
 export async function retryOnTemporaryFetchError<T>({
     error,
     retry,
-    delayMs = temporaryFetchRetryDelayMs,
+    initialDelayMs = DEFAULT_INITIAL_DELAY_MS,
+    maxRetries = DEFAULT_MAX_RETRIES,
 }: RetryOnTemporaryFetchErrorParams<T>) {
     if (!isTemporaryFetchError(error)) {
         throw error;
     }
 
-    await wait(delayMs);
-    return await retry();
+    let lastError: unknown = error;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        await wait(initialDelayMs * 2 ** attempt);
+        try {
+            return await retry();
+        } catch (e) {
+            lastError = e;
+            if (!isTemporaryFetchError(e)) throw e;
+        }
+    }
+    throw lastError;
 }
