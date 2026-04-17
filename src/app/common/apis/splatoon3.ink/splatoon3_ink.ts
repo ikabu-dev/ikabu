@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
+import { withTemporaryFetchRetry } from '../../fetch_retry';
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
@@ -94,16 +95,20 @@ export async function updateLocale() {
 
 export async function updateSchedule() {
     try {
-        const schedule = await fetch(schedule_url); // スケジュール情報のfetch
-        const schduleData = (await schedule.json()).data as Sp3Schedule;
-
-        storageCache.set('sp3_schedule', schduleData);
-        logger.info('schedule fetched!');
-        return schduleData;
+        return await withTemporaryFetchRetry(fetchScheduleAndCache);
     } catch (error) {
         await sendErrorLogs(logger, error);
         return null;
     }
+}
+
+async function fetchScheduleAndCache() {
+    const schedule = await fetch(schedule_url); // スケジュール情報のfetch
+    const scheduleData = (await schedule.json()).data as Sp3Schedule;
+
+    storageCache.set('sp3_schedule', scheduleData);
+    logger.info('schedule fetched!');
+    return scheduleData;
 }
 
 /**
