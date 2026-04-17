@@ -17,7 +17,7 @@ import { questionnaireButtonHandler } from '../event/rookie/send_questionnaire';
 import { setResolvedTag } from '../event/support_auto_tag/resolved_support';
 import { sendRadioRequest } from '../event/vctools_sticky/radio_request';
 import { voiceLockUpdate } from '../event/vctools_sticky/voice_lock';
-import { recruitButtonHandler } from '../feat-recruit/interactions/buttons/recruit_button_handler';
+import { recruitButtonHandler } from '../feat-recruit/recruit_button_handler';
 import { deleteFriendCode } from '../feat-utils/other/friendcode';
 import { dividerButtonHandler } from '../feat-utils/team_divider/divider_button_handler';
 import { joinTTS, killTTS } from '../feat-utils/voice/tts/discordjs_voice';
