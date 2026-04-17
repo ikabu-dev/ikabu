@@ -13,7 +13,7 @@ function createTemporaryError(message = 'EAI_AGAIN') {
     return Object.assign(new Error(message), { code: 'EAI_AGAIN' });
 }
 
-describe('splatoon3 fetch error notification', () => {
+describe('fetch retry', () => {
     beforeEach(() => {
         vi.useRealTimers();
     });
