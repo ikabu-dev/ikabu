@@ -2,102 +2,88 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     isTemporaryFetchError,
-    retryOnTemporaryFetchError,
+    withTemporaryFetchRetry,
 } from '../src/app/common/apis/splatoon3.ink/fetch_error_notification';
+
+// テスト用に短い待機時間を使用
+const ONE_SECOND_MS = 1000;
+
+// EAI_AGAIN コードを持つ一時的エラーを生成
+function createTemporaryError(message = 'EAI_AGAIN') {
+    return Object.assign(new Error(message), { code: 'EAI_AGAIN' });
+}
 
 describe('splatoon3 fetch error notification', () => {
     beforeEach(() => {
         vi.useRealTimers();
     });
 
-    it('detects temporary DNS errors', () => {
-        const temporaryError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
+    it('一時的なDNSエラーを検出する', () => {
+        const error = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
             code: 'EAI_AGAIN',
         });
 
-        expect(isTemporaryFetchError(temporaryError)).toBe(true);
+        expect(isTemporaryFetchError(error)).toBe(true);
     });
 
-    it('retries temporary fetch errors after delay', async () => {
-        vi.useFakeTimers();
+    it('初回成功時はリトライなしで結果を返す', async () => {
+        const fn = vi.fn().mockResolvedValue('ok');
 
-        const temporaryError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
-            code: 'EAI_AGAIN',
-        });
-        const retry = vi.fn().mockResolvedValue('ok');
-        const retryPromise = retryOnTemporaryFetchError({
-            error: temporaryError,
-            retry,
-            initialDelayMs: 1000,
-            maxRetries: 1,
-        });
-
-        expect(retry).not.toHaveBeenCalled();
-        await vi.advanceTimersByTimeAsync(1000);
-        await expect(retryPromise).resolves.toBe('ok');
-        expect(retry).toHaveBeenCalledTimes(1);
+        await expect(withTemporaryFetchRetry(fn)).resolves.toBe('ok');
+        expect(fn).toHaveBeenCalledTimes(1);
     });
 
-    it('retries with exponential backoff up to maxRetries times', async () => {
+    it('一時的なfetchエラーはexponential backoffでリトライする', async () => {
         vi.useFakeTimers();
-
-        const temporaryError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
-            code: 'EAI_AGAIN',
-        });
-        const retry = vi
+        // Arrange: 2回失敗、3回目で成功するモック
+        const fn = vi
             .fn()
-            .mockRejectedValueOnce(Object.assign(new Error('EAI_AGAIN'), { code: 'EAI_AGAIN' }))
-            .mockRejectedValueOnce(Object.assign(new Error('EAI_AGAIN'), { code: 'EAI_AGAIN' }))
+            .mockRejectedValueOnce(createTemporaryError())
+            .mockRejectedValueOnce(createTemporaryError())
             .mockResolvedValue('ok');
-        const retryPromise = retryOnTemporaryFetchError({
-            error: temporaryError,
-            retry,
-            initialDelayMs: 1000,
+
+        // Act: リトライ戦略を起動
+        // ※ Promiseをawaitせず変数に保持し、仮想時間を進めながら非同期処理を進める
+        const retryPromise = withTemporaryFetchRetry(fn, {
+            initialDelayMs: ONE_SECOND_MS,
             maxRetries: 3,
         });
 
-        // attempt 0: wait 1000ms
-        await vi.advanceTimersByTimeAsync(1000);
-        // attempt 1: wait 2000ms
-        await vi.advanceTimersByTimeAsync(2000);
-        // attempt 2: wait 4000ms
-        await vi.advanceTimersByTimeAsync(4000);
+        // 1回目失敗後の待機: initialDelayMs * 2^0 = 1秒
+        await vi.advanceTimersByTimeAsync(ONE_SECOND_MS);
+        // 2回目失敗後の待機: initialDelayMs * 2^1 = 2秒
+        await vi.advanceTimersByTimeAsync(ONE_SECOND_MS * 2);
+
+        // Assert: 3回呼ばれて最終的に成功
         await expect(retryPromise).resolves.toBe('ok');
-        expect(retry).toHaveBeenCalledTimes(3);
+        expect(fn).toHaveBeenCalledTimes(3);
     });
 
-    it('throws after exhausting all retries', async () => {
-        const temporaryError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
-            code: 'EAI_AGAIN',
-        });
-        const retry = vi
+    it('全リトライ失敗時は最後のエラーをthrowする', async () => {
+        // Arrange: 毎回新しいPromiseを返して常に失敗するモック
+        // ※ mockRejectedValue は同一Promiseを再利用し unhandled rejection が発生するため
+        //    mockImplementation で毎回新しいPromiseを生成する
+        const fn = vi
             .fn()
-            .mockImplementation(() =>
-                Promise.reject(Object.assign(new Error('EAI_AGAIN final'), { code: 'EAI_AGAIN' })),
-            );
+            .mockImplementation(() => Promise.reject(createTemporaryError('EAI_AGAIN final')));
 
+        // Act & Assert: 初回+2回リトライ = 計3回呼ばれてエラー
         await expect(
-            retryOnTemporaryFetchError({
-                error: temporaryError,
-                retry,
+            withTemporaryFetchRetry(fn, {
                 initialDelayMs: 0,
                 maxRetries: 2,
             }),
         ).rejects.toThrow('EAI_AGAIN final');
-        expect(retry).toHaveBeenCalledTimes(2);
+        expect(fn).toHaveBeenCalledTimes(3);
     });
 
-    it('does not retry non-temporary errors', async () => {
-        const nonTemporaryError = new Error('unexpected parse error');
-        const retry = vi.fn().mockResolvedValue('ok');
+    it('一時的でないエラーはリトライせずそのままthrowする', async () => {
+        const fn = vi.fn().mockRejectedValue(new Error('予期しないパースエラー'));
 
+        // 一時的エラーではないためリトライせず即エラー
         await expect(
-            retryOnTemporaryFetchError({
-                error: nonTemporaryError,
-                retry,
-                initialDelayMs: 1000,
-            }),
-        ).rejects.toThrow('unexpected parse error');
-        expect(retry).not.toHaveBeenCalled();
+            withTemporaryFetchRetry(fn, { initialDelayMs: ONE_SECOND_MS, maxRetries: 3 }),
+        ).rejects.toThrow('予期しないパースエラー');
+        expect(fn).toHaveBeenCalledTimes(1);
     });
 });
