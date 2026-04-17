@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
-import { withTemporaryFetchRetry } from './fetch_error_notification';
+import { withTemporaryFetchRetry } from '../../fetch_retry';
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
