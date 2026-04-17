@@ -24,31 +24,27 @@ function wait(delayMs: number) {
     return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
-type RetryOnTemporaryFetchErrorParams<T> = {
-    error: unknown;
-    retry: () => Promise<T>;
+type WithTemporaryFetchRetryOptions = {
     initialDelayMs?: number;
     maxRetries?: number;
 };
 
-export async function retryOnTemporaryFetchError<T>({
-    error,
-    retry,
-    initialDelayMs = DEFAULT_INITIAL_DELAY_MS,
-    maxRetries = DEFAULT_MAX_RETRIES,
-}: RetryOnTemporaryFetchErrorParams<T>) {
-    if (!isTemporaryFetchError(error)) {
-        throw error;
-    }
-
-    let lastError: unknown = error;
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        await wait(initialDelayMs * 2 ** attempt);
+export async function withTemporaryFetchRetry<T>(
+    fn: () => Promise<T>,
+    {
+        initialDelayMs = DEFAULT_INITIAL_DELAY_MS,
+        maxRetries = DEFAULT_MAX_RETRIES,
+    }: WithTemporaryFetchRetryOptions = {},
+): Promise<T> {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
-            return await retry();
+            return await fn();
         } catch (e) {
             lastError = e;
             if (!isTemporaryFetchError(e)) throw e;
+            if (attempt >= maxRetries) break;
+            await wait(initialDelayMs * 2 ** attempt);
         }
     }
     throw lastError;

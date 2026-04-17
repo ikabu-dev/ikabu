@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
-import { retryOnTemporaryFetchError } from './fetch_error_notification';
+import { withTemporaryFetchRetry } from './fetch_error_notification';
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
@@ -95,17 +95,10 @@ export async function updateLocale() {
 
 export async function updateSchedule() {
     try {
-        return await fetchScheduleAndCache();
+        return await withTemporaryFetchRetry(fetchScheduleAndCache);
     } catch (error) {
-        try {
-            return await retryOnTemporaryFetchError({
-                error,
-                retry: fetchScheduleAndCache,
-            });
-        } catch (retryError) {
-            await sendErrorLogs(logger, retryError);
-            return null;
-        }
+        await sendErrorLogs(logger, error);
+        return null;
     }
 }
 
