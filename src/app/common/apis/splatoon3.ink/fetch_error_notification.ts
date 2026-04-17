@@ -1,16 +1,16 @@
-const transientFetchErrorCodes = ['EAI_AGAIN', 'ENOTFOUND', 'ETIMEDOUT', 'ECONNRESET'] as const;
-const transientFetchRetryDelayMs = 1000 * 60 * 3;
+const temporaryFetchErrorCodes = ['EAI_AGAIN', 'ENOTFOUND', 'ETIMEDOUT', 'ECONNRESET'] as const;
+const temporaryFetchRetryDelayMs = 1000 * 60 * 3;
 
 type FetchErrorWithCode = Error & { code?: string; errno?: string };
 
-export function isTransientFetchError(error: unknown) {
+export function isTemporaryFetchError(error: unknown) {
     if (!(error instanceof Error)) return false;
 
     const fetchError = error as FetchErrorWithCode;
     const errorCode = fetchError.code ?? fetchError.errno;
     if (
         typeof errorCode === 'string' &&
-        transientFetchErrorCodes.includes(errorCode as (typeof transientFetchErrorCodes)[number])
+        temporaryFetchErrorCodes.includes(errorCode as (typeof temporaryFetchErrorCodes)[number])
     ) {
         return true;
     }
@@ -23,18 +23,18 @@ function wait(delayMs: number) {
     return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
-type RetryOnTransientFetchErrorParams<T> = {
+type RetryOnTemporaryFetchErrorParams<T> = {
     error: unknown;
     retry: () => Promise<T>;
     delayMs?: number;
 };
 
-export async function retryOnTransientFetchError<T>({
+export async function retryOnTemporaryFetchError<T>({
     error,
     retry,
-    delayMs = transientFetchRetryDelayMs,
-}: RetryOnTransientFetchErrorParams<T>) {
-    if (!isTransientFetchError(error)) {
+    delayMs = temporaryFetchRetryDelayMs,
+}: RetryOnTemporaryFetchErrorParams<T>) {
+    if (!isTemporaryFetchError(error)) {
         throw error;
     }
 
