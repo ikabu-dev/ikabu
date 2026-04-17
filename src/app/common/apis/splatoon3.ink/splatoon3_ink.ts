@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
+import { shouldNotifyFetchError } from './fetch_error_notification';
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
@@ -101,7 +102,9 @@ export async function updateSchedule() {
         logger.info('schedule fetched!');
         return schduleData;
     } catch (error) {
-        await sendErrorLogs(logger, error);
+        if (shouldNotifyFetchError(error)) {
+            await sendErrorLogs(logger, error);
+        }
         return null;
     }
 }
