@@ -31,3 +31,7 @@ export function shouldNotifyFetchError(error: unknown) {
 
     return false;
 }
+
+export function resetFetchErrorNotificationState() {
+    lastTransientFetchErrorNotifiedAt = 0;
+}

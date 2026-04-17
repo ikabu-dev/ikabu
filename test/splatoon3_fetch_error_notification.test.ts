@@ -1,11 +1,16 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     isTransientFetchError,
+    resetFetchErrorNotificationState,
     shouldNotifyFetchError,
 } from '../src/app/common/apis/splatoon3.ink/fetch_error_notification';
 
 describe('splatoon3 fetch error notification', () => {
+    beforeEach(() => {
+        resetFetchErrorNotificationState();
+    });
+
     it('detects transient DNS errors', () => {
         const transientError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
             code: 'EAI_AGAIN',
