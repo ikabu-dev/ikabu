@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-    isTemporaryFetchError,
-    withTemporaryFetchRetry,
-} from '../src/app/common/fetch_retry';
+import { isTemporaryFetchError, withTemporaryFetchRetry } from '../src/app/common/fetch_retry';
 
 // テスト用に短い待機時間を使用
 const ONE_SECOND_MS = 1000;
