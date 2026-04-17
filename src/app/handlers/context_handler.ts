@@ -3,7 +3,7 @@ import { CacheType, MessageContextMenuCommandInteraction } from 'discord.js';
 import { commandNames } from '../../constant';
 import { log4js_obj } from '../../log4js_settings';
 import { buttonEnable } from '../feat-admin/button_enabler/enable_button';
-import { createRecruitEditor } from '../feat-recruit/interactions/context_menus/recruit_editor';
+import { createRecruitEditor } from '../feat-recruit/edit_recruit/recruit_editor';
 import { sendCommandLog } from '../logs/commands/command_log';
 import { sendErrorLogs } from '../logs/error/send_error_logs';
 const logger = log4js_obj.getLogger('interaction');
