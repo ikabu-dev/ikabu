@@ -2,13 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     isTransientFetchError,
-    resetFetchErrorNotificationState,
-    shouldNotifyFetchError,
+    retryOnTransientFetchError,
 } from '../src/app/common/apis/splatoon3.ink/fetch_error_notification';
 
 describe('splatoon3 fetch error notification', () => {
     beforeEach(() => {
-        resetFetchErrorNotificationState();
+        vi.useRealTimers();
     });
 
     it('detects transient DNS errors', () => {
@@ -19,27 +18,36 @@ describe('splatoon3 fetch error notification', () => {
         expect(isTransientFetchError(transientError)).toBe(true);
     });
 
-    it('throttles transient fetch error notifications', () => {
+    it('retries transient fetch errors after delay', async () => {
         vi.useFakeTimers();
-        vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
 
         const transientError = Object.assign(new Error('getaddrinfo EAI_AGAIN splatoon3.ink'), {
             code: 'EAI_AGAIN',
         });
+        const retry = vi.fn().mockResolvedValue('ok');
+        const retryPromise = retryOnTransientFetchError({
+            error: transientError,
+            retry,
+            delayMs: 1000,
+        });
 
-        expect(shouldNotifyFetchError(transientError)).toBe(true);
-        expect(shouldNotifyFetchError(transientError)).toBe(false);
-
-        vi.setSystemTime(new Date('2026-01-01T00:30:01Z'));
-        expect(shouldNotifyFetchError(transientError)).toBe(true);
-
-        vi.useRealTimers();
+        expect(retry).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(1000);
+        await expect(retryPromise).resolves.toBe('ok');
+        expect(retry).toHaveBeenCalledTimes(1);
     });
 
-    it('does not throttle non-transient errors', () => {
+    it('does not retry non-transient errors', async () => {
         const nonTransientError = new Error('unexpected parse error');
+        const retry = vi.fn().mockResolvedValue('ok');
 
-        expect(shouldNotifyFetchError(nonTransientError)).toBe(true);
-        expect(shouldNotifyFetchError(nonTransientError)).toBe(true);
+        await expect(
+            retryOnTransientFetchError({
+                error: nonTransientError,
+                retry,
+                delayMs: 1000,
+            }),
+        ).rejects.toThrow('unexpected parse error');
+        expect(retry).not.toHaveBeenCalled();
     });
 });

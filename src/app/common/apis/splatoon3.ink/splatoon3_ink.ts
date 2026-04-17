@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
-import { shouldNotifyFetchError } from './fetch_error_notification';
+import { retryOnTransientFetchError } from './fetch_error_notification';
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
@@ -95,18 +95,27 @@ export async function updateLocale() {
 
 export async function updateSchedule() {
     try {
-        const schedule = await fetch(schedule_url); // スケジュール情報のfetch
-        const schduleData = (await schedule.json()).data as Sp3Schedule;
-
-        storageCache.set('sp3_schedule', schduleData);
-        logger.info('schedule fetched!');
-        return schduleData;
+        return await fetchScheduleAndCache();
     } catch (error) {
-        if (shouldNotifyFetchError(error)) {
-            await sendErrorLogs(logger, error);
+        try {
+            return await retryOnTransientFetchError({
+                error,
+                retry: fetchScheduleAndCache,
+            });
+        } catch (retryError) {
+            await sendErrorLogs(logger, retryError);
+            return null;
         }
-        return null;
     }
+}
+
+async function fetchScheduleAndCache() {
+    const schedule = await fetch(schedule_url); // スケジュール情報のfetch
+    const schduleData = (await schedule.json()).data as Sp3Schedule;
+
+    storageCache.set('sp3_schedule', schduleData);
+    logger.info('schedule fetched!');
+    return schduleData;
 }
 
 /**

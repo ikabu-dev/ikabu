@@ -1,6 +1,5 @@
 const transientFetchErrorCodes = ['EAI_AGAIN', 'ENOTFOUND', 'ETIMEDOUT', 'ECONNRESET'] as const;
-const fetchErrorNotificationCooldownMs = 1000 * 60 * 30;
-let lastTransientFetchErrorNotifiedAt = 0;
+const transientFetchRetryDelayMs = 1000 * 60 * 3;
 
 type FetchErrorWithCode = Error & { code?: string; errno?: string };
 
@@ -20,18 +19,25 @@ export function isTransientFetchError(error: unknown) {
     return lowerMessage.includes('eai_again') || lowerMessage.includes('getaddrinfo');
 }
 
-export function shouldNotifyFetchError(error: unknown) {
-    if (!isTransientFetchError(error)) return true;
-
-    const now = Date.now();
-    if (now - lastTransientFetchErrorNotifiedAt >= fetchErrorNotificationCooldownMs) {
-        lastTransientFetchErrorNotifiedAt = now;
-        return true;
-    }
-
-    return false;
+function wait(delayMs: number) {
+    return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
-export function resetFetchErrorNotificationState() {
-    lastTransientFetchErrorNotifiedAt = 0;
+type RetryOnTransientFetchErrorParams<T> = {
+    error: unknown;
+    retry: () => Promise<T>;
+    delayMs?: number;
+};
+
+export async function retryOnTransientFetchError<T>({
+    error,
+    retry,
+    delayMs = transientFetchRetryDelayMs,
+}: RetryOnTransientFetchErrorParams<T>) {
+    if (!isTransientFetchError(error)) {
+        throw error;
+    }
+
+    await wait(delayMs);
+    return await retry();
 }
