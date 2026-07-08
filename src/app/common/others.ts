@@ -280,7 +280,7 @@ const recruit_command = {
     フェス募集: '`/〇〇陣営 now` or `/〇〇陣営 next`',
     サーモン募集: '`/サーモンラン募集 run`',
     別ゲー募集:
-        '`/別ゲー募集 apex` or `/別ゲー募集 overwatch` or `/別ゲー募集 mhw` or `/別ゲー募集 valo` or `/別ゲー募集 other`',
+        '`/別ゲー募集 raiders` or `/別ゲー募集 apex` or `/別ゲー募集 overwatch` or `/別ゲー募集 mhw` or `/別ゲー募集 valo` or `/別ゲー募集 other`',
 };
 
 export async function getCommandHelpEmbed(guild: Guild, channelName: string) {
