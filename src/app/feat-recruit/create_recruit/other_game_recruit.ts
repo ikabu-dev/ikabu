@@ -60,7 +60,9 @@ export async function otherGameRecruit(interaction: ChatInputCommandInteraction<
     const roles = await guild.roles.fetch();
     const recruitChannel = interaction.channel;
 
-    if (options.getSubcommand() === 'apex') {
+    if (options.getSubcommand() === 'raiders') {
+        await splatoonRaiders(interaction, guild, recruitChannel, member, roles);
+    } else if (options.getSubcommand() === 'apex') {
         await apexLegends(interaction, guild, recruitChannel, member, roles);
     } else if (options.getSubcommand() === 'mhw') {
         await monsterHunterWilds(interaction, guild, recruitChannel, member, roles);
@@ -94,6 +96,41 @@ async function monsterHunterWilds(
         'https://github.com/shngmsw/ikabu/blob/stg/images/games/MonsterHunterWilds.png?raw=true';
     const logo =
         'https://github.com/shngmsw/ikabu/blob/stg/images/games/MonsterHunterWilds_logo.png?raw=true';
+    await sendOtherGames(
+        interaction,
+        guild,
+        recruitChannel,
+        member,
+        title,
+        recruitNumText,
+        mention,
+        txt,
+        color,
+        image,
+        logo,
+    );
+}
+
+async function splatoonRaiders(
+    interaction: ChatInputCommandInteraction<CacheType>,
+    guild: Guild,
+    recruitChannel: GuildTextBasedChannel,
+    member: GuildMember,
+    roles: Collection<string, Role>,
+) {
+    const role = roles.find((role: Role) => role.name === 'オタカラハンター');
+    if (role === undefined) {
+        await sendErrorMessage(recruitChannel);
+        return;
+    }
+    const title = 'Splatoon RAIDERS';
+    const recruitNumText = interaction.options.getString('募集人数', true);
+    const mention = role.toString();
+    const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, 'スプラトゥーンレイダース募集');
+    const color = '#ef6a1f';
+    const image = 'https://raw.githubusercontent.com/ikabu-dev/ikabu/stg/images/games/Raiders.png';
+    const logo =
+        'https://raw.githubusercontent.com/ikabu-dev/ikabu/stg/images/games/Raiders_logo.png';
     await sendOtherGames(
         interaction,
         guild,

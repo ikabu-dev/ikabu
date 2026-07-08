@@ -1061,6 +1061,32 @@ const otherGame = new SlashCommandBuilder()
     .setDescription('スプラ以外のゲーム募集コマンド')
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
         subcommand
+            .setName('raiders')
+            .setDescription('スプラトゥーン レイダースの募集')
+            .addStringOption((option: SlashCommandStringOption) =>
+                option
+                    .setName('募集人数')
+                    .setDescription('募集人数')
+                    .setChoices(
+                        { name: '@1', value: '1' },
+                        { name: '@2', value: '2' },
+                        { name: '@3', value: '3' },
+                    )
+                    .setRequired(true),
+            )
+            .addChannelOption((option: SlashCommandChannelOption) =>
+                option
+                    .setName('使用チャンネル')
+                    .setDescription('使用するボイスチャンネルを指定できます。')
+                    .addChannelTypes(ChannelType.GuildVoice)
+                    .setRequired(false),
+            )
+            .addStringOption((option: SlashCommandStringOption) =>
+                option.setName('内容または参加条件').setDescription('プレイ内容や参加条件など'),
+            ),
+    )
+    .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
+        subcommand
             .setName('apex')
             .setDescription('ApexLegendsの募集')
             .addStringOption((option: SlashCommandStringOption) =>
