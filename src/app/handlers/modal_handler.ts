@@ -7,6 +7,7 @@ import { exists } from '../common/others';
 import { anarchyRecruit } from '../feat-recruit/create_recruit/anarchy_recruit';
 import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit';
 import { festRecruit } from '../feat-recruit/create_recruit/fest_recruit';
+import { raidersRecruit } from '../feat-recruit/create_recruit/raiders_recruit';
 import { regularRecruit } from '../feat-recruit/create_recruit/regular_recruit';
 import { salmonRecruit } from '../feat-recruit/create_recruit/salmon_recruit';
 import { recruitEdit } from '../feat-recruit/edit_recruit/recruit_edit';
@@ -32,6 +33,9 @@ export async function call(interaction: ModalSubmitInteraction<CacheType>) {
                     break;
                 case 'fesrec':
                     await festRecruit(interaction);
+                    break;
+                case 'rairec':
+                    await raidersRecruit(interaction);
                     break;
                 case 'recedit':
                     await recruitEdit(interaction, params);

@@ -1,4 +1,10 @@
-import { ChannelType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
+import {
+    ChannelType,
+    ChatInputCommandInteraction,
+    MessageFlags,
+    ModalSubmitInteraction,
+    VoiceBasedChannel,
+} from 'discord.js';
 
 import { buildRecruitText } from './common/recruit_text';
 import { registerRecruitData } from './common/register_recruit_data';
@@ -10,11 +16,13 @@ import { RecruitType } from '../../../db/recruit_service';
 import { UniqueRoleService } from '../../../db/unique_role_service';
 import { log4js_obj } from '../../../log4js_settings';
 import { Sp3Schedule } from '../../common/apis/splatoon3.ink/types/schedule';
-import { searchDBMemberById } from '../../common/manager/member_manager';
-import { assertExistCheck, exists, notExists, sleep } from '../../common/others';
+import { getGuildByInteraction } from '../../common/manager/guild_manager';
+import { searchAPIMemberById, searchDBMemberById } from '../../common/manager/member_manager';
+import { assertExistCheck, exists, isEmpty, notExists, sleep } from '../../common/others';
 import { ErrorTexts } from '../../constant/error_texts';
 import { RoleKeySet } from '../../constant/role_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { sendRecruitModalLog } from '../../logs/modals/recruit_modal_log';
 import { recruitRaidersCanvas, ruleRaidersCanvas } from '../common/canvases/raiders_canvas';
 import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { RecruitConditionError } from '../common/types/recruit_condition_error';
@@ -39,7 +47,9 @@ const emptySchedule: Sp3Schedule = {
     },
 };
 
-export async function raidersRecruit(interaction: ChatInputCommandInteraction<'cached'>) {
+export async function raidersRecruit(
+    interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,
+) {
     assertExistCheck(interaction.channel, 'channel');
     // 'インタラクションに失敗'が出ないようにするため
     await interaction.deferReply({});
@@ -58,10 +68,20 @@ export async function raidersRecruit(interaction: ChatInputCommandInteraction<'c
     }
 
     let recruitData: RecruitData;
-    try {
-        recruitData = await arrangeRaidersRecruitData(interaction, recruitName);
-    } catch (error) {
-        return;
+    if (interaction.isChatInputCommand()) {
+        try {
+            recruitData = await arrangeRaidersRecruitData(interaction, recruitName);
+        } catch (error) {
+            return;
+        }
+    } else if (interaction.isModalSubmit()) {
+        try {
+            recruitData = await arrangeRaidersModalRecruitData(interaction, recruitName);
+        } catch (error) {
+            return;
+        }
+    } else {
+        throw new Error('interaction type is invalid');
     }
 
     const raidersBuffers = await getRaidersImageBuffers(recruitData);
@@ -167,6 +187,89 @@ async function arrangeRaidersRecruitData(
             await interaction.deleteReply();
             await interaction.followUp({
                 content: `\`${interaction.toString()}\`\n${error.getErrorMessage()}`,
+                flags: MessageFlags.Ephemeral,
+            });
+        } else {
+            await recruitChannel.send(ErrorTexts.UndefinedError);
+            await sendErrorLogs(logger, error);
+        }
+        throw error;
+    }
+}
+
+/*
+ * モーダル入力を RecruitData に整形する
+ * (レイダースにはスケジュールがないため、スケジュール取得・検証は行わない)
+ */
+async function arrangeRaidersModalRecruitData(
+    interaction: ModalSubmitInteraction<'cached' | 'raw'>,
+    recruitName: string,
+): Promise<RecruitData> {
+    const guild = await getGuildByInteraction(interaction);
+    const interactionMember = await searchAPIMemberById(guild, interaction.member.user.id);
+    const recruitChannel = interaction.channel;
+    assertExistCheck(interactionMember, 'GuildMember');
+    assertExistCheck(recruitChannel, 'interaction.channel');
+
+    await sendRecruitModalLog(interaction);
+
+    const voiceChannelCollection = interaction.fields.fields.has('voiceChannel')
+        ? interaction.fields.getSelectedChannels('voiceChannel', false, [ChannelType.GuildVoice])
+        : null;
+    const voiceChannel = voiceChannelCollection
+        ? ([...voiceChannelCollection.values()][0] as VoiceBasedChannel) ?? null
+        : null;
+
+    const recruitNum = Number(interaction.fields.getTextInputValue('rNum'));
+    let condition = interaction.fields.getTextInputValue('condition');
+    if (isEmpty(condition)) condition = 'なし';
+
+    const recruiter = await searchDBMemberById(guild, interactionMember.id);
+    assertExistCheck(recruiter, 'Member');
+
+    const attendeeUsersCollection = interaction.fields.fields.has('attendees')
+        ? interaction.fields.getSelectedUsers('attendees')
+        : null;
+    const attendeeUsers = attendeeUsersCollection ? [...attendeeUsersCollection.values()] : [];
+    const attendee1 = attendeeUsers[0]
+        ? await searchDBMemberById(guild, attendeeUsers[0].id)
+        : null;
+    const attendee2 = attendeeUsers[1]
+        ? await searchDBMemberById(guild, attendeeUsers[1].id)
+        : null;
+
+    try {
+        const count = validateRecruitNum(
+            recruitNum,
+            RecruitType.RaidersRecruit,
+            attendee1,
+            attendee2,
+            null,
+        );
+        await validateVoiceChannel(guild.id, voiceChannel, recruiter.userId);
+        const txt = buildRecruitText(recruiter.mention, recruitName, attendee1, attendee2, null);
+
+        return {
+            guild,
+            interactionMember,
+            recruitChannel,
+            scheduleNum: 0,
+            txt,
+            recruitNum,
+            condition,
+            count,
+            recruiter,
+            attendee1,
+            attendee2,
+            attendee3: null,
+            schedule: emptySchedule,
+            voiceChannel,
+        };
+    } catch (error) {
+        if (error instanceof RecruitConditionError) {
+            await interaction.deleteReply();
+            await interaction.followUp({
+                content: `${error.getErrorMessage()}`,
                 flags: MessageFlags.Ephemeral,
             });
         } else {

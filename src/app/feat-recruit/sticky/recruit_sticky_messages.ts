@@ -94,7 +94,7 @@ export async function sendRecruitSticky(stickyOptions: StickyOptions) {
         } else if (channelId === salmonRecruitChannelId) {
             channelName = 'サーモン募集';
         } else if (channelId === raidersRecruitChannelId) {
-            channelName = null;
+            channelName = 'レイダース募集';
         } else if (channelId === otherGamesRecruitChannelId) {
             channelName = null;
         } else if (channelId === shiverRecruitChannelId) {
