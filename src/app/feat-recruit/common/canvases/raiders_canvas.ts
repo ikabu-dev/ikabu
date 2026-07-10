@@ -53,7 +53,7 @@ export async function recruitRaidersCanvas(
 
     // タイトルロゴ (914x460)
     const raidersLogo = await Canvas.loadImage(path.resolve('./images/games/Raiders_logo.png'));
-    recruitCtx.drawImage(raidersLogo, 25, 10, 179, 90);
+    recruitCtx.drawImage(raidersLogo, 25, 18, 160, 81);
 
     // 募集主の画像
     const recruiterImage = await Canvas.loadImage(recruiter.iconUrl ?? modalRecruit.placeHold);
@@ -251,32 +251,32 @@ export async function ruleRaidersCanvas() {
     const ruleCanvas = Canvas.createCanvas(720, 550);
     const ruleCtx = ruleCanvas.getContext('2d');
 
+    // 下地(角丸)
     createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.fillStyle = '#2F3136';
     ruleCtx.fill();
+
+    // キーアートを角丸枠内いっぱいに cover 描画（左右は切り抜き）
+    const keyArt = await Canvas.loadImage(path.resolve('./images/games/Raiders.png'));
+    const canvasWidth = 720;
+    const canvasHeight = 550;
+    const scale = Math.max(canvasWidth / keyArt.width, canvasHeight / keyArt.height);
+    const drawWidth = keyArt.width * scale;
+    const drawHeight = keyArt.height * scale;
+    const drawX = (canvasWidth - drawWidth) / 2;
+    const drawY = (canvasHeight - drawHeight) / 2;
+
+    ruleCtx.save();
+    createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
+    ruleCtx.clip();
+    ruleCtx.drawImage(keyArt, drawX, drawY, drawWidth, drawHeight);
+    ruleCtx.restore();
+
+    // 枠線（1枚目と統一）
+    createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
     ruleCtx.strokeStyle = '#FFFFFF';
     ruleCtx.lineWidth = 4;
     ruleCtx.stroke();
-
-    // キーアート (1200x630) をアスペクト維持で中央に描画
-    const keyArt = await Canvas.loadImage(path.resolve('./images/games/Raiders.png'));
-    const artWidth = 680;
-    const artHeight = Math.round((artWidth * keyArt.height) / keyArt.width);
-    const artX = (720 - artWidth) / 2;
-    const artY = (550 - artHeight) / 2;
-
-    ruleCtx.save();
-    ruleCtx.beginPath();
-    createRoundRect(ruleCtx, artX, artY, artWidth, artHeight, 10);
-    ruleCtx.clip();
-    ruleCtx.drawImage(keyArt, artX, artY, artWidth, artHeight);
-    ruleCtx.strokeStyle = '#FFFFFF';
-    ruleCtx.lineWidth = 6.0;
-    ruleCtx.stroke();
-    ruleCtx.restore();
-
-    createRoundRect(ruleCtx, 1, 1, 718, 548, 30);
-    ruleCtx.clip();
 
     const buffer = ruleCanvas.toBuffer();
     return buffer;
