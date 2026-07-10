@@ -21,6 +21,7 @@ export const commandNames = {
     event: 'イベマ募集',
     anarchy: 'バンカラ募集',
     salmon: 'サーモンラン募集',
+    raiders: 'レイダース募集',
     fesA: 'フウカ陣営',
     fesB: 'マンタロー陣営',
     fesC: 'ウツホ陣営',

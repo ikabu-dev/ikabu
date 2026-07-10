@@ -20,6 +20,7 @@ import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit.js';
 import { festRecruit } from '../feat-recruit/create_recruit/fest_recruit.js';
 import { otherGameRecruit } from '../feat-recruit/create_recruit/other_game_recruit';
 import { privateRecruit } from '../feat-recruit/create_recruit/private_recruit';
+import { raidersRecruit } from '../feat-recruit/create_recruit/raiders_recruit.js';
 import { regularRecruit } from '../feat-recruit/create_recruit/regular_recruit.js';
 import { salmonRecruit } from '../feat-recruit/create_recruit/salmon_recruit.js';
 import { handleIkabuExperience } from '../feat-utils/other/experience.js';
@@ -82,6 +83,8 @@ async function cachedGuildCommandsHandler(interaction: ChatInputCommandInteracti
             await eventRecruit(interaction);
         } else if (commandName === commandNames.salmon) {
             await salmonRecruit(interaction);
+        } else if (commandName === commandNames.raiders) {
+            await raidersRecruit(interaction);
         } else if (commandName === commandNames.fesA) {
             await festRecruit(interaction);
         } else if (commandName === commandNames.fesB) {

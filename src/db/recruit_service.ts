@@ -15,6 +15,7 @@ export const RecruitType = {
     BigRunRecruit: 7,
     TeamContestRecruit: 8,
     OtherGameRecruit: 10,
+    RaidersRecruit: 11,
 } as const;
 export type RecruitType = ObjectValueList<typeof RecruitType>;
 export function isRecruitType(value: number): value is RecruitType {

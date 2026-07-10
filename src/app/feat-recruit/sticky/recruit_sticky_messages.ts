@@ -61,6 +61,10 @@ export async function sendRecruitSticky(stickyOptions: StickyOptions) {
             guild.id,
             ChannelKeySet.SalmonRecruit.key,
         );
+        const raidersRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
+            guild.id,
+            ChannelKeySet.RaidersRecruit.key,
+        );
         const otherGamesRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
             guild.id,
             ChannelKeySet.OtherGamesRecruit.key,
@@ -89,6 +93,8 @@ export async function sendRecruitSticky(stickyOptions: StickyOptions) {
             channelName = 'イベマ募集';
         } else if (channelId === salmonRecruitChannelId) {
             channelName = 'サーモン募集';
+        } else if (channelId === raidersRecruitChannelId) {
+            channelName = null;
         } else if (channelId === otherGamesRecruitChannelId) {
             channelName = null;
         } else if (channelId === shiverRecruitChannelId) {
