@@ -6,13 +6,18 @@ import {
     ModalSubmitInteraction,
 } from 'discord.js';
 
-import { recruitActionRow, recruitDeleteButton } from './create_recruit_buttons';
+import {
+    embedRecruitDeleteButton,
+    recruitActionRow,
+    recruitDeleteButton,
+} from './create_recruit_buttons';
+import { exists } from '../../../common/others';
 import { getMemberMentions } from '../../common/member_list';
 import { RecruitData } from '../../common/types/recruit_data';
 
 type RecruitMessageList = {
     recruitMessage: Message<true>;
-    ruleMessage: Message<true>;
+    ruleMessage: Message<true> | null;
     buttonMessage: Message<true>;
     deleteButtonMessage: Message<true>;
 };
@@ -22,21 +27,24 @@ export type RecruitImageBuffers = {
     ruleBuffer: Buffer;
 };
 
+// 2枚目(ルール画像)を送らない募集用
+export type RecruitImageBuffersWithoutRule = {
+    recruitBuffer: Buffer;
+    ruleBuffer: null;
+};
+
 export async function sendRecruitCanvas(
     interaction:
         | ChatInputCommandInteraction<'cached' | 'raw'>
         | ModalSubmitInteraction<'cached' | 'raw'>,
     recruitRoleId: string | null,
     recruitData: RecruitData,
-    imageBuffers: RecruitImageBuffers,
+    imageBuffers: RecruitImageBuffers | RecruitImageBuffersWithoutRule,
 ): Promise<RecruitMessageList> {
     const recruitChannel = recruitData.recruitChannel;
 
     const recruit = new AttachmentBuilder(imageBuffers.recruitBuffer, {
         name: 'ikabu_recruit.png',
-    });
-    const rule = new AttachmentBuilder(imageBuffers.ruleBuffer, {
-        name: 'rules.png',
     });
 
     const recruitMessage = await interaction.editReply({
@@ -46,7 +54,13 @@ export async function sendRecruitCanvas(
 
     if (!recruitMessage.inGuild()) throw new Error('recruitMessage is not in guild');
 
-    const ruleMessage = await recruitChannel.send({ files: [rule] });
+    let ruleMessage: Message<true> | null = null;
+    if (exists(imageBuffers.ruleBuffer)) {
+        const rule = new AttachmentBuilder(imageBuffers.ruleBuffer, {
+            name: 'rules.png',
+        });
+        ruleMessage = await recruitChannel.send({ files: [rule] });
+    }
 
     let buttonMessage = await recruitChannel.send({
         content: `<@&${recruitRoleId}> ボタンを押して参加表明するでし！\n${getMemberMentions(
@@ -60,7 +74,11 @@ export async function sendRecruitCanvas(
     });
 
     const deleteButtonMessage = await recruitChannel.send({
-        components: [recruitDeleteButton(buttonMessage, recruitMessage, ruleMessage)],
+        components: [
+            exists(ruleMessage)
+                ? recruitDeleteButton(buttonMessage, recruitMessage, ruleMessage)
+                : embedRecruitDeleteButton(buttonMessage, recruitMessage),
+        ],
     });
 
     await interaction.followUp({

@@ -9,7 +9,7 @@ import {
 import { buildRecruitText } from './common/recruit_text';
 import { registerRecruitData } from './common/register_recruit_data';
 import { removeDeleteButton } from './common/remove_delete_button';
-import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
+import { sendRecruitCanvas, RecruitImageBuffersWithoutRule } from './common/send_recruit_message';
 import { validateRecruitNum } from './validators/recruit_num_validator';
 import { validateVoiceChannel } from './validators/vc_validator';
 import { RecruitType } from '../../../db/recruit_service';
@@ -23,7 +23,7 @@ import { ErrorTexts } from '../../constant/error_texts';
 import { RoleKeySet } from '../../constant/role_key';
 import { sendErrorLogs } from '../../logs/error/send_error_logs';
 import { sendRecruitModalLog } from '../../logs/modals/recruit_modal_log';
-import { recruitRaidersCanvas, ruleRaidersCanvas } from '../common/canvases/raiders_canvas';
+import { recruitRaidersCanvas } from '../common/canvases/raiders_canvas';
 import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { RecruitConditionError } from '../common/types/recruit_condition_error';
 import { RecruitData } from '../common/types/recruit_data';
@@ -101,7 +101,7 @@ export async function raidersRecruit(
                 `レイダース - ${recruitData.recruiter.displayName}`,
                 recruitData.recruiter.userId,
                 recruitData.voiceChannel,
-                raidersBuffers.ruleBuffer,
+                raidersBuffers.recruitBuffer,
                 new Date(),
             )
         ).id;
@@ -280,7 +280,9 @@ async function arrangeRaidersModalRecruitData(
     }
 }
 
-async function getRaidersImageBuffers(recruitData: RecruitData): Promise<RecruitImageBuffers> {
+async function getRaidersImageBuffers(
+    recruitData: RecruitData,
+): Promise<RecruitImageBuffersWithoutRule> {
     const voiceChannel = recruitData.voiceChannel;
     const voiceChannelName = voiceChannel ? voiceChannel.name : null;
 
@@ -295,7 +297,5 @@ async function getRaidersImageBuffers(recruitData: RecruitData): Promise<Recruit
         recruitData.condition,
         voiceChannelName,
     );
-    const ruleBuffer = await ruleRaidersCanvas();
-
-    return { recruitBuffer: recruitBuffer, ruleBuffer: ruleBuffer };
+    return { recruitBuffer: recruitBuffer, ruleBuffer: null };
 }
