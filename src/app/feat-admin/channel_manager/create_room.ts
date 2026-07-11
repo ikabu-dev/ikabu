@@ -12,18 +12,18 @@ import {
     Role,
 } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { createChannel } from '../../common/manager/channel_manager';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchAPIMemberById } from '../../common/manager/member_manager';
+import { createChannel } from '@/app/common/manager/channel_manager';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import {
     createRole,
     searchRoleById,
     setColorToRole,
     setRoleToMember,
-} from '../../common/manager/role_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/manager/role_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 // const INDEX_CATEGORY_ID = 0;
 const INDEX_CATEGORY_NAME = 1;

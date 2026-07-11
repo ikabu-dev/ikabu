@@ -1,7 +1,7 @@
-import { ParticipantService } from '../../../../db/participant_service';
-import { RecruitType, RecruitService } from '../../../../db/recruit_service';
-import { exists } from '../../../common/others';
-import { RecruitData } from '../../common/types/recruit_data';
+import { exists } from '@/app/common/others';
+import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
+import { ParticipantService } from '@/db/participant_service';
+import { RecruitType, RecruitService } from '@/db/recruit_service';
 
 export async function registerRecruitData(
     recruitId: string,

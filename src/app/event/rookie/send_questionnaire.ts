@@ -13,11 +13,11 @@ import {
     disableThinkingButton,
     recoveryThinkingButton,
     setButtonDisable,
-} from '../../common/button_components';
-import { searchMessageById } from '../../common/manager/message_manager';
-import { assertExistCheck, exists, notExists, sleep } from '../../common/others';
-import { QuestionnaireParam } from '../../constant/button_id';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/button_components';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { assertExistCheck, exists, notExists, sleep } from '@/app/common/others';
+import { QuestionnaireParam } from '@/app/constant/button_id';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 
 export async function questionnaireButtonHandler(
     interaction: ButtonInteraction<'cached' | 'raw'>,

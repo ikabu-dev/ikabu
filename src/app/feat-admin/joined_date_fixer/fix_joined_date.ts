@@ -1,12 +1,12 @@
 import { ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
-import { MemberService } from '../../../db/member_service';
-import { UniqueRoleService } from '../../../db/unique_role_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { searchDBMemberById } from '../../common/manager/member_manager';
-import { exists, notExists } from '../../common/others';
-import { RoleKeySet } from '../../constant/role_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { searchDBMemberById } from '@/app/common/manager/member_manager';
+import { exists, notExists } from '@/app/common/others';
+import { RoleKeySet } from '@/app/constant/role_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { MemberService } from '@/db/member_service';
+import { UniqueRoleService } from '@/db/unique_role_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

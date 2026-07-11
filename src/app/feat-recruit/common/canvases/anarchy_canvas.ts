@@ -3,16 +3,13 @@ import path from 'path';
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
+import { MatchInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
+import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
+import { dateformat, formatDatetime } from '@/app/common/convert_datetime';
+import { exists, notExists } from '@/app/common/others';
+import { modalRecruit } from '@/constant';
+
 import { RecruitOpCode } from './regenerate_canvas';
-import { modalRecruit } from '../../../../constant';
-import { MatchInfo } from '../../../common/apis/splatoon3.ink/splatoon3_ink';
-import {
-    createRoundRect,
-    drawArcImage,
-    fillTextWithStroke,
-} from '../../../common/canvas_components';
-import { dateformat, formatDatetime } from '../../../common/convert_datetime';
-import { exists, notExists } from '../../../common/others';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',

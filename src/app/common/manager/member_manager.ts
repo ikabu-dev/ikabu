@@ -2,10 +2,11 @@ import { Member } from '@prisma/client';
 import axios from 'axios';
 import { Guild, GuildMember, Interaction, Message } from 'discord.js';
 
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { MemberService } from '@/db/member_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { getGuildByInteraction } from './guild_manager';
-import { MemberService } from '../../../db/member_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
 import { assertExistCheck, exists, notExists } from '../others';
 
 const logger = log4js_obj.getLogger('MemberManager');

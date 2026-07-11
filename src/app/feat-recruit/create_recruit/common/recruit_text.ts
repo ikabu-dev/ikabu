@@ -1,6 +1,6 @@
 import { Member } from '@prisma/client';
 
-import { exists } from '../../../common/others';
+import { exists } from '@/app/common/others';
 
 export function buildRecruitText(
     recruiterMention: string,

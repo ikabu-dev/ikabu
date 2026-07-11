@@ -1,7 +1,7 @@
 import { Client, Guild, Role } from 'discord.js';
 
-import { RoleService } from '../../../db/role_service';
-import { notExists } from '../../common/others';
+import { notExists } from '@/app/common/others';
+import { RoleService } from '@/db/role_service';
 
 export async function saveRole(role: Role) {
     await RoleService.save(

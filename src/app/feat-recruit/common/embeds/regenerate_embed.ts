@@ -1,10 +1,10 @@
 import { EmbedBuilder, Guild } from 'discord.js';
 
-import { RecruitService, RecruitType } from '../../../../db/recruit_service';
-import { log4js_obj } from '../../../../log4js_settings';
-import { searchMessageById } from '../../../common/manager/message_manager';
-import { assertExistCheck, notExists } from '../../../common/others';
-import { sendErrorLogs } from '../../../logs/error/send_error_logs';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { assertExistCheck, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { RecruitService, RecruitType } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('recruit');
 

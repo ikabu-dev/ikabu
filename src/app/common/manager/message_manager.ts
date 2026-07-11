@@ -1,7 +1,8 @@
 import { Guild } from 'discord.js';
 
+import { log4js_obj } from '@/log4js_settings';
+
 import { searchChannelById } from './channel_manager';
-import { log4js_obj } from '../../../log4js_settings';
 import { exists } from '../others';
 
 const logger = log4js_obj.getLogger('MessageManager');

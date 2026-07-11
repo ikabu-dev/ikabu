@@ -1,11 +1,11 @@
 import { EmbedBuilder, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { searchChannelById } from '../../common/manager/channel_manager';
-import { searchAPIMemberById, getMemberColor } from '../../common/manager/member_manager';
-import { isNotEmpty, isEmpty, notExists, assertExistCheck, exists } from '../../common/others';
-import { ErrorTexts } from '../../constant/error_texts';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { searchChannelById } from '@/app/common/manager/channel_manager';
+import { searchAPIMemberById, getMemberColor } from '@/app/common/manager/member_manager';
+import { isNotEmpty, isEmpty, notExists, assertExistCheck, exists } from '@/app/common/others';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

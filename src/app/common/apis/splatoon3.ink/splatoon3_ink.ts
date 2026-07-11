@@ -1,7 +1,12 @@
 import NodeCache from 'node-cache';
 import fetch from 'node-fetch';
 
-import { withTemporaryFetchRetry } from '../../fetch_retry';
+import { isDateWithinRange } from '@/app/common/datetime';
+import { withTemporaryFetchRetry } from '@/app/common/fetch_retry';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
+
 import { getBankaraDummyProperties } from './types/bankara_properties';
 import { getEventDummyProperties } from './types/event_properties';
 import { getFestDummyProperties } from './types/fest_properties';
@@ -10,10 +15,7 @@ import { getRegularDummyProperties } from './types/regular_properties';
 import { getSalmonRegularDummyProperties } from './types/salmon_properties';
 import { Sp3Schedule } from './types/schedule';
 import { getXDummyProperties } from './types/x_properties';
-import { log4js_obj } from '../../../../log4js_settings';
-import { sendErrorLogs } from '../../../logs/error/send_error_logs';
-import { isDateWithinRange } from '../../datetime';
-import { assertExistCheck, exists, notExists } from '../../others';
+
 const schedule_url = 'https://splatoon3.ink/data/schedules.json';
 const locale_url = 'https://splatoon3.ink/data/locale/ja-JP.json';
 

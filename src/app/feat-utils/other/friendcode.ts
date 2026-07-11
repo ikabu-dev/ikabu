@@ -12,16 +12,16 @@ import {
     User,
 } from 'discord.js';
 
-import { FriendCodeService } from '../../../db/friend_code_service.js';
-import { UniqueChannelService } from '../../../db/unique_channel_service.js';
-import { log4js_obj } from '../../../log4js_settings.js';
-import { searchChannelById } from '../../common/manager/channel_manager.js';
-import { getGuildByInteraction } from '../../common/manager/guild_manager.js';
-import { searchDBMemberById } from '../../common/manager/member_manager.js';
-import { assertExistCheck, exists, notExists } from '../../common/others.js';
-import { FriendCodeButton } from '../../constant/button_id.js';
-import { ChannelKeySet } from '../../constant/channel_key.js';
-import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
+import { searchChannelById } from '@/app/common/manager/channel_manager.js';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
+import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
+import { assertExistCheck, exists, notExists } from '@/app/common/others.js';
+import { FriendCodeButton } from '@/app/constant/button_id.js';
+import { ChannelKeySet } from '@/app/constant/channel_key.js';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { FriendCodeService } from '@/db/friend_code_service.js';
+import { UniqueChannelService } from '@/db/unique_channel_service.js';
+import { log4js_obj } from '@/log4js_settings.js';
 const logger = log4js_obj.getLogger();
 
 export async function handleFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {

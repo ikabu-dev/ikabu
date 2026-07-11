@@ -1,10 +1,11 @@
 import { ChatInputCommandInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
 
+import { notExists } from '@/app/common/others';
+import { ChannelService } from '@/db/channel_service';
+
 import { deleteVariables } from './delete_variables';
 import { setVariables } from './set_variables';
 import { showVariables } from './show_variables';
-import { ChannelService } from '../../../db/channel_service';
-import { notExists } from '../../common/others';
 
 export async function variablesHandler(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });

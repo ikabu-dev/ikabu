@@ -1,9 +1,10 @@
 import { Member } from '@prisma/client';
 
-import { RecruitType } from '../../../../db/recruit_service';
-import { exists } from '../../../common/others';
-import { RecruitAlertTexts } from '../../common/alert_texts/alert_texts';
-import { RecruitConditionError } from '../../common/types/recruit_condition_error';
+import { exists } from '@/app/common/others';
+import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
+import { RecruitConditionError } from '@/app/feat-recruit/common/types/recruit_condition_error';
+import { RecruitType } from '@/db/recruit_service';
+
 import { checkRecruitNum, checkRegularRecruitNum } from '../condition_checks/recruit_num_check';
 
 export function validateRecruitNum(

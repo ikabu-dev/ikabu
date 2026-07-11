@@ -1,15 +1,16 @@
 import { BaseGuildTextChannel, MessageFlags, ModalSubmitInteraction } from 'discord.js';
 
-import { ParticipantService } from '../../../db/participant_service';
-import { RecruitService, RecruitType } from '../../../db/recruit_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { assertExistCheck, notExists } from '../../common/others';
-import { sendStickyMessage } from '../../common/sticky_message';
-import { ErrorTexts } from '../../constant/error_texts';
-import { StickyKey } from '../../constant/sticky_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
-import { sendEditRecruitLog } from '../../logs/modals/recruit_modal_log';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { assertExistCheck, notExists } from '@/app/common/others';
+import { sendStickyMessage } from '@/app/common/sticky_message';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { StickyKey } from '@/app/constant/sticky_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { sendEditRecruitLog } from '@/app/logs/modals/recruit_modal_log';
+import { ParticipantService } from '@/db/participant_service';
+import { RecruitService, RecruitType } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
 import { regenerateEmbed } from '../common/embeds/regenerate_embed';
 import { availableRecruitString } from '../sticky/recruit_sticky_messages';

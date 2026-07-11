@@ -5,8 +5,8 @@ import {
     MessageContextMenuCommandInteraction,
 } from 'discord.js';
 
-import { assertExistCheck, exists } from '../../common/others';
-import { sendEmbedsWebhook } from '../../common/webhook';
+import { assertExistCheck, exists } from '@/app/common/others';
+import { sendEmbedsWebhook } from '@/app/common/webhook';
 
 export function sendCommandLog(
     interaction:

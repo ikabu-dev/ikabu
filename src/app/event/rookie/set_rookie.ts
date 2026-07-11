@@ -1,16 +1,16 @@
 import { GuildMember, Role } from 'discord.js';
 
-import { MemberService } from '../../../db/member_service.js';
-import { UniqueChannelService } from '../../../db/unique_channel_service.js';
-import { UniqueRoleService } from '../../../db/unique_role_service.js';
-import { log4js_obj } from '../../../log4js_settings';
-import { searchChannelById } from '../../common/manager/channel_manager';
-import { searchAPIMemberById } from '../../common/manager/member_manager.js';
-import { assignRoleToMember, searchRoleById } from '../../common/manager/role_manager';
-import { exists, getDeveloperMention, notExists, sleep } from '../../common/others.js';
-import { ChannelKeySet } from '../../constant/channel_key.js';
-import { RoleKeySet } from '../../constant/role_key.js';
-import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
+import { searchChannelById } from '@/app/common/manager/channel_manager';
+import { searchAPIMemberById } from '@/app/common/manager/member_manager.js';
+import { assignRoleToMember, searchRoleById } from '@/app/common/manager/role_manager';
+import { exists, getDeveloperMention, notExists, sleep } from '@/app/common/others.js';
+import { ChannelKeySet } from '@/app/constant/channel_key.js';
+import { RoleKeySet } from '@/app/constant/role_key.js';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { MemberService } from '@/db/member_service.js';
+import { UniqueChannelService } from '@/db/unique_channel_service.js';
+import { UniqueRoleService } from '@/db/unique_role_service.js';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('guildMemberAdd');
 

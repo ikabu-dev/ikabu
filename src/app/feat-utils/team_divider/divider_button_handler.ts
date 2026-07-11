@@ -1,5 +1,7 @@
 import { ButtonInteraction } from 'discord.js';
 
+import { TeamDividerParam } from '@/app/constant/button_id';
+
 import {
     joinButton,
     registerButton,
@@ -11,7 +13,6 @@ import {
     correctButton,
     hideButton,
 } from './divider';
-import { TeamDividerParam } from '../../constant/button_id';
 
 export async function dividerButtonHandler(
     interaction: ButtonInteraction<'cached' | 'raw'>,

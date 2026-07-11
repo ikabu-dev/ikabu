@@ -6,12 +6,13 @@ import {
     PermissionsBitField,
 } from 'discord.js';
 
+import { exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ChannelService } from '@/db/channel_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { adminChannelSetting } from './admin_channel_setting';
 import { vcToolsSetting } from './vcTools_setting';
-import { ChannelService } from '../../../db/channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
 
 const logger = log4js_obj.getLogger('interaction');
 

@@ -1,12 +1,13 @@
 import { ButtonInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
 
+import { recoveryThinkingButton, setButtonDisable } from '@/app/common/button_components';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchAPIMemberById } from '@/app/common/manager/member_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
+
 import { tagIdsEmbed } from './tag_ids_embed';
-import { log4js_obj } from '../../../log4js_settings';
-import { recoveryThinkingButton, setButtonDisable } from '../../common/button_components';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchAPIMemberById } from '../../common/manager/member_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
 
 const logger = log4js_obj.getLogger('interaction');
 

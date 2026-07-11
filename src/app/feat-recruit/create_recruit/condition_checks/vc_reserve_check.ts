@@ -1,7 +1,7 @@
 import { VoiceBasedChannel } from 'discord.js';
 
-import { exists } from '../../../common/others';
-import { RecruitAlertTexts } from '../../common/alert_texts/alert_texts';
+import { exists } from '@/app/common/others';
+import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
 
 export async function getVCReserveErrorMessage(
     guildId: string,

@@ -1,11 +1,11 @@
 import { Recruit } from '@prisma/client';
 import { ComponentType, EmbedBuilder, Guild, ModalSubmitInteraction } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchDBMemberById } from '../../common/manager/member_manager';
-import { assertExistCheck, exists } from '../../common/others';
-import { sendEmbedsWebhook } from '../../common/webhook';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchDBMemberById } from '@/app/common/manager/member_manager';
+import { assertExistCheck, exists } from '@/app/common/others';
+import { sendEmbedsWebhook } from '@/app/common/webhook';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

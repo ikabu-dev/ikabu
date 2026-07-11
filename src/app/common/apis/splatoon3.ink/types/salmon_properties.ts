@@ -1,4 +1,4 @@
-import { placeHold } from '../../../../../constant';
+import { placeHold } from '@/constant';
 
 export type SalmonRegularProperties = {
     startTime: string;

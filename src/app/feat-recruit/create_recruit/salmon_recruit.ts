@@ -1,21 +1,22 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
-import { arrangeCommandRecruitData } from './common/arrange_command_data';
-import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
-import { RecruitType } from '../../../db/recruit_service';
-import { UniqueRoleService } from '../../../db/unique_role_service';
 import {
     getSchedule,
     checkBigRun,
     checkTeamContest,
     getSalmonData,
     getTeamContestData,
-} from '../../common/apis/splatoon3.ink/splatoon3_ink';
-import { assertExistCheck, exists, sleep } from '../../common/others';
-import { RoleKeySet } from '../../constant/role_key';
+} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
+import { assertExistCheck, exists, sleep } from '@/app/common/others';
+import { RoleKeySet } from '@/app/constant/role_key';
+import { RecruitType } from '@/db/recruit_service';
+import { UniqueRoleService } from '@/db/unique_role_service';
+
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
+import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
 import { recruitBigRunCanvas, ruleBigRunCanvas } from '../common/canvases/big_run_canvas';
 import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { recruitSalmonCanvas, ruleSalmonCanvas } from '../common/canvases/salmon_canvas';

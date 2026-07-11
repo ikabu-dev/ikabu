@@ -1,9 +1,10 @@
 import { Attachment, EmbedBuilder, Guild, Message } from 'discord.js';
 
+import { placeHold } from '@/constant.js';
+import { UniqueChannelService } from '@/db/unique_channel_service.js';
+import { UniqueRoleService } from '@/db/unique_role_service.js';
+
 import { searchAPIMemberById } from './manager/member_manager.js';
-import { placeHold } from '../../constant.js';
-import { UniqueChannelService } from '../../db/unique_channel_service.js';
-import { UniqueRoleService } from '../../db/unique_role_service.js';
 import { ChannelKeySet } from '../constant/channel_key.js';
 import { RoleKeySet } from '../constant/role_key.js';
 

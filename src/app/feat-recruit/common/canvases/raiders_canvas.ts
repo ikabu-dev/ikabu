@@ -3,14 +3,11 @@ import path from 'path';
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
+import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
+import { exists, notExists } from '@/app/common/others.js';
+import { modalRecruit } from '@/constant.js';
+
 import { RecruitOpCode } from './regenerate_canvas.js';
-import { modalRecruit } from '../../../../constant.js';
-import {
-    createRoundRect,
-    drawArcImage,
-    fillTextWithStroke,
-} from '../../../common/canvas_components';
-import { exists, notExists } from '../../../common/others.js';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',

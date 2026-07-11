@@ -10,19 +10,19 @@ import {
     User,
 } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchAPIMemberById } from '../../common/manager/member_manager';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import {
     createRole,
     searchRoleById,
     searchRoleIdByName,
     setColorToRole,
     unassginRoleFromMembers,
-} from '../../common/manager/role_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { ErrorTexts } from '../../constant/error_texts';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/manager/role_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('RoleManager');
 

@@ -1,5 +1,5 @@
-import { UniqueChannelService } from '../../../../db/unique_channel_service';
-import { ChannelKeySet } from '../../../constant/channel_key';
+import { ChannelKeySet } from '@/app/constant/channel_key';
+import { UniqueChannelService } from '@/db/unique_channel_service';
 
 export async function getFestPeriodAlertText(guildId: string) {
     const shiverChannelId = await UniqueChannelService.getChannelIdByKey(

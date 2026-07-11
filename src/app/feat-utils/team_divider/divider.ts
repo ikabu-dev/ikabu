@@ -11,21 +11,21 @@ import {
     MessageFlags,
 } from 'discord.js';
 
-import { TeamDividerService, TeamMember } from '../../../db/team_divider_service';
-import { log4js_obj } from '../../../log4js_settings';
 import {
     setButtonEnable,
     recoveryThinkingButton,
     disableThinkingButton,
     setButtonDisable,
-} from '../../common/button_components';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchAPIMemberById } from '../../common/manager/member_manager';
-import { searchMessageById } from '../../common/manager/message_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { TeamDividerParam } from '../../constant/button_id';
-import { ErrorTexts } from '../../constant/error_texts';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/button_components';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchAPIMemberById } from '@/app/common/manager/member_manager';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { TeamDividerParam } from '@/app/constant/button_id';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { TeamDividerService, TeamMember } from '@/db/team_divider_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

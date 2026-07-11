@@ -1,5 +1,5 @@
-import { RecruitCountService } from '../../../db/recruit_count_service';
-import { exists } from '../../common/others';
+import { exists } from '@/app/common/others';
+import { RecruitCountService } from '@/db/recruit_count_service';
 
 export async function increaseRecruitCount(userIdList: string[]) {
     userIdList.forEach(async (userId) => {

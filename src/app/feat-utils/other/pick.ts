@@ -1,6 +1,6 @@
 import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck, exists, randomSelect } from '../../common/others';
+import { assertExistCheck, exists, randomSelect } from '@/app/common/others';
 
 export async function handlePick(interaction: ChatInputCommandInteraction<CacheType>) {
     const { options } = interaction;

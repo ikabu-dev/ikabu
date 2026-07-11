@@ -1,11 +1,11 @@
 import { CategoryChannel, ChatInputCommandInteraction, Guild } from 'discord.js';
 
-import { UniqueRoleService } from '../../../db/unique_role_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { searchRoleById, unassginRoleFromMembers } from '../../common/manager/role_manager';
-import { assertExistCheck, notExists } from '../../common/others';
-import { RoleKeySet } from '../../constant/role_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { searchRoleById, unassginRoleFromMembers } from '@/app/common/manager/role_manager';
+import { assertExistCheck, notExists } from '@/app/common/others';
+import { RoleKeySet } from '@/app/constant/role_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { UniqueRoleService } from '@/db/unique_role_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

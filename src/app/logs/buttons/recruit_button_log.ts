@@ -7,9 +7,9 @@ import {
     EmbedBuilder,
 } from 'discord.js';
 
-import { ParticipantMember } from '../../../db/participant_service';
-import { assertExistCheck } from '../../common/others';
-import { sendEmbedsWebhook } from '../../common/webhook';
+import { assertExistCheck } from '@/app/common/others';
+import { sendEmbedsWebhook } from '@/app/common/webhook';
+import { ParticipantMember } from '@/db/participant_service';
 
 export async function sendRecruitButtonLog(
     interaction: ButtonInteraction<CacheType>,

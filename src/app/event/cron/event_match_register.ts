@@ -1,19 +1,19 @@
 import { Guild } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
 import {
     getSchedule,
     getEventList,
     getLocale,
     event2txt,
-} from '../../common/apis/splatoon3.ink/splatoon3_ink';
-import { formatDatetime, dateformat } from '../../common/convert_datetime';
+} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
+import { formatDatetime, dateformat } from '@/app/common/convert_datetime';
 import {
     createGuildScheduledEvent,
     existsGuildScheduledEvent,
-} from '../../common/manager/guild_scheduled_event_manager';
-import { exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/manager/guild_scheduled_event_manager';
+import { exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('recruit');
 

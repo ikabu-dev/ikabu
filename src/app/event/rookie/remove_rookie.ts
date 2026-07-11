@@ -1,14 +1,15 @@
 import Discord, { GuildMember, Message, Role } from 'discord.js';
 
+import { getAPIMemberByMessage } from '@/app/common/manager/member_manager';
+import { unassignRoleFromMember } from '@/app/common/manager/role_manager';
+import { exists, getDeveloperMention, notExists } from '@/app/common/others';
+import { RoleKeySet } from '@/app/constant/role_key';
+import { MemberService } from '@/db/member_service';
+import { RecruitCountService } from '@/db/recruit_count_service';
+import { UniqueRoleService } from '@/db/unique_role_service';
+import { VoiceCountService } from '@/db/voice_count_service';
+
 import { sendIntentionConfirmReply } from './send_questionnaire';
-import { MemberService } from '../../../db/member_service';
-import { RecruitCountService } from '../../../db/recruit_count_service';
-import { UniqueRoleService } from '../../../db/unique_role_service';
-import { VoiceCountService } from '../../../db/voice_count_service';
-import { getAPIMemberByMessage } from '../../common/manager/member_manager';
-import { unassignRoleFromMember } from '../../common/manager/role_manager';
-import { exists, getDeveloperMention, notExists } from '../../common/others';
-import { RoleKeySet } from '../../constant/role_key';
 
 export async function removeRookie(msg: Message<true>) {
     const guild = msg.guild;
