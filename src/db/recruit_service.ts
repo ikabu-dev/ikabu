@@ -1,6 +1,6 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma.js';
 import { ObjectValueList } from '../app/constant/constant_common.js';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs.js';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
@@ -35,7 +35,7 @@ export class RecruitService {
         recruitType: number,
         option?: string | null,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruit.create({
                 data: {
                     guildId: guildId,
@@ -50,13 +50,11 @@ export class RecruitService {
                     option: option,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async deleteRecruit(guildId: string, messageId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruit.delete({
                 where: {
                     guildId_messageId: {
@@ -65,13 +63,11 @@ export class RecruitService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async updateRecruitNum(guildId: string, messageId: string, recruitNum: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruit.update({
                 where: {
                     guildId_messageId: {
@@ -83,13 +79,11 @@ export class RecruitService {
                     recruitNum: recruitNum,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async updateCondition(guildId: string, messageId: string, condition: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruit.update({
                 where: {
                     guildId_messageId: {
@@ -101,13 +95,11 @@ export class RecruitService {
                     condition: condition,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getRecruit(guildId: string, messageId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const recruit = await prisma.recruit.findUnique({
                 where: {
                     guildId_messageId: {
@@ -117,14 +109,11 @@ export class RecruitService {
                 },
             });
             return recruit;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getRecruitByEventId(guildId: string, eventId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const recruit = await prisma.recruit.findFirst({
                 where: {
                     guildId: guildId,
@@ -132,14 +121,11 @@ export class RecruitService {
                 },
             });
             return recruit;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getRecruitsByRecruitType(guildId: string, recruitType: number) {
-        try {
+        return dbCall(logger, [], async () => {
             const recruits = await prisma.recruit.findMany({
                 where: {
                     guildId: guildId,
@@ -147,14 +133,11 @@ export class RecruitService {
                 },
             });
             return recruits;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getRecruitsByChannelId(guildId: string, channelId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             const recruits = await prisma.recruit.findMany({
                 where: {
                     guildId: guildId,
@@ -162,14 +145,11 @@ export class RecruitService {
                 },
             });
             return recruits;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getAllMessageId() {
-        try {
+        return dbCall(logger, [], async () => {
             const recruits = await prisma.recruit.findMany({
                 select: {
                     messageId: true,
@@ -182,9 +162,6 @@ export class RecruitService {
             });
 
             return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }

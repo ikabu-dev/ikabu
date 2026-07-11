@@ -1,7 +1,7 @@
 import { TeamDivider } from '@prisma/client';
 
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
@@ -33,7 +33,7 @@ export class TeamDividerService {
         forceSpectate: boolean,
         hideWin: boolean,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.upsert({
                 where: {
                     messageId_memberId_matchNum: {
@@ -62,22 +62,18 @@ export class TeamDividerService {
                     hideWin: hideWin,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async deleteMemberFromDB(messageId: string, memberId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.deleteMany({
                 where: {
                     messageId: messageId,
                     memberId: memberId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -86,7 +82,7 @@ export class TeamDividerService {
      * @returns 表示用メッセージ
      */
     static async registeredMembersStrings(messageId: string) {
-        try {
+        return dbCall(logger, { text: '', memberCount: 0 }, async () => {
             const members = await prisma.teamDivider.findMany({
                 where: {
                     messageId: messageId,
@@ -102,10 +98,7 @@ export class TeamDividerService {
                 usersString = usersString + `\n${member.memberName}`;
             }
             return { text: usersString, memberCount: members.length };
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return { text: '', memberCount: 0 };
-        }
+        });
     }
 
     /**
@@ -116,7 +109,7 @@ export class TeamDividerService {
      * @returns 取得結果
      */
     static async selectMemberFromDB(messageId: string, matchNum: number, memberId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const member = await prisma.teamDivider.findUnique({
                 where: {
                     messageId_memberId_matchNum: {
@@ -127,10 +120,7 @@ export class TeamDividerService {
                 },
             });
             return member;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     /**
@@ -140,7 +130,7 @@ export class TeamDividerService {
      * @returns 取得結果
      */
     static async selectAllMemberFromDB(messageId: string, matchNum: number) {
-        try {
+        return dbCall(logger, [], async () => {
             const members = await prisma.teamDivider.findMany({
                 where: {
                     messageId: messageId,
@@ -148,10 +138,7 @@ export class TeamDividerService {
                 },
             });
             return members;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     /**
@@ -159,15 +146,13 @@ export class TeamDividerService {
      * @param messageId 登録メッセージID
      */
     static async deleteAllMemberFromDB(messageId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.deleteMany({
                 where: {
                     messageId: messageId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -178,7 +163,7 @@ export class TeamDividerService {
      * @param team 該当チーム(alfa=0, bravo=1, 観戦=2)
      */
     static async setTeam(messageId: string, memberId: string, matchNum: number, team: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.updateMany({
                 where: {
                     messageId: messageId,
@@ -189,9 +174,7 @@ export class TeamDividerService {
                     team: team,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -202,7 +185,7 @@ export class TeamDividerService {
      * @param count 試合参加回数
      */
     static async setCount(messageId: string, memberId: string, matchNum: number, count: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.updateMany({
                 where: {
                     messageId: messageId,
@@ -213,9 +196,7 @@ export class TeamDividerService {
                     joinedMatchCount: count,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -226,7 +207,7 @@ export class TeamDividerService {
      * @param winCount 勝利数
      */
     static async setWin(messageId: string, memberId: string, matchNum: number, winCount: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.updateMany({
                 where: {
                     messageId: messageId,
@@ -237,9 +218,7 @@ export class TeamDividerService {
                     win: winCount,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -248,7 +227,7 @@ export class TeamDividerService {
      * @param flag true=隠す or false=表示
      */
     static async setHideWin(messageId: string, flag: boolean) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.updateMany({
                 where: {
                     messageId: messageId,
@@ -257,9 +236,7 @@ export class TeamDividerService {
                     hideWin: flag,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -275,7 +252,7 @@ export class TeamDividerService {
         matchNum: number,
         flag: boolean,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.updateMany({
                 where: {
                     messageId: messageId,
@@ -286,9 +263,7 @@ export class TeamDividerService {
                     forceSpectate: flag,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     /**
@@ -304,7 +279,7 @@ export class TeamDividerService {
         team: number,
     ): Promise<TeamMember[]> {
         let members: TeamDivider[] = [];
-        try {
+        await dbCall(logger, undefined, async () => {
             members = await prisma.teamDivider.findMany({
                 where: {
                     messageId: messageId,
@@ -312,9 +287,7 @@ export class TeamDividerService {
                     team: team,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
 
         const result = members.map((member) => {
             let winRate = 0;
@@ -347,7 +320,7 @@ export class TeamDividerService {
      */
     static async getForceSpectate(messageId: string, matchNum: number): Promise<TeamMember[]> {
         let members: TeamDivider[] = [];
-        try {
+        await dbCall(logger, undefined, async () => {
             members = await prisma.teamDivider.findMany({
                 where: {
                     messageId: messageId,
@@ -355,9 +328,7 @@ export class TeamDividerService {
                     forceSpectate: true,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
 
         const result = members.map((member) => {
             let winRate = 0;
@@ -395,7 +366,7 @@ export class TeamDividerService {
         teamNum: number,
     ): Promise<TeamMember[]> {
         let members: TeamDivider[] = [];
-        try {
+        await dbCall(logger, undefined, async () => {
             members = await prisma.teamDivider.findMany({
                 where: {
                     messageId: messageId,
@@ -407,9 +378,7 @@ export class TeamDividerService {
                 },
                 take: teamNum * 2,
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
 
         const result = members.map((member) => {
             let winRate = 0;
@@ -440,15 +409,13 @@ export class TeamDividerService {
      * @param matchNum 該当試合数
      */
     static async deleteMatchingResult(messageId: string, matchNum: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.teamDivider.deleteMany({
                 where: {
                     messageId: messageId,
                     matchNum: matchNum,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 }

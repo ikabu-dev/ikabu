@@ -1,5 +1,5 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
@@ -11,7 +11,7 @@ export class UserReactionService {
         year: string,
         count: number,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.userReaction.upsert({
                 where: {
                     userId_reactionSeq_year_channelId: {
@@ -32,9 +32,7 @@ export class UserReactionService {
                     count: count,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getReactionCountByPK(
@@ -43,7 +41,7 @@ export class UserReactionService {
         channelId: string,
         year: string,
     ) {
-        try {
+        return dbCall(logger, null, async () => {
             const result = await prisma.userReaction.findUnique({
                 where: {
                     userId_reactionSeq_year_channelId: {
@@ -55,37 +53,28 @@ export class UserReactionService {
                 },
             });
             return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getReactionCountByUserId(userId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             const result = await prisma.userReaction.findMany({
                 where: {
                     userId: userId,
                 },
             });
             return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getReactionCountByReactionSeq(reactionSeq: number) {
-        try {
+        return dbCall(logger, [], async () => {
             const result = await prisma.userReaction.findMany({
                 where: {
                     reactionSeq: reactionSeq,
                 },
             });
             return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }

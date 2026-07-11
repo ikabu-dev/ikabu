@@ -1,8 +1,8 @@
 import { Member } from '@prisma/client';
 
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma.js';
 import { RecruitService } from './recruit_service.js';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs.js';
 import { log4js_obj } from '../log4js_settings.js';
 const logger = log4js_obj.getLogger('database');
 
@@ -20,7 +20,7 @@ export class ParticipantService {
         userType: number,
         joinedAt: Date,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.participant.upsert({
                 where: {
                     guildId_messageId_userId: {
@@ -41,9 +41,7 @@ export class ParticipantService {
                     joinedAt: joinedAt,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async registerParticipantFromMember(
@@ -52,7 +50,7 @@ export class ParticipantService {
         member: Member,
         userType: number,
     ) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.participant.upsert({
                 where: {
                     guildId_messageId_userId: {
@@ -71,13 +69,11 @@ export class ParticipantService {
                     userType: userType,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async deleteParticipant(guildId: string, messageId: string, userId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.participant.delete({
                 where: {
                     guildId_messageId_userId: {
@@ -87,26 +83,22 @@ export class ParticipantService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async deleteAllParticipant(guildId: string, messageId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.participant.deleteMany({
                 where: {
                     guildId: guildId,
                     messageId: messageId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async deleteUnuseParticipant() {
-        try {
+        return dbCall(logger, undefined, async () => {
             const messageIdList = await RecruitService.getAllMessageId();
 
             await prisma.participant.deleteMany({
@@ -116,9 +108,7 @@ export class ParticipantService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getParticipant(
@@ -126,7 +116,7 @@ export class ParticipantService {
         messageId: string,
         userId: string,
     ): Promise<ParticipantMember | null> {
-        try {
+        return dbCall(logger, null, async () => {
             const participant = await prisma.participant.findUnique({
                 where: {
                     guildId_messageId_userId: {
@@ -143,17 +133,14 @@ export class ParticipantService {
                 },
             });
             return participant;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getAllParticipants(
         guildId: string,
         messageId: string,
     ): Promise<ParticipantMember[]> {
-        try {
+        return dbCall(logger, [], async () => {
             const participants = await prisma.participant.findMany({
                 where: {
                     guildId: guildId,
@@ -176,9 +163,6 @@ export class ParticipantService {
             });
 
             return participants;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }

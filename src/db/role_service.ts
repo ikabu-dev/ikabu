@@ -1,7 +1,7 @@
 import { ColorResolvable } from 'discord.js';
 
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 
 const logger = log4js_obj.getLogger('database');
@@ -15,7 +15,7 @@ export class RoleService {
         color: ColorResolvable,
         position: number,
     ) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.role.upsert({
                 where: {
                     guildId_roleId: {
@@ -40,14 +40,11 @@ export class RoleService {
                     position: position,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async delete(guildId: string, roleId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.role.delete({
                 where: {
                     guildId_roleId: {
@@ -56,14 +53,11 @@ export class RoleService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getRole(guildId: string, roleId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.role.findUnique({
                 where: {
                     guildId_roleId: {
@@ -72,45 +66,33 @@ export class RoleService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async searchRole(guildId: string, roleName: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.role.findFirst({
                 where: {
                     guildId: guildId,
                     name: roleName,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getAllGuildRoles(guildId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             return await prisma.role.findMany({
                 where: {
                     guildId: guildId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getAllRoles() {
-        try {
+        return dbCall(logger, [], async () => {
             return await prisma.role.findMany();
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }

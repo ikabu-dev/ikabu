@@ -1,11 +1,11 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
 export class ReactionService {
     static async save(emojiId: string, emojiName: string, count: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.reaction.upsert({
                 where: {
                     emojiId_emojiName: {
@@ -22,13 +22,11 @@ export class ReactionService {
                     count: count,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async update(reactionSeq: number, count: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.reaction.update({
                 where: {
                     reactionSeq: reactionSeq,
@@ -37,13 +35,11 @@ export class ReactionService {
                     count: count,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getTotalReactionByEmoji(emojiId: string, emojiName: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const result = await prisma.reaction.findUnique({
                 where: {
                     emojiId_emojiName: {
@@ -53,9 +49,6 @@ export class ReactionService {
                 },
             });
             return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 }

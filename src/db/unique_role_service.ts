@@ -1,14 +1,14 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
 import { notExists } from '../app/common/others';
 import { RoleKey, isRoleKey } from '../app/constant/role_key';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 
 const logger = log4js_obj.getLogger('database');
 
 export class UniqueRoleService {
     static async save(guildId: string, key: RoleKey, roleId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.uniqueRole.upsert({
                 where: {
                     guildId_key: {
@@ -25,14 +25,11 @@ export class UniqueRoleService {
                     key: key,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getRoleIdByKey(guildId: string, key: RoleKey) {
-        try {
+        return dbCall(logger, null, async () => {
             const result = await prisma.uniqueRole.findUnique({
                 where: {
                     guildId_key: {
@@ -43,14 +40,11 @@ export class UniqueRoleService {
             });
             if (notExists(result)) return null;
             return result.roleId;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getAllUniqueRoles(guildId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             const results = await prisma.uniqueRole.findMany({
                 where: {
                     guildId: guildId,
@@ -74,14 +68,11 @@ export class UniqueRoleService {
             }
 
             return filteredResults;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async delete(guildId: string, key: RoleKey) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.uniqueRole.delete({
                 where: {
                     guildId_key: {
@@ -90,9 +81,6 @@ export class UniqueRoleService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 }

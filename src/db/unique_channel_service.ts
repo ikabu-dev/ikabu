@@ -1,14 +1,14 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
 import { notExists } from '../app/common/others';
 import { ChannelKey, isChannelKey } from '../app/constant/channel_key';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 
 const logger = log4js_obj.getLogger('database');
 
 export class UniqueChannelService {
     static async save(guildId: string, key: ChannelKey, channelId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.uniqueChannel.upsert({
                 where: {
                     guildId_key: {
@@ -25,14 +25,11 @@ export class UniqueChannelService {
                     key: key,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getChannelIdByKey(guildId: string, key: ChannelKey) {
-        try {
+        return dbCall(logger, null, async () => {
             const result = await prisma.uniqueChannel.findUnique({
                 where: {
                     guildId_key: {
@@ -43,14 +40,11 @@ export class UniqueChannelService {
             });
             if (notExists(result)) return null;
             return result.channelId;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getAllUniqueChannels(guildId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             const results = await prisma.uniqueChannel.findMany({
                 where: {
                     guildId: guildId,
@@ -74,14 +68,11 @@ export class UniqueChannelService {
             }
 
             return filteredResults;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async delete(guildId: string, key: ChannelKey) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.uniqueChannel.delete({
                 where: {
                     guildId_key: {
@@ -90,9 +81,6 @@ export class UniqueChannelService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 }

@@ -1,11 +1,11 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
 export class RecruitCountService {
     static async saveRecruitCount(userId: string, count: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruitCount.upsert({
                 where: {
                     userId: userId,
@@ -19,13 +19,11 @@ export class RecruitCountService {
                     joinCount: 0,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async saveJoinCount(userId: string, count: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.recruitCount.upsert({
                 where: {
                     userId: userId,
@@ -39,22 +37,17 @@ export class RecruitCountService {
                     joinCount: count,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getCountByUserId(userId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const counter = await prisma.recruitCount.findUnique({
                 where: {
                     userId: userId,
                 },
             });
             return counter;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 }

@@ -1,11 +1,11 @@
 import { Member } from '@prisma/client';
 import { GuildMember } from 'discord.js';
 
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
 import { UniqueRoleService } from './unique_role_service';
 import { exists } from '../app/common/others';
 import { RoleKeySet } from '../app/constant/role_key';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { modalRecruit } from '../constant';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
@@ -29,7 +29,7 @@ export class MemberService {
         joinedAt: Date,
         isRookie: boolean,
     ): Promise<Member | null> {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.member.upsert({
                 where: {
                     guildId_userId: {
@@ -52,10 +52,7 @@ export class MemberService {
                     isRookie: isRookie,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     /**
@@ -68,7 +65,7 @@ export class MemberService {
         member: GuildMember,
         isRookie?: boolean,
     ): Promise<Member | null> {
-        try {
+        return dbCall(logger, null, async () => {
             const iconUrl = member
                 .displayAvatarURL()
                 .replace('.webp', '.png')
@@ -117,10 +114,7 @@ export class MemberService {
                     isRookie: hasRookieRole,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async updateJoinedAt(
@@ -128,7 +122,7 @@ export class MemberService {
         userId: string,
         joinedAt: Date,
     ): Promise<Member | null> {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.member.update({
                 where: {
                     guildId_userId: {
@@ -140,10 +134,7 @@ export class MemberService {
                     joinedAt: joinedAt,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async setRookieFlag(
@@ -151,7 +142,7 @@ export class MemberService {
         userId: string,
         isRookie: boolean,
     ): Promise<Member | null> {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.member.update({
                 where: {
                     guildId_userId: {
@@ -163,14 +154,11 @@ export class MemberService {
                     isRookie: isRookie,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getMemberByUserId(guildId: string, userId: string): Promise<Member | null> {
-        try {
+        return dbCall(logger, null, async () => {
             const member = await prisma.member.findUnique({
                 where: {
                     guildId_userId: {
@@ -181,14 +169,11 @@ export class MemberService {
             });
 
             return member;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getMemberGuildIdsByUserId(userId: string): Promise<string[]> {
-        try {
+        return dbCall(logger, [], async () => {
             const members = await prisma.member.findMany({
                 where: {
                     userId: userId,
@@ -199,15 +184,12 @@ export class MemberService {
                 guildIds.push(member.guildId);
             }
             return guildIds;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     // ダミーを作らないとModalでエラーが出るため
     static async createDummyUser(guildId: string) {
-        try {
+        return dbCall(logger, undefined, async () => {
             // 既存のメンバーを検索します
             const members = await prisma.member.findMany({
                 where: {
@@ -263,8 +245,6 @@ export class MemberService {
                     logger.info(`dummy user created: ${user.userId}`);
                 }
             }
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 }

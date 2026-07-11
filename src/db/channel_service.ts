@@ -1,7 +1,7 @@
 import { ChannelType } from 'discord.js';
 
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 
 const logger = log4js_obj.getLogger('database');
@@ -15,7 +15,7 @@ export class ChannelService {
         position: number,
         parentId?: string | null,
     ) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.channel.upsert({
                 where: {
                     guildId_channelId: {
@@ -41,14 +41,11 @@ export class ChannelService {
                     isAdminChannel: false,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async setVCToolsEnabled(guildId: string, channelId: string, isVCToolsEnabled = true) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.channel.update({
                 where: {
                     guildId_channelId: {
@@ -60,14 +57,11 @@ export class ChannelService {
                     isVCToolsEnabled: isVCToolsEnabled,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async setAdminChannel(guildId: string, channelId: string, isAdminChannel = true) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.channel.update({
                 where: {
                     guildId_channelId: {
@@ -79,14 +73,11 @@ export class ChannelService {
                     isAdminChannel: isAdminChannel,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async delete(guildId: string, channelId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.channel.delete({
                 where: {
                     guildId_channelId: {
@@ -95,14 +86,11 @@ export class ChannelService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getChannel(guildId: string, channelId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             return await prisma.channel.findUnique({
                 where: {
                     guildId_channelId: {
@@ -111,45 +99,33 @@ export class ChannelService {
                     },
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getChannelsByCategoryId(guildId: string, categoryId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             return await prisma.channel.findMany({
                 where: {
                     guildId: guildId,
                     parentId: categoryId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getAllGuildChannels(guildId: string) {
-        try {
+        return dbCall(logger, [], async () => {
             return await prisma.channel.findMany({
                 where: {
                     guildId: guildId,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 
     static async getAllChannels() {
-        try {
+        return dbCall(logger, [], async () => {
             return await prisma.channel.findMany();
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }

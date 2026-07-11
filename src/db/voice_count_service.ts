@@ -1,11 +1,11 @@
+import { dbCall } from './db_call.js';
 import { prisma } from './prisma';
-import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');
 
 export class VoiceCountService {
     static async saveVoiceCount(userId: string, totalSec: number) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.voiceCount.upsert({
                 where: {
                     userId: userId,
@@ -18,13 +18,11 @@ export class VoiceCountService {
                     totalSec: totalSec,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async saveStartTime(userId: string, startTime: Date | null) {
-        try {
+        return dbCall(logger, undefined, async () => {
             await prisma.voiceCount.upsert({
                 where: {
                     userId: userId,
@@ -38,27 +36,22 @@ export class VoiceCountService {
                     totalSec: 0,
                 },
             });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        });
     }
 
     static async getCountByUserId(userId: string) {
-        try {
+        return dbCall(logger, null, async () => {
             const counter = await prisma.voiceCount.findUnique({
                 where: {
                     userId: userId,
                 },
             });
             return counter;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        });
     }
 
     static async getInCallCount() {
-        try {
+        return dbCall(logger, [], async () => {
             const counter = await prisma.voiceCount.findMany({
                 where: {
                     startTime: {
@@ -67,9 +60,6 @@ export class VoiceCountService {
                 },
             });
             return counter;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        });
     }
 }
