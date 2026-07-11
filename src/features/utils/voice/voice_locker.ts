@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 
 import { CommandVCLockButton } from '@/config/constants/button_id';
-import { sendVCToolsSticky } from '@/features/vc_tools';
+import { sendVCToolsSticky } from '@/features/utils/voice/vc_tools/vc_tools_message';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';

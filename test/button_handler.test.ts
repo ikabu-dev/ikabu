@@ -24,10 +24,10 @@ vi.mock('@/features/onboarding/send_questionnaire', () => ({
 vi.mock('@/features/support_tag/resolved_support', () => ({
     setResolvedTag: mocks.setResolvedTag,
 }));
-vi.mock('@/features/vc_tools/radio_request', () => ({
+vi.mock('@/features/utils/voice/vc_tools/radio_request', () => ({
     sendRadioRequest: mocks.sendRadioRequest,
 }));
-vi.mock('@/features/vc_tools/voice_lock', () => ({
+vi.mock('@/features/utils/voice/vc_tools/voice_lock', () => ({
     voiceLockUpdate: mocks.voiceLockUpdate,
 }));
 vi.mock('@/features/recruit/interactions/recruit_button_handler', () => ({

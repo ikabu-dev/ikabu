@@ -18,9 +18,9 @@ import { setResolvedTag } from '@/features/support_tag/resolved_support';
 import { deleteFriendCode } from '@/features/utils/other/friendcode';
 import { dividerButtonHandler } from '@/features/utils/team_divider/divider_button_handler';
 import { joinTTS, killTTS } from '@/features/utils/voice/tts/discordjs_voice';
+import { sendRadioRequest } from '@/features/utils/voice/vc_tools/radio_request';
+import { voiceLockUpdate } from '@/features/utils/voice/vc_tools/voice_lock';
 import { voiceLockCommandUpdate } from '@/features/utils/voice/voice_locker';
-import { sendRadioRequest } from '@/features/vc_tools/radio_request';
-import { voiceLockUpdate } from '@/features/vc_tools/voice_lock';
 import { exists } from '@/shared/assert';
 
 export async function call(interaction: ButtonInteraction<CacheType>) {

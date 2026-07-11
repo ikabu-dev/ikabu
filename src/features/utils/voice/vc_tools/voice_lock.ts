@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 
 import { VCLockButton } from '@/config/constants/button_id';
-import { createVCToolsButtons } from '@/features/vc_tools/vc_tools_message';
+import { createVCToolsButtons } from '@/features/utils/voice/vc_tools/vc_tools_message';
 import { ChannelService } from '@/infra/db/repositories/channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';

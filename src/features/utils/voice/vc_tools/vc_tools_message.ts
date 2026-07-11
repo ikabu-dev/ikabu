@@ -15,7 +15,7 @@ import {
 import { VCLockButton, VCToolsButton } from '@/config/constants/button_id';
 import { StickyKey } from '@/config/constants/sticky_key';
 import { env } from '@/config/env';
-import { createVCLockedButton } from '@/features/vc_tools/voice_lock';
+import { createVCLockedButton } from '@/features/utils/voice/vc_tools/voice_lock';
 import { ChannelService } from '@/infra/db/repositories/channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
