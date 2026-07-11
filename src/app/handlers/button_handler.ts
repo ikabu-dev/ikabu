@@ -12,17 +12,16 @@ import {
     isTeamDividerParam,
     isVCLockButton,
 } from '@/config/constants/button_id';
+import { questionnaireButtonHandler } from '@/features/onboarding/send_questionnaire';
+import { recruitButtonHandler } from '@/features/recruit/interactions/recruit_button_handler';
+import { setResolvedTag } from '@/features/support_tag/resolved_support';
+import { deleteFriendCode } from '@/features/utils/other/friendcode';
+import { dividerButtonHandler } from '@/features/utils/team_divider/divider_button_handler';
+import { joinTTS, killTTS } from '@/features/utils/voice/tts/discordjs_voice';
+import { sendRadioRequest } from '@/features/utils/voice/vc_tools/radio_request';
+import { voiceLockUpdate } from '@/features/utils/voice/vc_tools/voice_lock';
+import { voiceLockCommandUpdate } from '@/features/utils/voice/voice_locker';
 import { exists } from '@/shared/assert';
-
-import { questionnaireButtonHandler } from '../event/rookie/send_questionnaire';
-import { setResolvedTag } from '../event/support_auto_tag/resolved_support';
-import { sendRadioRequest } from '../event/vctools_sticky/radio_request';
-import { voiceLockUpdate } from '../event/vctools_sticky/voice_lock';
-import { recruitButtonHandler } from '../feat-recruit/recruit_button_handler';
-import { deleteFriendCode } from '../feat-utils/other/friendcode';
-import { dividerButtonHandler } from '../feat-utils/team_divider/divider_button_handler';
-import { joinTTS, killTTS } from '../feat-utils/voice/tts/discordjs_voice';
-import { voiceLockCommandUpdate } from '../feat-utils/voice/voice_locker';
 
 export async function call(interaction: ButtonInteraction<CacheType>) {
     const customId = interaction.customId;

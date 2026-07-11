@@ -18,32 +18,32 @@ const mocks = vi.hoisted(
         ) as Record<string, ReturnType<typeof vi.fn>>,
 );
 
-vi.mock('../src/app/event/rookie/send_questionnaire', () => ({
+vi.mock('@/features/onboarding/send_questionnaire', () => ({
     questionnaireButtonHandler: mocks.questionnaireButtonHandler,
 }));
-vi.mock('../src/app/event/support_auto_tag/resolved_support', () => ({
+vi.mock('@/features/support_tag/resolved_support', () => ({
     setResolvedTag: mocks.setResolvedTag,
 }));
-vi.mock('../src/app/event/vctools_sticky/radio_request', () => ({
+vi.mock('@/features/utils/voice/vc_tools/radio_request', () => ({
     sendRadioRequest: mocks.sendRadioRequest,
 }));
-vi.mock('../src/app/event/vctools_sticky/voice_lock', () => ({
+vi.mock('@/features/utils/voice/vc_tools/voice_lock', () => ({
     voiceLockUpdate: mocks.voiceLockUpdate,
 }));
-vi.mock('../src/app/feat-recruit/recruit_button_handler', () => ({
+vi.mock('@/features/recruit/interactions/recruit_button_handler', () => ({
     recruitButtonHandler: mocks.recruitButtonHandler,
 }));
-vi.mock('../src/app/feat-utils/other/friendcode', () => ({
+vi.mock('@/features/utils/other/friendcode', () => ({
     deleteFriendCode: mocks.deleteFriendCode,
 }));
-vi.mock('../src/app/feat-utils/team_divider/divider_button_handler', () => ({
+vi.mock('@/features/utils/team_divider/divider_button_handler', () => ({
     dividerButtonHandler: mocks.dividerButtonHandler,
 }));
-vi.mock('../src/app/feat-utils/voice/tts/discordjs_voice', () => ({
+vi.mock('@/features/utils/voice/tts/discordjs_voice', () => ({
     joinTTS: mocks.joinTTS,
     killTTS: mocks.killTTS,
 }));
-vi.mock('../src/app/feat-utils/voice/voice_locker', () => ({
+vi.mock('@/features/utils/voice/voice_locker', () => ({
     voiceLockCommandUpdate: mocks.voiceLockCommandUpdate,
 }));
 

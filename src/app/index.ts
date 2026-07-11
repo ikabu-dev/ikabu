@@ -26,6 +26,24 @@ import {
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
+import {
+    deleteChannel,
+    saveChannel,
+    saveChannelAtLaunch,
+} from '@/features/guild_sync/store_channel';
+import {
+    deleteRole,
+    saveRole,
+    saveRoleAtLaunch,
+    updateGuildRoles,
+} from '@/features/guild_sync/store_role';
+import { guildMemberAddEvent } from '@/features/onboarding/set_rookie';
+import { subscribeSplatEventMatch } from '@/features/stage_info/event_match_register';
+import { stageInfo } from '@/features/stage_info/stageinfo';
+import { emojiCountDown, emojiCountUp } from '@/features/stats/reactions';
+import { checkCallMember } from '@/features/stats/voice_count';
+import { editThreadTag } from '@/features/support_tag/edit_tag';
+import { sendCloseButton } from '@/features/support_tag/send_support_close_button';
 import { MemberService } from '@/infra/db/repositories/member_service';
 import { ParticipantService } from '@/infra/db/repositories/participant_service';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
@@ -42,24 +60,6 @@ import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention'
 import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 
 import { registerSlashCommands } from '../register';
-import {
-    deleteChannel,
-    saveChannel,
-    saveChannelAtLaunch,
-} from './event/channel_related/store_channel';
-import { subscribeSplatEventMatch } from './event/cron/event_match_register';
-import { stageInfo } from './event/cron/stageinfo';
-import { emojiCountDown, emojiCountUp } from './event/reaction_count/reactions';
-import {
-    deleteRole,
-    saveRole,
-    saveRoleAtLaunch,
-    updateGuildRoles,
-} from './event/role_related/store_role';
-import { guildMemberAddEvent } from './event/rookie/set_rookie';
-import { editThreadTag } from './event/support_auto_tag/edit_tag';
-import { sendCloseButton } from './event/support_auto_tag/send_support_close_button';
-import { checkCallMember } from './event/voice_count/voice_count';
 import * as buttonHandler from './handlers/button_handler';
 import * as commandHandler from './handlers/command_handler';
 import * as contextHandler from './handlers/context_handler';

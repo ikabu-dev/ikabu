@@ -20,12 +20,11 @@ import { ChannelKeySet } from '@/config/constants/channel_key';
 import { commandNames } from '@/config/constants/commands';
 import { RoleKeySet } from '@/config/constants/role_key';
 import { env } from '@/config/env';
+import { shutdown } from '@/features/admin/shutdown/command_builder';
+import { uniqueRoleSettings } from '@/features/admin/unique_role_settings/command_builder';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck } from '@/shared/assert';
-
-import { shutdown } from './app/feat-admin/shutdown/command_builder.js';
-import { uniqueRoleSettings } from './app/feat-admin/unique_role_settings/command_builder.js';
 
 const voiceLock = new SlashCommandBuilder()
     .setName(commandNames.vclock)
