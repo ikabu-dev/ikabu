@@ -38,7 +38,7 @@ export async function arrangeModalRecruitData(
         ? interaction.fields.getSelectedChannels('voiceChannel', false, [ChannelType.GuildVoice])
         : null;
     const voiceChannel = voiceChannelCollection
-        ? ([...voiceChannelCollection.values()][0] as VoiceBasedChannel) ?? null
+        ? (([...voiceChannelCollection.values()][0] as VoiceBasedChannel) ?? null)
         : null;
 
     const recruitNum = Number(interaction.fields.getTextInputValue('rNum'));
