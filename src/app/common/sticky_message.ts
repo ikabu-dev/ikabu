@@ -1,11 +1,11 @@
 import { Guild, MessagePayload, MessageCreateOptions } from 'discord.js';
 
+import { StickyKey } from '@/config/constants/sticky_key';
 import { StickyService } from '@/db/sticky_service';
 import { log4js_obj } from '@/log4js_settings';
 
 import { searchChannelById } from './manager/channel_manager';
 import { searchMessageById } from './manager/message_manager';
-import { StickyKey } from '../constant/sticky_key';
 
 const logger = log4js_obj.getLogger('message');
 

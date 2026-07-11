@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
-import { isRoleKey } from '@/app/constant/role_key';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { isRoleKey } from '@/config/constants/role_key';
 import { RoleService } from '@/db/role_service';
 import { UniqueRoleService } from '@/db/unique_role_service';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 

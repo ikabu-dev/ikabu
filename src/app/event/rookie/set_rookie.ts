@@ -3,14 +3,17 @@ import { GuildMember, Role } from 'discord.js';
 import { searchChannelById } from '@/app/common/manager/channel_manager';
 import { searchAPIMemberById } from '@/app/common/manager/member_manager.js';
 import { assignRoleToMember, searchRoleById } from '@/app/common/manager/role_manager';
-import { exists, getDeveloperMention, notExists, sleep } from '@/app/common/others.js';
-import { ChannelKeySet } from '@/app/constant/channel_key.js';
-import { RoleKeySet } from '@/app/constant/role_key.js';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { ChannelKeySet } from '@/config/constants/channel_key';
+import { RoleKeySet } from '@/config/constants/role_key';
+import { env } from '@/config/env';
 import { MemberService } from '@/db/member_service.js';
 import { UniqueChannelService } from '@/db/unique_channel_service.js';
 import { UniqueRoleService } from '@/db/unique_role_service.js';
 import { log4js_obj } from '@/log4js_settings';
+import { exists, notExists } from '@/shared/assert';
+import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
+import { sleep } from '@/shared/sleep';
 
 const logger = log4js_obj.getLogger('guildMemberAdd');
 
@@ -57,7 +60,7 @@ export async function guildMemberAddEvent(newMember: GuildMember) {
         );
 
         if (notExists(rookieRoleId)) {
-            if (guild.id === process.env.SERVER_ID) {
+            if (guild.id === env.serverId) {
                 if (exists(lobbyChannel) && lobbyChannel.isTextBased()) {
                     await lobbyChannel.send(
                         (await getDeveloperMention(guild.id)) +

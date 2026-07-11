@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { notExists } from '@/app/common/others';
+import { notExists } from '@/shared/assert';
 
 export async function handleVoicePick(interaction: ChatInputCommandInteraction<'cached'>) {
     if (notExists(interaction.channel)) return;

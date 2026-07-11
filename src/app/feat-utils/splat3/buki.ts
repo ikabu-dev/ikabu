@@ -10,10 +10,11 @@ import fetch from 'node-fetch';
 
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchDBMemberById } from '@/app/common/manager/member_manager';
-import { exists, randomSelect } from '@/app/common/others';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { log4js_obj } from '@/log4js_settings';
+import { exists } from '@/shared/assert';
+import { randomSelect } from '@/shared/random';
 const weaponsUrl = 'https://stat.ink/api/v3/weapon';
 
 const logger = log4js_obj.getLogger('interaction');

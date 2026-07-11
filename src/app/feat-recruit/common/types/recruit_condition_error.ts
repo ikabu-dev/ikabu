@@ -1,4 +1,4 @@
-import { ErrorTexts } from '@/app/constant/error_texts';
+import { ErrorTexts } from '@/config/constants/error_texts';
 
 export class RecruitConditionError extends Error {
     private errorMessage: string | undefined;

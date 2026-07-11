@@ -1,6 +1,7 @@
+import { RoleKey, isRoleKey } from '@/config/constants/role_key';
+import { notExists } from '@/shared/assert';
+
 import { prisma } from './prisma';
-import { notExists } from '../app/common/others';
-import { RoleKey, isRoleKey } from '../app/constant/role_key';
 import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 

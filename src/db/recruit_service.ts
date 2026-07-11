@@ -1,5 +1,6 @@
+import { ObjectValueList } from '@/config/constants/constant_common';
+
 import { prisma } from './prisma.js';
-import { ObjectValueList } from '../app/constant/constant_common.js';
 import { sendErrorLogs } from '../app/logs/error/send_error_logs.js';
 import { log4js_obj } from '../log4js_settings';
 const logger = log4js_obj.getLogger('database');

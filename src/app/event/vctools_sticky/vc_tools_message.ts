@@ -12,13 +12,15 @@ import {
     VoiceState,
 } from 'discord.js';
 
-import { Merge, exists, notExists } from '@/app/common/others';
 import { sendStickyMessage } from '@/app/common/sticky_message';
-import { VCLockButton, VCToolsButton } from '@/app/constant/button_id';
-import { StickyKey } from '@/app/constant/sticky_key';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { VCLockButton, VCToolsButton } from '@/config/constants/button_id';
+import { StickyKey } from '@/config/constants/sticky_key';
+import { env } from '@/config/env';
 import { ChannelService } from '@/db/channel_service';
 import { log4js_obj } from '@/log4js_settings';
+import { exists, notExists } from '@/shared/assert';
+import { Merge } from '@/shared/types';
 
 import { createVCLockedButton } from './voice_lock';
 
@@ -131,7 +133,7 @@ export function createMenuButton(channel: Merge<TextBasedChannel & VoiceBasedCha
 }
 
 function createReadButton(channel: Merge<TextBasedChannel & VoiceBasedChannel>) {
-    const bukichi = channel.members.find((member) => member.user.id === process.env.DISCORD_BOT_ID);
+    const bukichi = channel.members.find((member) => member.user.id === env.discordBotId);
 
     if (notExists(bukichi)) {
         return new ButtonBuilder()

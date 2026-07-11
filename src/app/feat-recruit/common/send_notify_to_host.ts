@@ -14,10 +14,11 @@ import {
 import { searchChannelById } from '@/app/common/manager/channel_manager';
 import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { exists, sleep } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { ParticipantMember } from '@/db/participant_service';
 import { log4js_obj } from '@/log4js_settings';
+import { exists } from '@/shared/assert';
+import { sleep } from '@/shared/sleep';
 
 import { messageLinkButtons } from '../create_recruit/common/create_recruit_buttons';
 import { joinRequestConfirmButtons } from '../join_request/create_join_request_buttons';

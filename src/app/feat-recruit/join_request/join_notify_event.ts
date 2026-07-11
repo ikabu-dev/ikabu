@@ -3,13 +3,13 @@ import { ButtonInteraction, MessageFlags } from 'discord.js';
 import { disableThinkingButton, recoveryThinkingButton } from '@/app/common/button_components';
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
 import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
-import { assertExistCheck, notExists } from '@/app/common/others.js';
-import { ErrorTexts } from '@/app/constant/error_texts.js';
 import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { ParticipantService, ParticipantMember } from '@/db/participant_service.js';
 import { RecruitService } from '@/db/recruit_service.js';
 import { log4js_obj } from '@/log4js_settings.js';
+import { assertExistCheck, notExists } from '@/shared/assert';
 
 import { memberListText } from '../common/member_list';
 import { sendJoinNotifyToHost } from '../common/send_notify_to_host';

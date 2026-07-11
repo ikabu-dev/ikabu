@@ -21,9 +21,9 @@ import {
     setColorToRole,
     setRoleToMember,
 } from '@/app/common/manager/role_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 // const INDEX_CATEGORY_ID = 0;
 const INDEX_CATEGORY_NAME = 1;

@@ -1,8 +1,9 @@
 import { VoiceState } from 'discord.js';
 
+import { env } from '@/config/env';
 import { log4js_obj } from '@/log4js_settings';
+import { exists, notExists } from '@/shared/assert';
 
-import { exists, notExists } from '../common/others';
 import { vcToolsStickyFromVoiceState } from '../event/vctools_sticky/vc_tools_message';
 import { disableLimit } from '../event/vctools_sticky/voice_lock';
 import { endCall, startCall } from '../event/voice_count/voice_count';
@@ -18,12 +19,12 @@ export async function call(oldState: VoiceState, newState: VoiceState) {
             // ここはミュートなどの動作を行ったときに発火する場所
         } else if (notExists(oldState.channelId) && exists(newState.channelId)) {
             // ここはconnectしたときに発火する場所
-            if (newState.guild.id === process.env.SERVER_ID) {
+            if (newState.guild.id === env.serverId) {
                 await startCall(newState.id);
             }
             await vcToolsStickyFromVoiceState(newState, true);
         } else if (exists(oldState.channelId) && notExists(newState.channelId)) {
-            if (oldState.guild.id === process.env.SERVER_ID) {
+            if (oldState.guild.id === env.serverId) {
                 await endCall(oldState.id);
             }
             // ここはdisconnectしたときに発火する場所

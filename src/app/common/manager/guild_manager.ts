@@ -1,6 +1,6 @@
 import { Interaction } from 'discord.js';
 
-import { notExists } from '../others';
+import { notExists } from '@/shared/assert';
 
 export async function getGuildByInteraction(interaction: Interaction<'cached' | 'raw'>) {
     let guild = interaction.guild;

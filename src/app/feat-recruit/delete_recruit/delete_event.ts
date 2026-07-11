@@ -4,13 +4,13 @@ import { recoveryThinkingButton, setButtonDisable } from '@/app/common/button_co
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchDBMemberById } from '@/app/common/manager/member_manager';
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { ParticipantMember, ParticipantService } from '@/db/participant_service';
 import { RecruitService } from '@/db/recruit_service';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 import { getStickyChannelId, sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 import { cancelRecruitEvent } from '../vc_reservation/recruit_event';

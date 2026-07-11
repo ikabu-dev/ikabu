@@ -3,9 +3,9 @@ import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchDBMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, notExists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 

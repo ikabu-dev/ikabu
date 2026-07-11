@@ -2,8 +2,9 @@ import { URLSearchParams } from 'url';
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 
-import { exists } from '@/app/common/others';
-import { RecruitParam } from '@/app/constant/button_id';
+import { RecruitParam } from '@/config/constants/button_id';
+import { env } from '@/config/env';
+import { exists } from '@/shared/assert';
 
 export function recruitDeleteButton(
     message: Message<true>,
@@ -124,10 +125,10 @@ export function createNewRecruitButton(channelName: string) {
                 .setStyle(ButtonStyle.Success),
         ]);
     }
-    if (exists(process.env.HOW_TO_RECRUIT_URL)) {
+    if (exists(env.howToRecruitUrl)) {
         button.addComponents([
             new ButtonBuilder()
-                .setURL(process.env.HOW_TO_RECRUIT_URL)
+                .setURL(env.howToRecruitUrl)
                 .setLabel('募集方法を確認')
                 .setStyle(ButtonStyle.Link),
         ]);

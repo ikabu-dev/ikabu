@@ -1,9 +1,9 @@
 import { Message } from 'discord.js';
 
 import { setButtonDisable } from '@/app/common/button_components';
-import { notExists } from '@/app/common/others';
 import { ParticipantService } from '@/db/participant_service';
 import { RecruitService } from '@/db/recruit_service';
+import { notExists } from '@/shared/assert';
 
 import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { getMemberMentions } from '../common/member_list';

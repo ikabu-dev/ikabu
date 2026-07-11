@@ -158,8 +158,9 @@ vi.mock('../src/app/feat-admin/ban/ban', () => ({ handleBan: mocks.handleBan }))
 vi.mock('../src/app/logs/commands/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
 vi.mock('../src/app/logs/error/send_error_logs.js', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
+import { commandNames } from '@/config/constants/commands';
+
 import { call } from '../src/app/handlers/command_handler';
-import { commandNames } from '../src/constant';
 
 const cases: [string, string][] = [
     ['shutdown', 'shutdown'],

@@ -1,6 +1,6 @@
 import { ButtonInteraction } from 'discord.js';
 
-import { TeamDividerParam } from '@/app/constant/button_id';
+import { TeamDividerParam } from '@/config/constants/button_id';
 
 import {
     joinButton,

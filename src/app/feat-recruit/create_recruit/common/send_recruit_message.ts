@@ -6,9 +6,9 @@ import {
     ModalSubmitInteraction,
 } from 'discord.js';
 
-import { exists } from '@/app/common/others';
 import { getMemberMentions } from '@/app/feat-recruit/common/member_list';
 import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
+import { exists } from '@/shared/assert';
 
 import {
     embedRecruitDeleteButton,

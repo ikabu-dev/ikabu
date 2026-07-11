@@ -18,8 +18,9 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../src/db/prisma', () => ({ prisma: mocks }));
 vi.mock('../../src/app/logs/error/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
-import { ChannelKeySet } from '../../src/app/constant/channel_key';
-import { RoleKeySet } from '../../src/app/constant/role_key';
+import { ChannelKeySet } from '@/config/constants/channel_key';
+import { RoleKeySet } from '@/config/constants/role_key';
+
 import { MemberService } from '../../src/db/member_service';
 import { RecruitService } from '../../src/db/recruit_service';
 import { UniqueChannelService } from '../../src/db/unique_channel_service';

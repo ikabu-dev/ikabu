@@ -2,12 +2,14 @@ import Discord, { GuildMember, Message, Role } from 'discord.js';
 
 import { getAPIMemberByMessage } from '@/app/common/manager/member_manager';
 import { unassignRoleFromMember } from '@/app/common/manager/role_manager';
-import { exists, getDeveloperMention, notExists } from '@/app/common/others';
-import { RoleKeySet } from '@/app/constant/role_key';
+import { RoleKeySet } from '@/config/constants/role_key';
+import { env } from '@/config/env';
 import { MemberService } from '@/db/member_service';
 import { RecruitCountService } from '@/db/recruit_count_service';
 import { UniqueRoleService } from '@/db/unique_role_service';
 import { VoiceCountService } from '@/db/voice_count_service';
+import { exists, notExists } from '@/shared/assert';
+import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
 
 import { sendIntentionConfirmReply } from './send_questionnaire';
 
@@ -18,7 +20,7 @@ export async function removeRookie(msg: Message<true>) {
     const rookieRoleId = await UniqueRoleService.getRoleIdByKey(guild.id, RoleKeySet.Rookie.key);
 
     if (notExists(rookieRoleId)) {
-        if (guild.id === process.env.SERVER_ID) {
+        if (guild.id === env.serverId) {
             await msg.channel.send(
                 (await getDeveloperMention(guild.id)) + '新入部員ロールが設定されていないでし！',
             );
@@ -43,7 +45,7 @@ export async function removeRookie(msg: Message<true>) {
                 iconURL: member.displayAvatarURL(),
             });
             await msg.channel.send({ embeds: [embed] }).catch();
-            if (exists(process.env.QUESTIONNAIRE_ROOKIE_URL)) {
+            if (exists(env.questionnaireRookieUrl)) {
                 await sendIntentionConfirmReply(msg, authorId, 'QUESTIONNAIRE_ROOKIE_URL');
             }
         }

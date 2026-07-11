@@ -1,4 +1,4 @@
-import { ChannelKeySet } from '@/app/constant/channel_key';
+import { ChannelKeySet } from '@/config/constants/channel_key';
 import { UniqueChannelService } from '@/db/unique_channel_service';
 
 export async function getFestPeriodAlertText(guildId: string) {

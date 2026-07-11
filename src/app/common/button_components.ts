@@ -10,7 +10,8 @@ import {
     MessageActionRowComponent,
 } from 'discord.js';
 
-import { assertExistCheck, exists } from './others';
+import { env } from '@/config/env';
+import { assertExistCheck, exists } from '@/shared/assert';
 
 /**
  * 考え中ボタンのラベルを更新してボタンを有効化する
@@ -145,12 +146,12 @@ export function setButtonDisable(
                             exists(interaction) &&
                             interaction.customId === buttonComponent.customId
                         ) {
-                            assertExistCheck(process.env.RECRUIT_LOADING_EMOJI_ID);
+                            assertExistCheck(env.recruitLoadingEmojiId);
                             newButton = new ButtonBuilder();
                             if (buttonComponent.style) newButton.setStyle(buttonComponent.style);
                             if (buttonComponent.customId)
                                 newButton.setCustomId(buttonComponent.customId);
-                            newButton.setEmoji(process.env.RECRUIT_LOADING_EMOJI_ID);
+                            newButton.setEmoji(env.recruitLoadingEmojiId);
                             newButton.setDisabled(true);
                         } else {
                             newButton = ButtonBuilder.from(buttonComponent);

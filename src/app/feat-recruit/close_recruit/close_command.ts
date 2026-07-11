@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck, getCloseEmbed, getCommandHelpEmbed } from '@/app/common/others';
+import { getCloseEmbed, getCommandHelpEmbed } from '@/app/feat-recruit/common/recruit_embeds';
+import { assertExistCheck } from '@/shared/assert';
 
 import { createNewRecruitButton } from '../create_recruit/common/create_recruit_buttons';
 

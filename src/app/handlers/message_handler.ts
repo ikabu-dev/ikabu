@@ -1,11 +1,13 @@
 import { AttachmentBuilder, Message, PermissionsBitField } from 'discord.js';
 
+import { ChannelKeySet } from '@/config/constants/channel_key';
+import { env } from '@/config/env';
 import { UniqueChannelService } from '@/db/unique_channel_service';
 import { log4js_obj } from '@/log4js_settings';
+import { exists } from '@/shared/assert';
+import { randomBool } from '@/shared/random';
 
 import { searchAPIMemberById } from '../common/manager/member_manager';
-import { randomBool, exists } from '../common/others';
-import { ChannelKeySet } from '../constant/channel_key';
 import { stageInfo } from '../event/cron/stageinfo';
 import { deleteToken } from '../event/message_related/delete_token';
 import { dispand } from '../event/message_related/dispander';
@@ -40,7 +42,7 @@ export async function call(message: Message<true>) {
                     await stageInfo(guild);
                 }
             }
-            if (exists(process.env.QUESTIONNAIRE_URL)) {
+            if (exists(env.questionnaireUrl)) {
                 const botCommandChannelId = await UniqueChannelService.getChannelIdByKey(
                     message.guild.id,
                     ChannelKeySet.BotCommand.key,

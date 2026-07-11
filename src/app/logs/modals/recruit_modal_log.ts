@@ -3,9 +3,10 @@ import { ComponentType, EmbedBuilder, Guild, ModalSubmitInteraction } from 'disc
 
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchDBMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, exists } from '@/app/common/others';
 import { sendEmbedsWebhook } from '@/app/common/webhook';
+import { env } from '@/config/env';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 
@@ -51,8 +52,8 @@ export async function sendRecruitModalLog(interaction: ModalSubmitInteraction<'r
     ]);
     embed.setColor('#56C000');
     embed.setTimestamp(interaction.createdAt);
-    assertExistCheck(process.env.COMMAND_LOG_WEBHOOK_URL, 'COMMAND_LOG_WEBHOOK_URL');
-    void sendEmbedsWebhook(process.env.COMMAND_LOG_WEBHOOK_URL, [embed]);
+    assertExistCheck(env.commandLogWebhookUrl, 'COMMAND_LOG_WEBHOOK_URL');
+    void sendEmbedsWebhook(env.commandLogWebhookUrl, [embed]);
 }
 
 export async function sendEditRecruitLog(
@@ -93,6 +94,6 @@ export async function sendEditRecruitLog(
     ]);
     embed.setColor('#0070BB');
     embed.setTimestamp(editedAt);
-    assertExistCheck(process.env.COMMAND_LOG_WEBHOOK_URL, 'COMMAND_LOG_WEBHOOK_URL');
-    void sendEmbedsWebhook(process.env.COMMAND_LOG_WEBHOOK_URL, [embed]);
+    assertExistCheck(env.commandLogWebhookUrl, 'COMMAND_LOG_WEBHOOK_URL');
+    void sendEmbedsWebhook(env.commandLogWebhookUrl, [embed]);
 }

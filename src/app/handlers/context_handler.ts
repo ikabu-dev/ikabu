@@ -1,6 +1,6 @@
 import { CacheType, MessageContextMenuCommandInteraction } from 'discord.js';
 
-import { commandNames } from '@/constant';
+import { commandNames } from '@/config/constants/commands';
 import { log4js_obj } from '@/log4js_settings';
 
 import { buttonEnable } from '../feat-admin/button_enabler/enable_button';

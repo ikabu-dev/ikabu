@@ -1,7 +1,7 @@
 import { Guild } from 'discord.js';
 
-import { exists, notExists } from '@/app/common/others';
 import { VoiceCountService } from '@/db/voice_count_service';
+import { exists, notExists } from '@/shared/assert';
 
 export async function startCall(userId: string) {
     await VoiceCountService.saveStartTime(userId, new Date());

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { dateformat, formatDatetime } from '../src/app/common/convert_datetime';
+import { dateformat, formatDatetime } from '@/shared/datetime/convert_datetime';
 
 describe('formatDatetime', () => {
     it('UTC時刻を日本時間・日本語曜日で整形する', () => {

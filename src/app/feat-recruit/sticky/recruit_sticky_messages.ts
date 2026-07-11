@@ -2,15 +2,17 @@ import { Recruit } from '@prisma/client';
 import { Channel, Guild, Message, MessageFlags } from 'discord.js';
 
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { RequireOne, exists, getCommandHelpEmbed } from '@/app/common/others';
 import { sendStickyMessage } from '@/app/common/sticky_message';
-import { ChannelKeySet } from '@/app/constant/channel_key';
-import { StickyKey } from '@/app/constant/sticky_key';
+import { getCommandHelpEmbed } from '@/app/feat-recruit/common/recruit_embeds';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ChannelKeySet } from '@/config/constants/channel_key';
+import { StickyKey } from '@/config/constants/sticky_key';
 import { ParticipantService } from '@/db/participant_service';
 import { RecruitService, RecruitType } from '@/db/recruit_service';
 import { UniqueChannelService } from '@/db/unique_channel_service';
 import { log4js_obj } from '@/log4js_settings';
+import { exists } from '@/shared/assert';
+import { RequireOne } from '@/shared/types';
 
 import { createNewRecruitButton } from '../create_recruit/common/create_recruit_buttons';
 

@@ -1,6 +1,6 @@
 import { Guild, GuildScheduledEventCreateOptions } from 'discord.js';
 
-import { exists } from '../others';
+import { exists } from '@/shared/assert';
 
 export function getGuildScheduledEvents(guild: Guild) {
     const scheduledEvents = guild.scheduledEvents.cache;

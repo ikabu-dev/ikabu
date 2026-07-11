@@ -53,7 +53,8 @@ import {
     SupportCloseButton,
     VCLockButton,
     VCToolsButton,
-} from '../src/app/constant/button_id';
+} from '@/config/constants/button_id';
+
 import { call } from '../src/app/handlers/button_handler';
 
 const cases: [string, string][] = [

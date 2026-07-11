@@ -1,19 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-    assertExistCheck,
-    dateAdd,
-    dateDiff,
-    datetimeDiff,
-    exists,
-    getMentionsFromMessage,
-    isEmpty,
-    isNotEmpty,
-    notExists,
-    randomBool,
-    randomSelect,
-    rgbToHex,
-} from '../src/app/common/others';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { rgbToHex } from '@/shared/color';
+import { dateAdd, dateDiff, datetimeDiff } from '@/shared/datetime/date_calc';
+import { getMentionsFromMessage } from '@/shared/discord_helpers/message_embeds';
+import { randomBool, randomSelect } from '@/shared/random';
+import { isEmpty, isNotEmpty } from '@/shared/string';
 
 describe('others', () => {
     it('null と undefined の存在を判定し、存在しない値は例外にする', () => {

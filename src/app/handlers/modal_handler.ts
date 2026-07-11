@@ -3,8 +3,8 @@ import { URLSearchParams } from 'url';
 import { CacheType, ModalSubmitInteraction } from 'discord.js';
 
 import { MemberService } from '@/db/member_service';
+import { exists } from '@/shared/assert';
 
-import { exists } from '../common/others';
 import { anarchyRecruit } from '../feat-recruit/create_recruit/anarchy_recruit';
 import { eventRecruit } from '../feat-recruit/create_recruit/event_recruit';
 import { festRecruit } from '../feat-recruit/create_recruit/fest_recruit';

@@ -20,12 +20,12 @@ import {
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
-import { TeamDividerParam } from '@/app/constant/button_id';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { TeamDividerParam } from '@/config/constants/button_id';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { TeamDividerService, TeamMember } from '@/db/team_divider_service';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 

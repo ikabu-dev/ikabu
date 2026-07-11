@@ -1,8 +1,8 @@
 import { MessageReaction, User } from 'discord.js';
 
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
 import { ReactionService } from '@/db/reaction_service';
 import { UserReactionService } from '@/db/user_reaction_service';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 export async function emojiCountUp(reaction: MessageReaction, user: User) {
     if (!reaction.message.inGuild()) return;

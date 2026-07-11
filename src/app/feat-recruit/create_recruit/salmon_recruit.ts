@@ -7,10 +7,11 @@ import {
     getSalmonData,
     getTeamContestData,
 } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { assertExistCheck, exists, sleep } from '@/app/common/others';
-import { RoleKeySet } from '@/app/constant/role_key';
+import { RoleKeySet } from '@/config/constants/role_key';
 import { RecruitType } from '@/db/recruit_service';
 import { UniqueRoleService } from '@/db/unique_role_service';
+import { assertExistCheck, exists } from '@/shared/assert';
+import { sleep } from '@/shared/sleep';
 
 import { arrangeCommandRecruitData } from './common/arrange_command_data';
 import { arrangeModalRecruitData } from './common/arrange_modal_data';

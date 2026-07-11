@@ -1,9 +1,9 @@
 import { ButtonInteraction } from 'discord.js';
 
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { notExists } from '@/app/common/others';
 import { ParticipantMember, ParticipantService } from '@/db/participant_service';
 import { RecruitService } from '@/db/recruit_service';
+import { notExists } from '@/shared/assert';
 
 export function getMemberMentions(recruitNum: number, participants: ParticipantMember[]) {
     const applicantMentionList = []; // 参加希望者リスト
