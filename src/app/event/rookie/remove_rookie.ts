@@ -1,15 +1,15 @@
 import Discord, { GuildMember, Message, Role } from 'discord.js';
 
-import { getAPIMemberByMessage } from '@/app/common/manager/member_manager';
-import { unassignRoleFromMember } from '@/app/common/manager/role_manager';
 import { RoleKeySet } from '@/config/constants/role_key';
 import { env } from '@/config/env';
-import { MemberService } from '@/db/member_service';
-import { RecruitCountService } from '@/db/recruit_count_service';
-import { UniqueRoleService } from '@/db/unique_role_service';
-import { VoiceCountService } from '@/db/voice_count_service';
+import { MemberService } from '@/infra/db/repositories/member_service';
+import { RecruitCountService } from '@/infra/db/repositories/recruit_count_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
+import { VoiceCountService } from '@/infra/db/repositories/voice_count_service';
 import { exists, notExists } from '@/shared/assert';
 import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
+import { getAPIMemberByMessage } from '@/shared/discord_helpers/member_manager';
+import { unassignRoleFromMember } from '@/shared/discord_helpers/role_manager';
 
 import { sendIntentionConfirmReply } from './send_questionnaire';
 

@@ -1,5 +1,5 @@
 import { RoleKeySet } from '@/config/constants/role_key';
-import { UniqueRoleService } from '@/db/unique_role_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import { exists } from '@/shared/assert';
 
 export async function getDeveloperMention(guildId: string) {

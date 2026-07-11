@@ -11,12 +11,12 @@ import {
     VoiceState,
 } from 'discord.js';
 
-import { getAPIMemberByInteraction } from '@/app/common/manager/member_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { VCLockButton } from '@/config/constants/button_id';
-import { ChannelService } from '@/db/channel_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ChannelService } from '@/infra/db/repositories/channel_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { notExists } from '@/shared/assert';
+import { getAPIMemberByInteraction } from '@/shared/discord_helpers/member_manager';
 import { Merge } from '@/shared/types';
 
 import { createVCToolsButtons } from './vc_tools_message';

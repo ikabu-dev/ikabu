@@ -1,11 +1,11 @@
 import { Message } from 'discord.js';
 
-import { searchMessageById } from '@/app/common/manager/message_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { log4js_obj } from '@/log4js_settings';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists, notExists } from '@/shared/assert';
 import { composeEmbed } from '@/shared/discord_helpers/message_embeds';
+import { searchMessageById } from '@/shared/discord_helpers/message_manager';
 
 const logger = log4js_obj.getLogger('dispander');
 

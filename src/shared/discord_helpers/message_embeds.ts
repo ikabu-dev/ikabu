@@ -1,8 +1,8 @@
 import { Attachment, EmbedBuilder, Message } from 'discord.js';
 
-import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import { placeHold } from '@/config/constants/images';
 import { exists } from '@/shared/assert';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import { isNotEmpty } from '@/shared/string';
 
 export async function composeEmbed(message: Message<true>, url: string) {

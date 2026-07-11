@@ -3,9 +3,9 @@ import path from 'path';
 import Canvas from 'canvas';
 import Discord, { ChatInputCommandInteraction } from 'discord.js';
 
-import { searchDBMemberById } from '@/app/common/manager/member_manager';
 import { assertExistCheck, notExists } from '@/shared/assert';
 import { dateDiff } from '@/shared/datetime/date_calc';
+import { searchDBMemberById } from '@/shared/discord_helpers/member_manager';
 
 const backgroundImgPaths = [
     './images/over4years.jpg',

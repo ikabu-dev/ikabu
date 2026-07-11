@@ -2,7 +2,7 @@ import { URLSearchParams } from 'url';
 
 import { CacheType, ModalSubmitInteraction } from 'discord.js';
 
-import { MemberService } from '@/db/member_service';
+import { MemberService } from '@/infra/db/repositories/member_service';
 import { exists } from '@/shared/assert';
 
 import { anarchyRecruit } from '../feat-recruit/create_recruit/anarchy_recruit';

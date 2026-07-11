@@ -15,16 +15,15 @@ const mocks = vi.hoisted(() => ({
     uniqueRole: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), delete: vi.fn() },
 }));
 
-vi.mock('../../src/db/prisma', () => ({ prisma: mocks }));
-vi.mock('../../src/app/logs/error/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
+vi.mock('@/infra/db/prisma', () => ({ prisma: mocks }));
+vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { RoleKeySet } from '@/config/constants/role_key';
-
-import { MemberService } from '../../src/db/member_service';
-import { RecruitService } from '../../src/db/recruit_service';
-import { UniqueChannelService } from '../../src/db/unique_channel_service';
-import { UniqueRoleService } from '../../src/db/unique_role_service';
+import { MemberService } from '@/infra/db/repositories/member_service';
+import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 
 describe('DBサービスの例外安全網', () => {
     beforeEach(() => vi.clearAllMocks());

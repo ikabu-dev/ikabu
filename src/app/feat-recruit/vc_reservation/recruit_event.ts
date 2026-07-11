@@ -20,12 +20,12 @@ import {
     time,
 } from 'discord.js';
 
-import { recoveryThinkingButton } from '@/app/common/button_components';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { RecruitParam } from '@/config/constants/button_id';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { log4js_obj } from '@/log4js_settings';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists, notExists } from '@/shared/assert';
+import { recoveryThinkingButton } from '@/shared/discord_helpers/button_components';
 import { sleep } from '@/shared/sleep';
 const logger = log4js_obj.getLogger();
 

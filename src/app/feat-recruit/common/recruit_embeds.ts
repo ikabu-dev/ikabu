@@ -1,7 +1,7 @@
 import { EmbedBuilder, Guild } from 'discord.js';
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
-import { UniqueChannelService } from '@/db/unique_channel_service';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 
 export function getCloseEmbed() {
     const embed = new EmbedBuilder();

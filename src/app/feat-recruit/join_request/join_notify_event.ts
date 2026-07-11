@@ -1,15 +1,18 @@
 import { ButtonInteraction, MessageFlags } from 'discord.js';
 
-import { disableThinkingButton, recoveryThinkingButton } from '@/app/common/button_components';
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
-import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
-import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { ParticipantService, ParticipantMember } from '@/db/participant_service.js';
-import { RecruitService } from '@/db/recruit_service.js';
-import { log4js_obj } from '@/log4js_settings.js';
+import { ParticipantService, ParticipantMember } from '@/infra/db/repositories/participant_service';
+import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendRecruitButtonLog } from '@/infra/logging/recruit_button_log';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, notExists } from '@/shared/assert';
+import {
+    disableThinkingButton,
+    recoveryThinkingButton,
+} from '@/shared/discord_helpers/button_components';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchDBMemberById } from '@/shared/discord_helpers/member_manager';
 
 import { memberListText } from '../common/member_list';
 import { sendJoinNotifyToHost } from '../common/send_notify_to_host';

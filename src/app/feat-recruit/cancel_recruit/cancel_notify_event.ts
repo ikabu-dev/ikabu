@@ -1,10 +1,10 @@
 import { Recruit } from '@prisma/client';
 import { ButtonInteraction, EmbedBuilder, Guild } from 'discord.js';
 
-import { disableThinkingButton } from '@/app/common/button_components';
-import { ParticipantService } from '@/db/participant_service';
-import { RecruitService } from '@/db/recruit_service';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
+import { RecruitService } from '@/infra/db/repositories/recruit_service';
 import { assertExistCheck, exists } from '@/shared/assert';
+import { disableThinkingButton } from '@/shared/discord_helpers/button_components';
 
 import {
     getStickyChannelId,

@@ -3,11 +3,15 @@ import path from 'path';
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
-import { SalmonInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink.js';
-import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
 import { modalRecruit, placeHold } from '@/config/constants/images';
+import { SalmonInfo } from '@/infra/external/splatoon3-ink/splatoon3_ink';
 import { exists, notExists } from '@/shared/assert';
 import { dateformat, formatDatetime } from '@/shared/datetime/convert_datetime';
+import {
+    createRoundRect,
+    drawArcImage,
+    fillTextWithStroke,
+} from '@/shared/discord_helpers/canvas_components';
 
 import { RecruitOpCode } from './regenerate_canvas.js';
 

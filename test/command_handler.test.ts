@@ -155,8 +155,8 @@ vi.mock('../src/app/feat-utils/voice/voice_mention.js', () => ({
 }));
 vi.mock('../src/app/feat-utils/voice/vpick.js', () => ({ handleVoicePick: mocks.handleVoicePick }));
 vi.mock('../src/app/feat-admin/ban/ban', () => ({ handleBan: mocks.handleBan }));
-vi.mock('../src/app/logs/commands/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
-vi.mock('../src/app/logs/error/send_error_logs.js', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
+vi.mock('@/infra/logging/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
+vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
 import { commandNames } from '@/config/constants/commands';
 

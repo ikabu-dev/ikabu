@@ -1,16 +1,19 @@
 import { ButtonInteraction, MessageFlags } from 'discord.js';
 
-import { recoveryThinkingButton, setButtonDisable } from '@/app/common/button_components';
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { searchDBMemberById } from '@/app/common/manager/member_manager';
-import { searchMessageById } from '@/app/common/manager/message_manager';
-import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { ParticipantMember, ParticipantService } from '@/db/participant_service';
-import { RecruitService } from '@/db/recruit_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ParticipantMember, ParticipantService } from '@/infra/db/repositories/participant_service';
+import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendRecruitButtonLog } from '@/infra/logging/recruit_button_log';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import {
+    recoveryThinkingButton,
+    setButtonDisable,
+} from '@/shared/discord_helpers/button_components';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchDBMemberById } from '@/shared/discord_helpers/member_manager';
+import { searchMessageById } from '@/shared/discord_helpers/message_manager';
 
 import { getStickyChannelId, sendRecruitSticky } from '../sticky/recruit_sticky_messages';
 import { cancelRecruitEvent } from '../vc_reservation/recruit_event';

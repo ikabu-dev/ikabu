@@ -2,7 +2,7 @@ import { Member } from '@prisma/client';
 
 import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
 import { RecruitConditionError } from '@/app/feat-recruit/common/types/recruit_condition_error';
-import { RecruitType } from '@/db/recruit_service';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { exists } from '@/shared/assert';
 
 import { checkRecruitNum, checkRegularRecruitNum } from '../condition_checks/recruit_num_check';

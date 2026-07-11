@@ -2,7 +2,9 @@ import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 
 import { commandNames } from '@/config/constants/commands';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { log4js_obj } from '@/log4js_settings.js';
+import { sendCommandLog } from '@/infra/logging/command_log';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists } from '@/shared/assert';
 
 import { handleBan } from '../feat-admin/ban/ban';
@@ -38,8 +40,6 @@ import { handleTTSCommand } from '../feat-utils/voice/tts/discordjs_voice';
 import { voiceLocker } from '../feat-utils/voice/voice_locker';
 import { voiceMention } from '../feat-utils/voice/voice_mention.js';
 import { handleVoicePick } from '../feat-utils/voice/vpick.js';
-import { sendCommandLog } from '../logs/commands/command_log';
-import { sendErrorLogs } from '../logs/error/send_error_logs.js';
 
 const logger = log4js_obj.getLogger('interaction');
 

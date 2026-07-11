@@ -1,17 +1,17 @@
 import { Recruit } from '@prisma/client';
 import { Channel, Guild, Message, MessageFlags } from 'discord.js';
 
-import { searchMessageById } from '@/app/common/manager/message_manager';
-import { sendStickyMessage } from '@/app/common/sticky_message';
 import { getCommandHelpEmbed } from '@/app/feat-recruit/common/recruit_embeds';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { StickyKey } from '@/config/constants/sticky_key';
-import { ParticipantService } from '@/db/participant_service';
-import { RecruitService, RecruitType } from '@/db/recruit_service';
-import { UniqueChannelService } from '@/db/unique_channel_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
+import { RecruitService, RecruitType } from '@/infra/db/repositories/recruit_service';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists } from '@/shared/assert';
+import { searchMessageById } from '@/shared/discord_helpers/message_manager';
+import { sendStickyMessage } from '@/shared/discord_helpers/sticky_message';
 import { RequireOne } from '@/shared/types';
 
 import { createNewRecruitButton } from '../create_recruit/common/create_recruit_buttons';

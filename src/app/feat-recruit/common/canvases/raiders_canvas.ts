@@ -3,9 +3,13 @@ import path from 'path';
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
-import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
 import { modalRecruit } from '@/config/constants/images';
 import { exists, notExists } from '@/shared/assert';
+import {
+    createRoundRect,
+    drawArcImage,
+    fillTextWithStroke,
+} from '@/shared/discord_helpers/canvas_components';
 
 import { RecruitOpCode } from './regenerate_canvas.js';
 
