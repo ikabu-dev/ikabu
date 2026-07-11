@@ -62,66 +62,46 @@ export async function call(interaction: ChatInputCommandInteraction<CacheType>) 
 }
 
 async function cachedGuildCommandsHandler(interaction: ChatInputCommandInteraction<'cached'>) {
-    const { commandName } = interaction;
+    const cachedGuildCommandHandlers: Record<
+        string,
+        (interaction: ChatInputCommandInteraction<'cached'>) => Promise<unknown>
+    > = {
+        [commandNames.shutdown]: shutdown,
+        [commandNames.close]: closeCommand,
+        [commandNames.team_divider]: dividerInitialMessage,
+        [commandNames.regular]: regularRecruit,
+        [commandNames.anarchy]: anarchyRecruit,
+        [commandNames.event]: eventRecruit,
+        [commandNames.salmon]: salmonRecruit,
+        [commandNames.raiders]: raidersRecruit,
+        [commandNames.fesA]: festRecruit,
+        [commandNames.fesB]: festRecruit,
+        [commandNames.fesC]: festRecruit,
+        [commandNames.other_game]: otherGameRecruit,
+        [commandNames.private]: privateRecruit,
+        [commandNames.buttonRecruit]: buttonRecruit,
+        [commandNames.voiceChannelMention]: voiceMention,
+        [commandNames.channelSetting]: channelSettingsHandler,
+        [commandNames.uniqueChannelSetting]: uniqueChannelSettingsHandler,
+        [commandNames.uniqueRoleSetting]: uniqueRoleSettingsHandler,
+        [commandNames.variablesSettings]: variablesHandler,
+        [commandNames.voice_pick]: handleVoicePick,
+        [commandNames.ban]: handleBan,
+        [commandNames.joinedDateFixer]: joinedAtFixer,
+        [commandNames.festivalSettings]: festSettingHandler,
+        [commandNames.experience]: handleIkabuExperience,
+        [commandNames.voice]: handleTTSCommand,
+        [commandNames.ch_manager]: channelManagerHandler,
+    };
 
     try {
-        if (commandName === commandNames.shutdown) {
-            await shutdown(interaction);
-        } else if (
-            commandName === commandNames.vclock &&
+        if (
+            interaction.commandName === commandNames.vclock &&
             !(interaction.replied || interaction.deferred)
         ) {
             await voiceLocker(interaction);
-        } else if (commandName === commandNames.close) {
-            await closeCommand(interaction);
-        } else if (commandName === commandNames.team_divider) {
-            await dividerInitialMessage(interaction);
-        } else if (commandName === commandNames.regular) {
-            await regularRecruit(interaction);
-        } else if (commandName === commandNames.anarchy) {
-            await anarchyRecruit(interaction);
-        } else if (commandName === commandNames.event) {
-            await eventRecruit(interaction);
-        } else if (commandName === commandNames.salmon) {
-            await salmonRecruit(interaction);
-        } else if (commandName === commandNames.raiders) {
-            await raidersRecruit(interaction);
-        } else if (commandName === commandNames.fesA) {
-            await festRecruit(interaction);
-        } else if (commandName === commandNames.fesB) {
-            await festRecruit(interaction);
-        } else if (commandName === commandNames.fesC) {
-            await festRecruit(interaction);
-        } else if (commandName === commandNames.other_game) {
-            await otherGameRecruit(interaction);
-        } else if (commandName === commandNames.private) {
-            await privateRecruit(interaction);
-        } else if (commandName === commandNames.buttonRecruit) {
-            await buttonRecruit(interaction);
-        } else if (commandName === commandNames.voiceChannelMention) {
-            await voiceMention(interaction);
-        } else if (commandName === commandNames.channelSetting) {
-            await channelSettingsHandler(interaction);
-        } else if (commandName === commandNames.uniqueChannelSetting) {
-            await uniqueChannelSettingsHandler(interaction);
-        } else if (commandName === commandNames.uniqueRoleSetting) {
-            await uniqueRoleSettingsHandler(interaction);
-        } else if (commandName === commandNames.variablesSettings) {
-            await variablesHandler(interaction);
-        } else if (commandName == commandNames.voice_pick) {
-            await handleVoicePick(interaction);
-        } else if (commandName == commandNames.ban) {
-            await handleBan(interaction);
-        } else if (commandName == commandNames.joinedDateFixer) {
-            await joinedAtFixer(interaction);
-        } else if (commandName == commandNames.festivalSettings) {
-            await festSettingHandler(interaction);
-        } else if (commandName === commandNames.experience) {
-            await handleIkabuExperience(interaction);
-        } else if (commandName === commandNames.voice) {
-            await handleTTSCommand(interaction);
-        } else if (commandName == commandNames.ch_manager) {
-            await channelManagerHandler(interaction);
+        } else {
+            await cachedGuildCommandHandlers[interaction.commandName]?.(interaction);
         }
     } catch (error) {
         await sendErrorLogs(logger, error);
@@ -133,26 +113,22 @@ async function cachedGuildCommandsHandler(interaction: ChatInputCommandInteracti
 }
 
 async function CommandsHandler(interaction: ChatInputCommandInteraction<CacheType>) {
-    try {
-        const { commandName } = interaction;
+    const commandHandlers: Record<
+        string,
+        (interaction: ChatInputCommandInteraction<CacheType>) => Promise<unknown>
+    > = {
+        [commandNames.friend_code]: handleFriendCode,
+        [commandNames.wiki]: handleWiki,
+        [commandNames.kansen]: handleKansen,
+        [commandNames.timer]: handleTimer,
+        [commandNames.pick]: handlePick,
+        [commandNames.buki]: handleBuki,
+        [commandNames.show]: handleShow,
+        [commandNames.help]: handleHelp,
+    };
 
-        if (commandName === commandNames.friend_code) {
-            await handleFriendCode(interaction);
-        } else if (commandName == commandNames.wiki) {
-            await handleWiki(interaction);
-        } else if (commandName == commandNames.kansen) {
-            await handleKansen(interaction);
-        } else if (commandName == commandNames.timer) {
-            await handleTimer(interaction);
-        } else if (commandName == commandNames.pick) {
-            await handlePick(interaction);
-        } else if (commandName == commandNames.buki) {
-            await handleBuki(interaction);
-        } else if (commandName == commandNames.show) {
-            await handleShow(interaction);
-        } else if (commandName == commandNames.help) {
-            await handleHelp(interaction);
-        }
+    try {
+        await commandHandlers[interaction.commandName]?.(interaction);
     } catch (error) {
         await sendErrorLogs(logger, error);
         const commandChannel = interaction.channel;
