@@ -1,16 +1,25 @@
-// Response for Uptime Robot
-import http from 'http';
+import { validateEnv } from '@/config/env';
 
-import { env } from '@/config/env';
-http.createServer(function (
-    _request: http.IncomingMessage,
-    response: {
-        writeHead: (arg0: number, arg1: { 'Content-Type': string }) => void;
-        end: (arg0: string) => void;
-    },
-) {
-    response.writeHead(200, { 'Content-Type': 'text/plain' });
-    response.end('Discord bot is active now \n');
-}).listen(env.port || 3000);
-require('@/infra/logging/log4js');
-require('./app/index.js');
+async function main() {
+    // 環境変数の検証は、アプリのモジュールを読み込む「前」に行う。
+    // log4js の設定や読み上げ機能は import された時点で環境変数を assert するため、
+    // 先に import してしまうと、検証にたどり着く前にクラッシュしてしまう。
+    // そのため logger すら、検証を通ってから動的に読み込む。
+    validateEnv();
+
+    const { log4js_obj } = await import('@/infra/logging/log4js');
+    const { bootstrap } = await import('@/bootstrap');
+
+    try {
+        await bootstrap();
+    } catch (error) {
+        log4js_obj.getLogger().fatal('起動に失敗しました', error);
+        process.exit(1);
+    }
+}
+
+void main().catch((error) => {
+    // 環境変数の検証で落ちた場合はロガーがまだ使えないため、標準エラー出力に出す
+    console.error('起動に失敗しました', error);
+    process.exit(1);
+});

@@ -63,6 +63,35 @@ export const env = {
 };
 
 /**
+ * これが無いと Bot が正しく起動できない環境変数。
+ * bootstrap がこれを検証し、欠けていれば起動前に落とす。
+ */
+const REQUIRED_ENV_KEYS = [
+    'DISCORD_BOT_TOKEN',
+    'DISCORD_BOT_ID',
+    'SERVER_ID',
+    'LOG4JS_CONFIG_PATH',
+    // 読み上げ機能が import 時に assert しているため、無いとプロセスが起動しない
+    'VOICE_TEXT_API_KEY',
+] as const;
+
+/**
+ * 必須の環境変数が揃っているか検証する。
+ * 揃っていない状態で起動すると、コマンド登録の失敗などが実行中に初めて表面化するため、
+ * 起動時に気づけるようにする。
+ */
+export function validateEnv(): void {
+    const missing = REQUIRED_ENV_KEYS.filter((key) => {
+        const value = raw(key);
+        return value === undefined || value === '';
+    });
+
+    if (missing.length > 0) {
+        throw new Error(`必須の環境変数が設定されていません: ${missing.join(', ')}`);
+    }
+}
+
+/**
  * キーが実行時に決まる場合の参照。
  * アンケートURL(QUESTIONNAIRE_URL / QUESTIONNAIRE_ROOKIE_URL)のように
  * ボタンのパラメータからキーが渡されるケースでのみ使う。

@@ -14,7 +14,11 @@ import { pickCommand } from '@/features/pick/pick_command';
 import { anarchyRecruitCommand } from '@/features/recruit/create/anarchy_recruit_command';
 import { buttonRecruitCommand } from '@/features/recruit/create/button_recruit_command';
 import { eventRecruitCommand } from '@/features/recruit/create/event_recruit_command';
-import { fesACommand, fesBCommand, fesCCommand } from '@/features/recruit/create/fest_recruit_command';
+import {
+    fesACommand,
+    fesBCommand,
+    fesCCommand,
+} from '@/features/recruit/create/fest_recruit_command';
 import { otherGameCommand } from '@/features/recruit/create/other_game_recruit_command';
 import { privateRecruitCommand } from '@/features/recruit/create/private_recruit_command';
 import { raidersRecruitCommand } from '@/features/recruit/create/raiders_recruit_command';

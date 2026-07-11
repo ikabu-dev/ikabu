@@ -54,8 +54,7 @@ import {
     VCLockButton,
     VCToolsButton,
 } from '@/config/constants/button_id';
-
-import { call } from '../src/app/handlers/button_handler';
+import { call } from '@/gateway/button_handler';
 
 const cases: [string, string][] = [
     [FriendCodeButton.Hide, 'deleteFriendCode'],

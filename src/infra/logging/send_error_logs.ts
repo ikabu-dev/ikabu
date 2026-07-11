@@ -1,9 +1,9 @@
 import { Logger } from 'log4js';
 
-import { client } from '@/app';
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
+import { client } from '@/infra/discord/client';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { assertExistCheck, notExists } from '@/shared/assert';
 
