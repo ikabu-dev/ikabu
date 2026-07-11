@@ -1,14 +1,11 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
   "name": "ikabu",
   "version": "0.0.1",
   "engines": {
     "node": ">=24.0.0"
   },
-  "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
+  "description": "Discord bot for Splatoon 3 community (ikabu)",
+  "main": "build/server.js",
   "scripts": {
     "compile": "prisma generate && tsc -p . && prisma migrate deploy",
     "start": "pnpm run compile && node -r dotenv/config ./build/server.js dotenv_config_path=./.env",
@@ -49,14 +46,10 @@
   },
   "license": "MIT",
   "keywords": [
-    "node",
-    "express"
+    "discord",
+    "bot",
+    "splatoon3"
   ],
-  "compilerOptions": {
-    "lib": [
-      "es2020.string"
-    ]
-  },
   "devDependencies": {
     "@types/cron": "^2.0.1",
     "@types/crypto-js": "^4.1.1",
