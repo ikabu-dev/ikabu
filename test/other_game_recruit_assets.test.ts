@@ -18,14 +18,21 @@ describe('other game recruit asset paths', () => {
             expect(source).not.toContain(stgUrl);
         }
 
-        for (const localPath of [
+        const localPaths = [
             './images/games/MonsterHunterWilds.png',
             './images/games/ApexLegends.jpg',
             './images/games/Overwatch.jpg',
             './images/games/valorant.jpg',
             './images/games/others.jpg',
-        ]) {
+        ];
+
+        for (const localPath of localPaths) {
             expect(source).toContain(localPath);
+        }
+
+        for (const localPath of localPaths) {
+            const absolutePath = path.resolve(process.cwd(), localPath);
+            expect(fs.existsSync(absolutePath)).toBe(true);
         }
     });
 });

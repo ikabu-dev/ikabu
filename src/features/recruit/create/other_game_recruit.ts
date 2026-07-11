@@ -276,8 +276,8 @@ async function sendOtherGames(
     assertExistCheck(recruiter, 'recruiter');
 
     try {
-        const imageName = `other-game-image-${basename(image)}`;
-        const logoName = `other-game-logo-${basename(logo)}`;
+        const imageName = createAttachmentName(image, 'other-game-image');
+        const logoName = createAttachmentName(logo, 'other-game-logo');
         const files = [
             new AttachmentBuilder(image, { name: imageName }),
             new AttachmentBuilder(logo, { name: logoName }),
@@ -406,4 +406,8 @@ async function sendErrorMessage(channel: GuildTextBasedChannel) {
     await channel.send(
         '設定がおかしいでし！\n「お手数ですがサポートセンターまでご連絡お願いします。」でし！',
     );
+}
+
+function createAttachmentName(filePath: string, prefix: string) {
+    return `${prefix}-${basename(filePath)}`;
 }
