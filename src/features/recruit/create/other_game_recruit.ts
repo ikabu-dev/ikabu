@@ -275,42 +275,42 @@ async function sendOtherGames(
 
     assertExistCheck(recruiter, 'recruiter');
 
-    const imageName = basename(image);
-    const logoName = basename(logo);
-    const files = [
-        new AttachmentBuilder(image, { name: imageName }),
-        new AttachmentBuilder(logo, { name: logoName }),
-    ];
-
-    const embed = new EmbedBuilder()
-        .setAuthor({
-            name: recruiter.displayName,
-            iconURL: recruiter.iconUrl,
-        })
-        .setTitle(title + '募集')
-        .setColor(color)
-        .addFields([
-            {
-                name: '募集人数',
-                value: recruitNumText,
-            },
-            {
-                name: '参加条件',
-                value: condition,
-            },
-        ])
-        .setImage(`attachment://${imageName}`)
-        .setTimestamp()
-        .setThumbnail(`attachment://${logoName}`);
-
-    if (exists(voiceChannel)) {
-        embed.addFields({
-            name: '使用チャンネル',
-            value: '🔉 ' + voiceChannel.name,
-        });
-    }
-
     try {
+        const imageName = basename(image);
+        const logoName = basename(logo);
+        const files = [
+            new AttachmentBuilder(image, { name: imageName }),
+            new AttachmentBuilder(logo, { name: logoName }),
+        ];
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: recruiter.displayName,
+                iconURL: recruiter.iconUrl,
+            })
+            .setTitle(title + '募集')
+            .setColor(color)
+            .addFields([
+                {
+                    name: '募集人数',
+                    value: recruitNumText,
+                },
+                {
+                    name: '参加条件',
+                    value: condition,
+                },
+            ])
+            .setImage(`attachment://${imageName}`)
+            .setTimestamp()
+            .setThumbnail(`attachment://${logoName}`);
+
+        if (exists(voiceChannel)) {
+            embed.addFields({
+                name: '使用チャンネル',
+                value: '🔉 ' + voiceChannel.name,
+            });
+        }
+
         const embedMessage = await interaction.editReply({
             content: txt,
             embeds: [embed],

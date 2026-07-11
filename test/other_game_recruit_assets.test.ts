@@ -1,20 +1,31 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
 describe('other game recruit asset paths', () => {
     it('uses local asset paths instead of stg branch URLs', () => {
-        const source = fs.readFileSync(
-            './src/features/recruit/create/other_game_recruit.ts',
-            'utf-8',
+        const sourcePath = path.resolve(
+            process.cwd(),
+            'src/features/recruit/create/other_game_recruit.ts',
         );
+        const source = fs.readFileSync(sourcePath, 'utf-8');
 
-        expect(source).not.toContain('raw.githubusercontent.com/shngmsw/ikabu/stg');
-        expect(source).not.toContain('github.com/shngmsw/ikabu/blob/stg');
-        expect(source).toContain('./images/games/MonsterHunterWilds.png');
-        expect(source).toContain('./images/games/ApexLegends.jpg');
-        expect(source).toContain('./images/games/Overwatch.jpg');
-        expect(source).toContain('./images/games/valorant.jpg');
-        expect(source).toContain('./images/games/others.jpg');
+        for (const stgUrl of [
+            'raw.githubusercontent.com/shngmsw/ikabu/stg',
+            'github.com/shngmsw/ikabu/blob/stg',
+        ]) {
+            expect(source).not.toContain(stgUrl);
+        }
+
+        for (const localPath of [
+            './images/games/MonsterHunterWilds.png',
+            './images/games/ApexLegends.jpg',
+            './images/games/Overwatch.jpg',
+            './images/games/valorant.jpg',
+            './images/games/others.jpg',
+        ]) {
+            expect(source).toContain(localPath);
+        }
     });
 });
