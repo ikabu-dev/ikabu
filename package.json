@@ -1,16 +1,13 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
   "name": "ikabu",
   "version": "0.0.1",
   "engines": {
     "node": ">=24.0.0"
   },
-  "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
+  "description": "Discord bot for Splatoon 3 community (ikabu)",
+  "main": "build/server.js",
   "scripts": {
-    "compile": "prisma generate && tsc -p . && prisma migrate deploy",
+    "compile": "prisma generate && tsc -p . && tsc-alias -p tsconfig.json && prisma migrate deploy",
     "start": "pnpm run compile && node -r dotenv/config ./build/server.js dotenv_config_path=./.env",
     "create-migrate": "prisma migrate dev --create-only",
     "migrate-deploy": "prisma migrate deploy",
@@ -24,8 +21,7 @@
     "@prisma/adapter-better-sqlite3": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@snazzah/davey": "^0.1.8",
-    "@types/sqlite3": "^3.1.8",
-    "axios": "^1.15.0",
+    "axios": "^1.16.0",
     "better-sqlite3": "^12.5.0",
     "canvas": "^3.2.0",
     "config": "^4.1.1",
@@ -34,62 +30,46 @@
     "crypto-js": "^4.1.1",
     "csv": "^6.0.5",
     "csv-stringify": "^6.0.5",
-    "data-utils": "0.0.2",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^1.3.7",
-    "date-utils": "^1.2.21",
     "discord.js": "^14.25.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "ffmpeg-static": "^5.0.0",
-    "fs": "^0.0.1-security",
-    "install": "^0.13.0",
     "js-combinatorics": "^1.5.6",
     "log4js": "^6.7.0",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.7",
     "opusscript": "^0.0.8",
-    "pg": "^8.7.3",
-    "sqlite3": "^5.1.7",
     "tweetnacl": "^1.0.3",
-    "wikijs": "^6.3.3",
-    "ytdl-core": "^4.11.0"
+    "wikijs": "^6.3.3"
   },
   "license": "MIT",
   "keywords": [
-    "node",
-    "express"
+    "discord",
+    "bot",
+    "splatoon3"
   ],
-  "compilerOptions": {
-    "lib": [
-      "es2020.string"
-    ]
-  },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/cron": "^2.0.1",
     "@types/crypto-js": "^4.1.1",
-    "@types/eslint": "^8.4.3",
-    "@types/eslint-plugin-prettier": "^3.1.0",
     "@types/node": "^25.0.1",
-    "@types/node-cron": "^3.0.8",
     "@types/node-fetch": "^2.6.2",
-    "@types/prettier": "^2.6.3",
-    "@typescript-eslint/eslint-plugin": "^5.57.0",
-    "@typescript-eslint/parser": "^5.57.0",
-    "eslint": "^8.37.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-config-standard-with-typescript": "^34.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "globals": "^17.7.0",
     "lefthook": "^2.1.4",
-    "prettier": "2.8.7",
+    "prettier": "^3.9.5",
     "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.9.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.63.0",
     "vitest": "^4.0.15"
   },
   "packageManager": "pnpm@10.33.0",
@@ -99,8 +79,8 @@
       "better-sqlite3",
       "canvas",
       "ffmpeg-static",
-      "prisma",
-      "sqlite3"
+      "lefthook",
+      "prisma"
     ]
   }
 }

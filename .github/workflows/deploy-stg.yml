@@ -1,0 +1,250 @@
+name: Deploy to stg
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: deploy-stg
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/deploy stg' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      statuses: write
+
+    steps:
+      - name: Get PR info
+        id: pr-info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          PR_JSON=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,headRefOid,baseRefName)
+          HEAD_REF=$(echo "$PR_JSON" | jq -r '.headRefName')
+          HEAD_SHA=$(echo "$PR_JSON" | jq -r '.headRefOid')
+          BASE_REF=$(echo "$PR_JSON" | jq -r '.baseRefName')
+
+          if [ "$BASE_REF" != "main" ]; then
+            echo "::notice::Skipped: PR #${PR_NUMBER} targets '${BASE_REF}', not 'main'."
+            exit 1
+          fi
+
+          # ブランチ名のバリデーション（英数字、ハイフン、アンダースコア、スラッシュ、ドットのみ許可）
+          if ! echo "$HEAD_REF" | grep -qE '^[a-zA-Z0-9/_.-]+$'; then
+            echo "::error::Invalid branch name: $HEAD_REF"
+            exit 1
+          fi
+
+          echo "head_ref=$HEAD_REF" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Check approval
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr-info.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          REVIEWS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json reviews --jq '[.reviews[] | select(.state == "APPROVED")] | length')
+          if [ "$REVIEWS" -eq "0" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "❌ **stg デプロイ失敗**: デプロイには approve が必要です。"
+            exit 1
+          fi
+
+      - name: Post deploy start comment
+        id: deploy-comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr-info.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+          HEAD_REF: ${{ steps.pr-info.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          BODY=$(cat <<EOF
+          🚀 **stg デプロイ**
+
+          | ステップ | 状態 |
+          |---|---|
+          | コード取得 | ⏳ 実行中... |
+          | 依存関係インストール | ⬜ 待機中 |
+          | サービス再起動 | ⬜ 待機中 |
+
+          ブランチ: \`${HEAD_REF}\`
+          コミット: \`${HEAD_SHA}\`
+          EOF
+          )
+          RESPONSE=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            -X POST \
+            -f body="$BODY" \
+            --jq '.id')
+          echo "comment_id=$RESPONSE" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy - git fetch and checkout
+        uses: appleboy/ssh-action@master
+        env:
+          DEPLOY_BRANCH: ${{ steps.pr-info.outputs.head_ref }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_BRANCH
+          script: |
+            cd ${{ secrets.SERVER_DEPLOY_DIR_STG }}
+            git fetch origin "$DEPLOY_BRANCH"
+            git checkout "$DEPLOY_BRANCH"
+            git pull origin "$DEPLOY_BRANCH"
+
+      - name: Update comment - code fetched
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ steps.deploy-comment.outputs.comment_id }}
+          HEAD_REF: ${{ steps.pr-info.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          BODY=$(cat <<EOF
+          🚀 **stg デプロイ**
+
+          | ステップ | 状態 |
+          |---|---|
+          | コード取得 | ✅ 完了 |
+          | 依存関係インストール | ⏳ 実行中... |
+          | サービス再起動 | ⬜ 待機中 |
+
+          ブランチ: \`${HEAD_REF}\`
+          コミット: \`${HEAD_SHA}\`
+          EOF
+          )
+          gh api "repos/${REPO}/issues/comments/${COMMENT_ID}" \
+            -X PATCH \
+            -f body="$BODY"
+
+      - name: Deploy - install and compile
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.SERVER_DEPLOY_DIR_STG }}
+            mise install
+            mise exec -- pnpm install --frozen-lockfile
+            mise exec -- pnpm run compile
+
+      - name: Update comment - install complete
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ steps.deploy-comment.outputs.comment_id }}
+          HEAD_REF: ${{ steps.pr-info.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          BODY=$(cat <<EOF
+          🚀 **stg デプロイ**
+
+          | ステップ | 状態 |
+          |---|---|
+          | コード取得 | ✅ 完了 |
+          | 依存関係インストール | ✅ 完了 |
+          | サービス再起動 | ⏳ 実行中... |
+
+          ブランチ: \`${HEAD_REF}\`
+          コミット: \`${HEAD_SHA}\`
+          EOF
+          )
+          gh api "repos/${REPO}/issues/comments/${COMMENT_ID}" \
+            -X PATCH \
+            -f body="$BODY"
+
+      - name: Deploy - restart service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart bukichi-stg.service
+
+      - name: Update comment - deploy complete
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ steps.deploy-comment.outputs.comment_id }}
+          HEAD_REF: ${{ steps.pr-info.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          BODY=$(cat <<EOF
+          ✅ **stg デプロイ完了**
+
+          | ステップ | 状態 |
+          |---|---|
+          | コード取得 | ✅ 完了 |
+          | 依存関係インストール | ✅ 完了 |
+          | サービス再起動 | ✅ 完了 |
+
+          ブランチ: \`${HEAD_REF}\`
+          コミット: \`${HEAD_SHA}\`
+          EOF
+          )
+          gh api "repos/${REPO}/issues/comments/${COMMENT_ID}" \
+            -X PATCH \
+            -f body="$BODY"
+
+      - name: Set commit status - success
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          gh api "repos/${REPO}/statuses/${HEAD_SHA}" \
+            -X POST \
+            -f state="success" \
+            -f context="deploy/stg" \
+            -f description="stg デプロイ完了"
+
+      - name: Handle failure - update comment
+        if: failure() && steps.deploy-comment.outputs.comment_id
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMENT_ID: ${{ steps.deploy-comment.outputs.comment_id }}
+          HEAD_REF: ${{ steps.pr-info.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          BODY=$(cat <<EOF
+          ❌ **stg デプロイ失敗**
+
+          デプロイ中にエラーが発生しました。[ワークフローログ](${RUN_URL}) を確認してください。
+
+          ブランチ: \`${HEAD_REF}\`
+          コミット: \`${HEAD_SHA}\`
+          EOF
+          )
+          gh api "repos/${REPO}/issues/comments/${COMMENT_ID}" \
+            -X PATCH \
+            -f body="$BODY"
+
+      - name: Set commit status - failure
+        if: failure() && steps.pr-info.outputs.head_sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ steps.pr-info.outputs.head_sha }}
+        run: |
+          gh api "repos/${REPO}/statuses/${HEAD_SHA}" \
+            -X POST \
+            -f state="failure" \
+            -f context="deploy/stg" \
+            -f description="stg デプロイ失敗"
