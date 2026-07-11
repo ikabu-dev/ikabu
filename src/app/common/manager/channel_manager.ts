@@ -1,7 +1,8 @@
 import { ChannelType, Guild, NonThreadGuildBasedChannel } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
+
 import { exists } from '../others';
 
 const logger = log4js_obj.getLogger('ChannelManager');

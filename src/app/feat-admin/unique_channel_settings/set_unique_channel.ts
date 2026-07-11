@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { UniqueChannelService } from '../../../db/unique_channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { exists } from '../../common/others';
-import { isChannelKey } from '../../constant/channel_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { exists } from '@/app/common/others';
+import { isChannelKey } from '@/app/constant/channel_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

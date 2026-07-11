@@ -1,10 +1,10 @@
 import { Logger } from 'log4js';
 
-import { client } from '../..';
-import { UniqueChannelService } from '../../../db/unique_channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { assertExistCheck, notExists } from '../../common/others';
-import { ChannelKeySet } from '../../constant/channel_key';
+import { client } from '@/app';
+import { assertExistCheck, notExists } from '@/app/common/others';
+import { ChannelKeySet } from '@/app/constant/channel_key';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+import { log4js_obj } from '@/log4js_settings';
 
 export async function sendErrorLogs(logger: Logger, error: unknown) {
     const defaultLogger = log4js_obj.getLogger('default');

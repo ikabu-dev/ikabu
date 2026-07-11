@@ -1,19 +1,20 @@
 import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
-import { ParticipantMember, ParticipantService } from '../../../db/participant_service';
-import { RecruitService } from '../../../db/recruit_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { recoveryThinkingButton } from '../../common/button_components';
-import { searchChannelById } from '../../common/manager/channel_manager';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchAPIMemberById, searchDBMemberById } from '../../common/manager/member_manager';
-import { searchMessageById } from '../../common/manager/message_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { sendStickyMessage } from '../../common/sticky_message';
-import { RecruitParam } from '../../constant/button_id';
-import { ErrorTexts } from '../../constant/error_texts';
-import { StickyKey } from '../../constant/sticky_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { recoveryThinkingButton } from '@/app/common/button_components';
+import { searchChannelById } from '@/app/common/manager/channel_manager';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchAPIMemberById, searchDBMemberById } from '@/app/common/manager/member_manager';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { sendStickyMessage } from '@/app/common/sticky_message';
+import { RecruitParam } from '@/app/constant/button_id';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { StickyKey } from '@/app/constant/sticky_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ParticipantMember, ParticipantService } from '@/db/participant_service';
+import { RecruitService } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
 import { memberListText } from '../common/member_list';
 import { availableRecruitString } from '../sticky/recruit_sticky_messages';

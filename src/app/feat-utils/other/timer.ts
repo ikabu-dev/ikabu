@@ -1,7 +1,7 @@
 import { CacheType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
-import { notExists } from '../../common/others';
-import { ErrorTexts } from '../../constant/error_texts';
+import { notExists } from '@/app/common/others';
+import { ErrorTexts } from '@/app/constant/error_texts';
 
 export async function handleTimer(interaction: ChatInputCommandInteraction<CacheType>) {
     const { options } = interaction;

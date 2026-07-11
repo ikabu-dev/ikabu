@@ -8,11 +8,11 @@ import {
     MediaChannel,
 } from 'discord.js';
 
-import { ChannelService } from '../../../db/channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ChannelService } from '@/db/channel_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

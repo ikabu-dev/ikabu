@@ -1,15 +1,16 @@
 import { ButtonInteraction, MessageFlags } from 'discord.js';
 
-import { ParticipantService, ParticipantMember } from '../../../db/participant_service.js';
-import { RecruitService, RecruitType } from '../../../db/recruit_service.js';
-import { log4js_obj } from '../../../log4js_settings.js';
-import { disableThinkingButton, recoveryThinkingButton } from '../../common/button_components.js';
-import { getGuildByInteraction } from '../../common/manager/guild_manager.js';
-import { searchDBMemberById } from '../../common/manager/member_manager.js';
-import { assertExistCheck, exists, notExists } from '../../common/others.js';
-import { ErrorTexts } from '../../constant/error_texts.js';
-import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log.js';
-import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
+import { disableThinkingButton, recoveryThinkingButton } from '@/app/common/button_components.js';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
+import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
+import { assertExistCheck, exists, notExists } from '@/app/common/others.js';
+import { ErrorTexts } from '@/app/constant/error_texts.js';
+import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log.js';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { ParticipantService, ParticipantMember } from '@/db/participant_service.js';
+import { RecruitService, RecruitType } from '@/db/recruit_service.js';
+import { log4js_obj } from '@/log4js_settings.js';
+
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas.js';
 import { memberListText } from '../common/member_list';
 import { sendJoinNotifyToHost } from '../common/send_notify_to_host';

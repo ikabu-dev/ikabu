@@ -1,9 +1,9 @@
 import { GuildScheduledEventStatus, VoiceState } from 'discord.js';
 
-import { RecruitService } from '../../../db/recruit_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { exists, notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { exists, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { RecruitService } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('voiceStateUpdate');
 

@@ -1,16 +1,13 @@
 import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
+import { SalmonInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink.js';
+import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
+import { dateformat, formatDatetime } from '@/app/common/convert_datetime';
+import { exists, notExists } from '@/app/common/others.js';
+import { modalRecruit, placeHold } from '@/constant.js';
+
 import { RecruitOpCode } from './regenerate_canvas.js';
-import { modalRecruit, placeHold } from '../../../../constant.js';
-import { SalmonInfo } from '../../../common/apis/splatoon3.ink/splatoon3_ink.js';
-import {
-    createRoundRect,
-    drawArcImage,
-    fillTextWithStroke,
-} from '../../../common/canvas_components';
-import { dateformat, formatDatetime } from '../../../common/convert_datetime';
-import { exists, notExists } from '../../../common/others.js';
 
 /*
  * 募集用のキャンバス(1枚目)を作成する

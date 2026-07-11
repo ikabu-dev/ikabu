@@ -1,15 +1,16 @@
 import { ButtonInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 
-import { ParticipantService, ParticipantMember } from '../../../db/participant_service.js';
-import { RecruitService } from '../../../db/recruit_service.js';
-import { log4js_obj } from '../../../log4js_settings.js';
-import { disableThinkingButton, recoveryThinkingButton } from '../../common/button_components';
-import { getGuildByInteraction } from '../../common/manager/guild_manager.js';
-import { searchDBMemberById } from '../../common/manager/member_manager.js';
-import { assertExistCheck, datetimeDiff, exists, notExists } from '../../common/others.js';
-import { ErrorTexts } from '../../constant/error_texts.js';
-import { sendRecruitButtonLog } from '../../logs/buttons/recruit_button_log';
-import { sendErrorLogs } from '../../logs/error/send_error_logs.js';
+import { disableThinkingButton, recoveryThinkingButton } from '@/app/common/button_components';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
+import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
+import { assertExistCheck, datetimeDiff, exists, notExists } from '@/app/common/others.js';
+import { ErrorTexts } from '@/app/constant/error_texts.js';
+import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { ParticipantService, ParticipantMember } from '@/db/participant_service.js';
+import { RecruitService } from '@/db/recruit_service.js';
+import { log4js_obj } from '@/log4js_settings.js';
+
 import { getMemberMentions } from '../common/member_list';
 import { increaseRecruitCount, increaseJoinCount } from '../common/recruit_count';
 import {

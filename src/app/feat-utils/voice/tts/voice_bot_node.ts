@@ -9,9 +9,9 @@ import conf from 'config-reloadable';
 import { SHA256 } from 'crypto-js';
 import { ChatInputCommandInteraction, Message } from 'discord.js';
 
-import VoiceTextApi, { VoiceTextApiParams } from '../../../common/apis/voice-text/voice_text';
-import { searchDBMemberById } from '../../../common/manager/member_manager';
-import { assertExistCheck, exists, notExists } from '../../../common/others';
+import VoiceTextApi, { VoiceTextApiParams } from '@/app/common/apis/voice-text/voice_text';
+import { searchDBMemberById } from '@/app/common/manager/member_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
 
 const config = conf();
 interface VoiceTypes {

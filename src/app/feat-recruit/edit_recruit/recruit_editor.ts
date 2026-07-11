@@ -7,11 +7,11 @@ import {
     TextInputStyle,
 } from 'discord.js';
 
-import { RecruitService } from '../../../db/recruit_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { notExists } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { RecruitService } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

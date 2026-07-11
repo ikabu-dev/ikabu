@@ -5,8 +5,8 @@ import {
     SlashCommandRoleOption,
 } from 'discord.js';
 
-import { commandNames } from '../../../constant';
-import { RoleKeySet } from '../../constant/role_key';
+import { RoleKeySet } from '@/app/constant/role_key';
+import { commandNames } from '@/constant';
 
 export const uniqueRoleSettings = new SlashCommandBuilder()
     .setName(commandNames.uniqueRoleSetting)

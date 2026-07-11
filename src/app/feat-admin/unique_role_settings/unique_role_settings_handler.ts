@@ -1,10 +1,11 @@
 import { ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
 
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
+
 import { setUniqueRoleCommand } from './set_unique_role';
 import { showAllUniqueRoleSettings } from './show_all_unique_role';
 import { unsetUniqueRoleCommand } from './unset_unique_role';
-import { log4js_obj } from '../../../log4js_settings';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
 
 const logger = log4js_obj.getLogger('interaction');
 

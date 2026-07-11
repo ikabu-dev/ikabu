@@ -1,7 +1,8 @@
 import { AttachmentBuilder, Message, PermissionsBitField } from 'discord.js';
 
-import { UniqueChannelService } from '../../db/unique_channel_service';
-import { log4js_obj } from '../../log4js_settings';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { searchAPIMemberById } from '../common/manager/member_manager';
 import { randomBool, exists } from '../common/others';
 import { ChannelKeySet } from '../constant/channel_key';

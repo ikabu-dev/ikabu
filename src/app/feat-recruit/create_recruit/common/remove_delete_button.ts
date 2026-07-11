@@ -1,7 +1,7 @@
-import { log4js_obj } from '../../../../log4js_settings';
-import { searchMessageById } from '../../../common/manager/message_manager';
-import { exists } from '../../../common/others';
-import { RecruitData } from '../../common/types/recruit_data';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { exists } from '@/app/common/others';
+import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('recruit');
 

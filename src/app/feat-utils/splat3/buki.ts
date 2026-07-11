@@ -8,12 +8,12 @@ import {
 } from 'discord.js';
 import fetch from 'node-fetch';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { getGuildByInteraction } from '../../common/manager/guild_manager';
-import { searchDBMemberById } from '../../common/manager/member_manager';
-import { exists, randomSelect } from '../../common/others';
-import { ErrorTexts } from '../../constant/error_texts';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
+import { searchDBMemberById } from '@/app/common/manager/member_manager';
+import { exists, randomSelect } from '@/app/common/others';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 const weaponsUrl = 'https://stat.ink/api/v3/weapon';
 
 const logger = log4js_obj.getLogger('interaction');

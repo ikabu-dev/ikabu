@@ -1,16 +1,17 @@
 import { Recruit } from '@prisma/client';
 import { Channel, Guild, Message, MessageFlags } from 'discord.js';
 
-import { ParticipantService } from '../../../db/participant_service';
-import { RecruitService, RecruitType } from '../../../db/recruit_service';
-import { UniqueChannelService } from '../../../db/unique_channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { searchMessageById } from '../../common/manager/message_manager';
-import { RequireOne, exists, getCommandHelpEmbed } from '../../common/others';
-import { sendStickyMessage } from '../../common/sticky_message';
-import { ChannelKeySet } from '../../constant/channel_key';
-import { StickyKey } from '../../constant/sticky_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { searchMessageById } from '@/app/common/manager/message_manager';
+import { RequireOne, exists, getCommandHelpEmbed } from '@/app/common/others';
+import { sendStickyMessage } from '@/app/common/sticky_message';
+import { ChannelKeySet } from '@/app/constant/channel_key';
+import { StickyKey } from '@/app/constant/sticky_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ParticipantService } from '@/db/participant_service';
+import { RecruitService, RecruitType } from '@/db/recruit_service';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { createNewRecruitButton } from '../create_recruit/common/create_recruit_buttons';
 
 const logger = log4js_obj.getLogger('message');

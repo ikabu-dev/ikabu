@@ -1,11 +1,12 @@
 import { ChannelType, ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
 
+import { searchChannelById } from '@/app/common/manager/channel_manager';
+import { notExists } from '@/app/common/others';
+import { ChannelKeySet } from '@/app/constant/channel_key';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+
 import { festEnd } from './fest_end';
 import { festStart } from './fest_start';
-import { UniqueChannelService } from '../../../db/unique_channel_service';
-import { searchChannelById } from '../../common/manager/channel_manager';
-import { notExists } from '../../common/others';
-import { ChannelKeySet } from '../../constant/channel_key';
 
 export async function festSettingHandler(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.deferReply({});

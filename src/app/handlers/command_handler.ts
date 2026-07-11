@@ -1,7 +1,8 @@
 import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 
-import { commandNames } from '../../constant.js';
-import { log4js_obj } from '../../log4js_settings.js';
+import { commandNames } from '@/constant.js';
+import { log4js_obj } from '@/log4js_settings.js';
+
 import { exists } from '../common/others';
 import { ErrorTexts } from '../constant/error_texts.js';
 import { handleBan } from '../feat-admin/ban/ban';

@@ -1,7 +1,8 @@
 import { ButtonInteraction } from 'discord.js';
 
+import { log4js_obj } from '@/log4js_settings';
+
 import { cancelButtonHandler, cancelNotifyButtonHandler } from './cancel_button_handler';
-import { log4js_obj } from '../../log4js_settings';
 import { setButtonDisable } from '../common/button_components';
 import { exists } from '../common/others';
 import { RecruitParam } from '../constant/button_id';

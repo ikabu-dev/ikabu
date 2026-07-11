@@ -18,11 +18,12 @@ import {
     VoiceState,
 } from 'discord.js';
 
+import { searchAPIMemberById } from '@/app/common/manager/member_manager';
+import { exists, getDeveloperMention, isEmpty, notExists } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
+
 import { modeApi, bufferToStream, setting } from './voice_bot_node';
-import { log4js_obj } from '../../../../log4js_settings';
-import { searchAPIMemberById } from '../../../common/manager/member_manager';
-import { exists, getDeveloperMention, isEmpty, notExists } from '../../../common/others';
-import { sendErrorLogs } from '../../../logs/error/send_error_logs';
 
 const infoLogger = log4js_obj.getLogger('info');
 const interactionLogger = log4js_obj.getLogger('interaction');

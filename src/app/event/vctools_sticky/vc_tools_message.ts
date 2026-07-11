@@ -12,14 +12,15 @@ import {
     VoiceState,
 } from 'discord.js';
 
+import { Merge, exists, notExists } from '@/app/common/others';
+import { sendStickyMessage } from '@/app/common/sticky_message';
+import { VCLockButton, VCToolsButton } from '@/app/constant/button_id';
+import { StickyKey } from '@/app/constant/sticky_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ChannelService } from '@/db/channel_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { createVCLockedButton } from './voice_lock';
-import { ChannelService } from '../../../db/channel_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { Merge, exists, notExists } from '../../common/others';
-import { sendStickyMessage } from '../../common/sticky_message';
-import { VCLockButton, VCToolsButton } from '../../constant/button_id';
-import { StickyKey } from '../../constant/sticky_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
 
 const logger = log4js_obj.getLogger('voiceStateUpdate');
 

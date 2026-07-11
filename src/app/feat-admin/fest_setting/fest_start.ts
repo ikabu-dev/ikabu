@@ -1,7 +1,7 @@
 import { CategoryChannel, ChatInputCommandInteraction, Guild } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

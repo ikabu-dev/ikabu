@@ -7,7 +7,6 @@ import {
     CacheType,
 } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
 import {
     getSchedule,
     checkFes,
@@ -18,13 +17,14 @@ import {
     getAnarchyOpenData,
     getXMatchData,
     inFallbackMode,
-} from '../../common/apis/splatoon3.ink/splatoon3_ink';
-import { Sp3Schedule } from '../../common/apis/splatoon3.ink/types/schedule';
-import { createRoundRect, fillTextWithStroke } from '../../common/canvas_components';
-import { formatDatetime, dateformat } from '../../common/convert_datetime.js';
-import { assertExistCheck, rule2image } from '../../common/others';
-import { ErrorTexts } from '../../constant/error_texts';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
+import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
+import { createRoundRect, fillTextWithStroke } from '@/app/common/canvas_components';
+import { formatDatetime, dateformat } from '@/app/common/convert_datetime.js';
+import { assertExistCheck, rule2image } from '@/app/common/others';
+import { ErrorTexts } from '@/app/constant/error_texts';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

@@ -1,14 +1,6 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
-import { arrangeCommandRecruitData } from './common/arrange_command_data';
-import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
-import { RecruitType } from '../../../db/recruit_service';
-import { UniqueRoleService } from '../../../db/unique_role_service';
-import { log4js_obj } from '../../../log4js_settings';
-import { getAnarchyOpenData, MatchInfo } from '../../common/apis/splatoon3.ink/splatoon3_ink';
+import { getAnarchyOpenData, MatchInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
 import {
     assertExistCheck,
     sleep,
@@ -16,9 +8,18 @@ import {
     notExists,
     getDeveloperMention,
     exists,
-} from '../../common/others';
-import { RoleKeySet, isRoleKey, getUniqueRoleNameByKey } from '../../constant/role_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/others';
+import { RoleKeySet, isRoleKey, getUniqueRoleNameByKey } from '@/app/constant/role_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { RecruitType } from '@/db/recruit_service';
+import { UniqueRoleService } from '@/db/unique_role_service';
+import { log4js_obj } from '@/log4js_settings';
+
+import { arrangeCommandRecruitData } from './common/arrange_command_data';
+import { arrangeModalRecruitData } from './common/arrange_modal_data';
+import { registerRecruitData } from './common/register_recruit_data';
+import { removeDeleteButton } from './common/remove_delete_button';
+import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
 import { recruitAutoClose } from '../close_recruit/auto_close';
 import { recruitAnarchyCanvas, ruleAnarchyCanvas } from '../common/canvases/anarchy_canvas';
 import { RecruitOpCode } from '../common/canvases/regenerate_canvas';

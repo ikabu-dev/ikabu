@@ -3,9 +3,9 @@ import path from 'path';
 
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 
-import { log4js_obj } from '../../../log4js_settings';
-import { assertExistCheck } from '../../common/others';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+import { assertExistCheck } from '@/app/common/others';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { log4js_obj } from '@/log4js_settings';
 
 const ENV_FILE_PATH = path.resolve('./', '.env');
 

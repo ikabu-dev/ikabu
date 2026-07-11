@@ -42,6 +42,7 @@ export default tseslint.config(
                 '@typescript-eslint/parser': ['.ts', '.tsx'],
             },
             'import/resolver': {
+                typescript: {},
                 node: {
                     extensions: ['.js', '.ts'],
                     paths: ['src'],

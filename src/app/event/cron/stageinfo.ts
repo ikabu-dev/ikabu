@@ -1,7 +1,5 @@
 import Discord, { Guild, GuildTextBasedChannel } from 'discord.js';
 
-import { UniqueChannelService } from '../../../db/unique_channel_service';
-import { log4js_obj } from '../../../log4js_settings';
 import {
     getAnarchyList,
     getXMatchList,
@@ -11,13 +9,15 @@ import {
     checkFes,
     getSchedule,
     inFallbackMode,
-} from '../../common/apis/splatoon3.ink/splatoon3_ink';
-import { Sp3Schedule } from '../../common/apis/splatoon3.ink/types/schedule';
-import { formatDatetime, dateformat } from '../../common/convert_datetime.js';
-import { searchChannelById } from '../../common/manager/channel_manager';
-import { assertExistCheck, exists, notExists } from '../../common/others';
-import { ChannelKeySet } from '../../constant/channel_key';
-import { sendErrorLogs } from '../../logs/error/send_error_logs';
+} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
+import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
+import { formatDatetime, dateformat } from '@/app/common/convert_datetime.js';
+import { searchChannelById } from '@/app/common/manager/channel_manager';
+import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { ChannelKeySet } from '@/app/constant/channel_key';
+import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { UniqueChannelService } from '@/db/unique_channel_service';
+import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('interaction');
 

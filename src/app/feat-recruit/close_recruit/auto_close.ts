@@ -1,9 +1,10 @@
 import { Message } from 'discord.js';
 
-import { ParticipantService } from '../../../db/participant_service';
-import { RecruitService } from '../../../db/recruit_service';
-import { setButtonDisable } from '../../common/button_components';
-import { notExists } from '../../common/others';
+import { setButtonDisable } from '@/app/common/button_components';
+import { notExists } from '@/app/common/others';
+import { ParticipantService } from '@/db/participant_service';
+import { RecruitService } from '@/db/recruit_service';
+
 import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { getMemberMentions } from '../common/member_list';
 import { RecruitData } from '../common/types/recruit_data';

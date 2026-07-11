@@ -1,8 +1,9 @@
 import { ButtonInteraction, MessageFlags } from 'discord.js';
 
-import { ParticipantMember, ParticipantService } from '../../db/participant_service';
-import { RecruitService } from '../../db/recruit_service';
-import { log4js_obj } from '../../log4js_settings';
+import { ParticipantMember, ParticipantService } from '@/db/participant_service';
+import { RecruitService } from '@/db/recruit_service';
+import { log4js_obj } from '@/log4js_settings';
+
 import { disableThinkingButton, recoveryThinkingButton } from '../common/button_components';
 import { cancelRecruit } from './cancel_recruit/cancel_event';
 import { cancelRecruitNotify } from './cancel_recruit/cancel_notify_event';

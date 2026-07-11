@@ -2,8 +2,8 @@ import { URLSearchParams } from 'url';
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 
-import { exists } from '../../../common/others';
-import { RecruitParam } from '../../../constant/button_id';
+import { exists } from '@/app/common/others';
+import { RecruitParam } from '@/app/constant/button_id';
 
 export function recruitDeleteButton(
     message: Message<true>,
