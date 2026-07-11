@@ -158,7 +158,7 @@ vi.mock('@/features/ban/ban', () => ({ handleBan: mocks.handleBan }));
 vi.mock('@/infra/logging/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
 vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
-import { call } from '../src/app/handlers/command_handler';
+import { call } from '@/gateway/command_handler';
 
 // [Discord に登録されるコマンド名, dispatch されるべきハンドラ]
 const cases: [string, string][] = [
