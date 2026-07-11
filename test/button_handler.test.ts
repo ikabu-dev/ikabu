@@ -24,26 +24,26 @@ vi.mock('@/features/onboarding/send_questionnaire', () => ({
 vi.mock('@/features/support_tag/resolved_support', () => ({
     setResolvedTag: mocks.setResolvedTag,
 }));
-vi.mock('@/features/utils/voice/vc_tools/radio_request', () => ({
+vi.mock('@/features/voice/vc_tools/radio_request', () => ({
     sendRadioRequest: mocks.sendRadioRequest,
 }));
-vi.mock('@/features/utils/voice/vc_tools/voice_lock', () => ({
+vi.mock('@/features/voice/vc_tools/voice_lock', () => ({
     voiceLockUpdate: mocks.voiceLockUpdate,
 }));
 vi.mock('@/features/recruit/interactions/recruit_button_handler', () => ({
     recruitButtonHandler: mocks.recruitButtonHandler,
 }));
-vi.mock('@/features/utils/other/friendcode', () => ({
+vi.mock('@/features/friend_code/friendcode', () => ({
     deleteFriendCode: mocks.deleteFriendCode,
 }));
-vi.mock('@/features/utils/team_divider/divider_button_handler', () => ({
+vi.mock('@/features/team_divider/divider_button_handler', () => ({
     dividerButtonHandler: mocks.dividerButtonHandler,
 }));
-vi.mock('@/features/utils/voice/tts/discordjs_voice', () => ({
+vi.mock('@/features/voice/tts/discordjs_voice', () => ({
     joinTTS: mocks.joinTTS,
     killTTS: mocks.killTTS,
 }));
-vi.mock('@/features/utils/voice/voice_locker', () => ({
+vi.mock('@/features/voice/voice_locker', () => ({
     voiceLockCommandUpdate: mocks.voiceLockCommandUpdate,
 }));
 
