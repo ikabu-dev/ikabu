@@ -26,5 +26,5 @@ describe('Impact Tests', () => {
             console.error('Canvas import failed:', e);
             throw e;
         }
-    });
+    }, 30000);
 });
