@@ -1440,7 +1440,7 @@ const festivalSettings = new SlashCommandBuilder()
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
-const commands = [
+export const commandDefinitions = [
     shutdown,
     voiceLock,
     friendCode,
@@ -1500,7 +1500,7 @@ export async function registerSlashCommands() {
             });
         await rest
             .put(Routes.applicationGuildCommands(botId, serverId), {
-                body: commands,
+                body: commandDefinitions,
             })
             .then(() => logger.info('Successfully registered application guild commands.'))
             .catch(async (error) => {
@@ -1515,7 +1515,7 @@ export async function registerSlashCommands() {
             });
         await rest
             .put(Routes.applicationCommands(botId), {
-                body: commands,
+                body: commandDefinitions,
             })
             .then(() => logger.info('Successfully registered application global commands.'))
             .catch(async (error) => {
