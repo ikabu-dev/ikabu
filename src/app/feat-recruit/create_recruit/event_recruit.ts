@@ -1,109 +1,69 @@
-import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
-
-import { getEventData, EventMatchInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { assertExistCheck, exists, sleep } from '@/app/common/others';
+import { EventMatchInfo, getEventData } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
 import { RoleKeySet } from '@/app/constant/role_key';
 import { RecruitType } from '@/db/recruit_service';
 import { UniqueRoleService } from '@/db/unique_role_service';
 
 import { arrangeCommandRecruitData } from './common/arrange_command_data';
 import { arrangeModalRecruitData } from './common/arrange_modal_data';
-import { registerRecruitData } from './common/register_recruit_data';
-import { removeDeleteButton } from './common/remove_delete_button';
-import { sendRecruitCanvas, RecruitImageBuffers } from './common/send_recruit_message';
-import { recruitAutoClose } from '../close_recruit/auto_close';
+import {
+    executeRecruitFlow,
+    RecruitArrangement,
+    RecruitFlowContext,
+    RecruitInteraction,
+} from './common/recruit_flow';
+import { RecruitImageBuffers } from './common/send_recruit_message';
 import { recruitEventCanvas, ruleEventCanvas } from '../common/canvases/event_canvas';
 import { RecruitOpCode } from '../common/canvases/regenerate_canvas';
 import { RecruitData } from '../common/types/recruit_data';
-import { sendRecruitSticky } from '../sticky/recruit_sticky_messages';
-import { createRecruitEvent } from '../vc_reservation/recruit_event';
 
-export async function eventRecruit(
-    interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,
-) {
-    assertExistCheck(interaction.channel, 'channel');
-    // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({});
+const recruitName = 'イベマ募集';
 
-    const recruitName = 'イベマ募集';
+export async function eventRecruit(interaction: RecruitInteraction) {
+    await executeRecruitFlow<EventMatchInfo | null, RecruitFlowContext>(interaction, {
+        resolveArrangement,
+        getMatchData: (recruitData) => getEventData(recruitData.schedule),
+        getImageBuffers,
+        getEventTiming: (recruitData, eventData) => ({
+            title: `イベントマッチ - ${recruitData.recruiter.displayName}`,
+            startTime: eventData?.startTime ?? new Date(),
+            endTime: eventData?.endTime ?? new Date(),
+        }),
+        getRegisterOption: (recruitData, eventData) => eventData?.title ?? 'えらー',
+        autoClose: true,
+    });
+}
+
+async function resolveArrangement(
+    interaction: RecruitInteraction,
+): Promise<RecruitArrangement<RecruitFlowContext> | null> {
     const recruitType = RecruitType.EventRecruit;
     const recruitRoleId = await UniqueRoleService.getRoleIdByKey(
         interaction.guildId,
         RoleKeySet.EventRecruit.key,
     );
+    const context: RecruitFlowContext = { recruitType, recruitRoleId };
 
     let recruitData: RecruitData;
     if (interaction.isChatInputCommand()) {
         try {
             recruitData = await arrangeCommandRecruitData(interaction, recruitName, recruitType);
         } catch (error) {
-            return;
+            return null;
         }
     } else if (interaction.isModalSubmit()) {
         try {
             recruitData = await arrangeModalRecruitData(interaction, recruitName, recruitType);
         } catch (error) {
-            return;
+            return null;
         }
     } else {
         throw new Error('interaction type is invalid');
     }
 
-    const eventData = await getEventData(recruitData.schedule);
-
-    const eventBuffers = await getEventImageBuffers(recruitData, eventData);
-
-    const recruitMessageList = await sendRecruitCanvas(
-        interaction,
-        recruitRoleId,
-        recruitData,
-        eventBuffers,
-    );
-
-    let eventId: string | null = null;
-    if (exists(recruitData.voiceChannel)) {
-        eventId = (
-            await createRecruitEvent(
-                recruitData.guild,
-                `イベントマッチ - ${recruitData.recruiter.displayName}`,
-                recruitData.recruiter.userId,
-                recruitData.voiceChannel,
-                eventBuffers.ruleBuffer,
-                eventData?.startTime ?? new Date(),
-                eventData?.endTime ?? new Date(),
-            )
-        ).id;
-    }
-
-    await registerRecruitData(
-        recruitMessageList.recruitMessage.id,
-        recruitType,
-        recruitData,
-        eventId,
-        eventData?.title ?? 'えらー',
-    );
-
-    // 募集リスト更新
-    await sendRecruitSticky({
-        channelOpt: { guild: recruitData.guild, channelId: recruitData.recruitChannel.id },
-    });
-
-    // 15秒後に削除ボタンを消す
-    await sleep(15);
-
-    await removeDeleteButton(recruitData, recruitMessageList.deleteButtonMessage.id);
-
-    // 2時間後にボタンを無効化する
-    await sleep(7200 - 15);
-
-    await recruitAutoClose(
-        recruitData,
-        recruitMessageList.recruitMessage.id,
-        recruitMessageList.buttonMessage,
-    );
+    return { recruitData, context };
 }
 
-async function getEventImageBuffers(
+async function getImageBuffers(
     recruitData: RecruitData,
     eventData: EventMatchInfo | null,
 ): Promise<RecruitImageBuffers> {
