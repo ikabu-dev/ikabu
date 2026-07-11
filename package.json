@@ -7,7 +7,7 @@
   "description": "Discord bot for Splatoon 3 community (ikabu)",
   "main": "build/server.js",
   "scripts": {
-    "compile": "prisma generate && tsc -p . && prisma migrate deploy",
+    "compile": "prisma generate && tsc -p . && tsc-alias -p tsconfig.json && prisma migrate deploy",
     "start": "pnpm run compile && node -r dotenv/config ./build/server.js dotenv_config_path=./.env",
     "create-migrate": "prisma migrate dev --create-only",
     "migrate-deploy": "prisma migrate deploy",
@@ -58,6 +58,7 @@
     "@types/node-fetch": "^2.6.2",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-unused-imports": "^4.4.1",
@@ -66,6 +67,7 @@
     "prettier": "^3.9.5",
     "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.9.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.63.0",
     "vitest": "^4.0.15"
