@@ -75,6 +75,7 @@ export async function recruitEdit(
             case RecruitType.SalmonRecruit:
             case RecruitType.FestivalRecruit:
             case RecruitType.BigRunRecruit:
+            case RecruitType.RaidersRecruit:
                 await regenerateCanvas(guild, channelId, messageId, RecruitOpCode.open);
                 break;
             case RecruitType.PrivateRecruit:
@@ -129,6 +130,7 @@ async function editRecruitNum(
         case RecruitType.SalmonRecruit:
         case RecruitType.FestivalRecruit:
         case RecruitType.BigRunRecruit:
+        case RecruitType.RaidersRecruit:
             limit = 4;
             break;
         case RecruitType.RegularRecruit:

@@ -9,6 +9,7 @@ export const RoleKeySet = {
     AnarchyRecruit: { name: 'バンカラ募集', key: 'ROLE_ID_RECRUIT_ANARCHY' },
     EventRecruit: { name: 'イベマ募集', key: 'ROLE_ID_RECRUIT_EVENT' },
     SalmonRecruit: { name: 'サーモン募集', key: 'ROLE_ID_RECRUIT_SALMON' },
+    RaidersRecruit: { name: 'レイダース募集', key: 'ROLE_ID_RECRUIT_RAIDERS' },
     FryeRecruit: { name: 'ウツホ募集', key: 'ROLE_ID_RECRUIT_FRYE' },
     ShiverRecruit: { name: 'フウカ募集', key: 'ROLE_ID_RECRUIT_SHIVER' },
     BigmanRecruit: { name: 'マンタロー募集', key: 'ROLE_ID_RECRUIT_BIGMAN' },

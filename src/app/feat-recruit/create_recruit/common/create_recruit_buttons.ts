@@ -106,6 +106,7 @@ export function createNewRecruitButton(channelName: string) {
         'バンカラ募集',
         'イベマ募集',
         'サーモン募集',
+        'レイダース募集',
         'ウツホ募集',
         'フウカ募集',
         'マンタロー募集',

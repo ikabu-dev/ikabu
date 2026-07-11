@@ -279,6 +279,7 @@ const recruit_command = {
     バンカラ募集: '`/バンカラ募集 now` or `/バンカラ募集 next`',
     フェス募集: '`/〇〇陣営 now` or `/〇〇陣営 next`',
     サーモン募集: '`/サーモンラン募集 run`',
+    レイダース募集: '`/レイダース募集 recruit`',
     別ゲー募集:
         '`/別ゲー募集 apex` or `/別ゲー募集 overwatch` or `/別ゲー募集 mhw` or `/別ゲー募集 valo` or `/別ゲー募集 other`',
 };
@@ -305,6 +306,9 @@ export async function getCommandHelpEmbed(guild: Guild, channelName: string) {
             break;
         case 'サーモン募集':
             commandMessage = recruit_command.サーモン募集;
+            break;
+        case 'レイダース募集':
+            commandMessage = recruit_command.レイダース募集;
             break;
         case '別ゲー募集':
             commandMessage = recruit_command.別ゲー募集;

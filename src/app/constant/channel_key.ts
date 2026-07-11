@@ -20,6 +20,7 @@ export const ChannelKeySet = {
     AnarchyRecruit: { name: 'バンカラ募集', key: 'CHANNEL_ID_RECRUIT_ANARCHY' },
     EventRecruit: { name: 'イベマ募集', key: 'CHANNEL_ID_RECRUIT_EVENT' },
     SalmonRecruit: { name: 'サーモン募集', key: 'CHANNEL_ID_RECRUIT_SALMON' },
+    RaidersRecruit: { name: 'レイダース募集', key: 'CHANNEL_ID_RECRUIT_RAIDERS' },
     FestivalCategory: { name: 'フェスカテゴリ', key: 'CATEGORY_ID_FESTIVAL' },
     FryeRecruit: { name: 'ウツホ募集', key: 'CHANNEL_ID_RECRUIT_FRYE' },
     ShiverRecruit: { name: 'フウカ募集', key: 'CHANNEL_ID_RECRUIT_SHIVER' },
