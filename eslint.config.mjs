@@ -1,8 +1,8 @@
 import js from '@eslint/js';
-import prettierRecommended from 'eslint-plugin-prettier/recommended';
-import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -79,7 +79,9 @@ export default tseslint.config(
             // 旧 .eslintrc.js（@typescript-eslint/recommended v5 相当）と同等の挙動になるよう調整する。
             // v8 recommended で新たに error 化されたが、旧設定では warn だったもの
             'no-unused-vars': 'off',
-            '@typescript-eslint/no-unused-vars': 'warn',
+            // v8 では caughtErrors のデフォルトが 'none' → 'all' に変更されたため、
+            // 旧設定（v5 のデフォルト）と同じ挙動になるよう明示的に 'none' を指定する
+            '@typescript-eslint/no-unused-vars': ['warn', { caughtErrors: 'none' }],
             // v8 recommended で新たに追加されたが、旧設定には存在しなかったもの（旧同等 = off）
             'no-unused-expressions': 'off',
             '@typescript-eslint/no-unused-expressions': 'off',
