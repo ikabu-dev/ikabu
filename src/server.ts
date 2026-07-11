@@ -1,5 +1,7 @@
 // Response for Uptime Robot
 import http from 'http';
+
+import { env } from '@/config/env';
 http.createServer(function (
     _request: http.IncomingMessage,
     response: {
@@ -9,6 +11,6 @@ http.createServer(function (
 ) {
     response.writeHead(200, { 'Content-Type': 'text/plain' });
     response.end('Discord bot is active now \n');
-}).listen(process.env.PORT || 3000);
+}).listen(env.port || 3000);
 require('./log4js_settings');
 require('./app/index.js');

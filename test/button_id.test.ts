@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import * as buttonId from '../src/app/constant/button_id';
+import * as buttonId from '../src/config/constants/button_id';
 import { RecruitType, isRecruitType } from '../src/db/recruit_service';
 
 describe('button_id 型ガード', () => {

@@ -21,11 +21,12 @@ import {
 } from 'discord.js';
 
 import { recoveryThinkingButton } from '@/app/common/button_components';
-import { exists, notExists, sleep } from '@/app/common/others';
-import { RecruitParam } from '@/app/constant/button_id';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { RecruitParam } from '@/config/constants/button_id';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { log4js_obj } from '@/log4js_settings';
+import { exists, notExists } from '@/shared/assert';
+import { sleep } from '@/shared/sleep';
 const logger = log4js_obj.getLogger();
 
 const activeJobs: Map<string, CronJob> = new Map();

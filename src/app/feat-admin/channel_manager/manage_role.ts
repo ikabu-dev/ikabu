@@ -19,10 +19,10 @@ import {
     setColorToRole,
     unassginRoleFromMembers,
 } from '@/app/common/manager/role_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('RoleManager');
 

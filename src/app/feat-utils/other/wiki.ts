@@ -1,9 +1,9 @@
 import { CacheType, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import wiki from 'wikijs';
 
-import { notExists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { notExists } from '@/shared/assert';
 
 export async function handleWiki(interaction: ChatInputCommandInteraction<CacheType>) {
     const logger = log4js_obj.getLogger('interaction');

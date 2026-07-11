@@ -20,11 +20,12 @@ import {
 } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
 import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
 import { createRoundRect, fillTextWithStroke } from '@/app/common/canvas_components';
-import { formatDatetime, dateformat } from '@/app/common/convert_datetime.js';
-import { assertExistCheck, rule2image } from '@/app/common/others';
-import { ErrorTexts } from '@/app/constant/error_texts';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck } from '@/shared/assert';
+import { formatDatetime, dateformat } from '@/shared/datetime/convert_datetime';
+import { rule2image } from '@/shared/splatoon/rule_image';
 
 const logger = log4js_obj.getLogger('interaction');
 

@@ -1,7 +1,7 @@
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { exists } from '@/app/common/others';
 import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
 import { log4js_obj } from '@/log4js_settings';
+import { exists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('recruit');
 

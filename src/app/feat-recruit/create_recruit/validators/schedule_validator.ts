@@ -2,10 +2,11 @@ import { Guild } from 'discord.js';
 
 import { getSchedule } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
 import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
-import { getDeveloperMention, notExists } from '@/app/common/others';
 import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
 import { RecruitConditionError } from '@/app/feat-recruit/common/types/recruit_condition_error';
 import { RecruitType } from '@/db/recruit_service';
+import { notExists } from '@/shared/assert';
+import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
 
 import { checkRecruitSchedule } from '../condition_checks/schedule_check';
 

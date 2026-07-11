@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
 
 import { searchAPIMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, exists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('ban');
 

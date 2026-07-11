@@ -3,9 +3,10 @@ import { ButtonInteraction, MessageFlags, PermissionsBitField } from 'discord.js
 import { recoveryThinkingButton, setButtonDisable } from '@/app/common/button_components';
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchAPIMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { env } from '@/config/env';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 import { tagIdsEmbed } from './tag_ids_embed';
 
@@ -27,10 +28,7 @@ export async function setResolvedTag(interaction: ButtonInteraction<'cached' | '
             });
         }
 
-        if (
-            notExists(process.env.TAG_ID_SUPPORT_PROGRESS) ||
-            notExists(process.env.TAG_ID_SUPPORT_RESOLVED)
-        ) {
+        if (notExists(env.tagIdSupportProgress) || notExists(env.tagIdSupportResolved)) {
             const embed = tagIdsEmbed(channel);
             if (exists(embed)) {
                 return await interaction.reply({ embeds: [embed] });
@@ -51,8 +49,8 @@ export async function setResolvedTag(interaction: ButtonInteraction<'cached' | '
         }
 
         const appliedTags = channel.appliedTags;
-        const replace_index = appliedTags.indexOf(process.env.TAG_ID_SUPPORT_PROGRESS);
-        appliedTags.splice(replace_index, 1, process.env.TAG_ID_SUPPORT_RESOLVED);
+        const replace_index = appliedTags.indexOf(env.tagIdSupportProgress);
+        appliedTags.splice(replace_index, 1, env.tagIdSupportResolved);
         await channel.setAppliedTags(appliedTags, '質問対応終了');
         await channel.setLocked(true);
         await channel.setArchived(true);

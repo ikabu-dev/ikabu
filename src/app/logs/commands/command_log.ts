@@ -5,8 +5,9 @@ import {
     MessageContextMenuCommandInteraction,
 } from 'discord.js';
 
-import { assertExistCheck, exists } from '@/app/common/others';
 import { sendEmbedsWebhook } from '@/app/common/webhook';
+import { env } from '@/config/env';
+import { assertExistCheck, exists } from '@/shared/assert';
 
 export function sendCommandLog(
     interaction:
@@ -66,6 +67,6 @@ export function sendCommandLog(
     ]);
     embed.setColor('#CFCFCF');
     embed.setTimestamp(interaction.createdAt);
-    assertExistCheck(process.env.COMMAND_LOG_WEBHOOK_URL, 'COMMAND_LOG_WEBHOOK_URL');
-    void sendEmbedsWebhook(process.env.COMMAND_LOG_WEBHOOK_URL, [embed]);
+    assertExistCheck(env.commandLogWebhookUrl, 'COMMAND_LOG_WEBHOOK_URL');
+    void sendEmbedsWebhook(env.commandLogWebhookUrl, [embed]);
 }

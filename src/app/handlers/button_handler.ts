@@ -2,7 +2,6 @@ import { URLSearchParams } from 'url';
 
 import { ButtonInteraction, CacheType, MessageFlags } from 'discord.js';
 
-import { exists } from '../common/others';
 import {
     FriendCodeButton,
     SupportCloseButton,
@@ -12,7 +11,9 @@ import {
     isRecruitParam,
     isTeamDividerParam,
     isVCLockButton,
-} from '../constant/button_id';
+} from '@/config/constants/button_id';
+import { exists } from '@/shared/assert';
+
 import { questionnaireButtonHandler } from '../event/rookie/send_questionnaire';
 import { setResolvedTag } from '../event/support_auto_tag/resolved_support';
 import { sendRadioRequest } from '../event/vctools_sticky/radio_request';

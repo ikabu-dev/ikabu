@@ -1,4 +1,4 @@
-import { placeHold } from '@/constant';
+import { placeHold } from '@/config/constants/images';
 
 export type SalmonRegularProperties = {
     startTime: string;

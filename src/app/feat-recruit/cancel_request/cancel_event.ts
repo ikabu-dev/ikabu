@@ -2,10 +2,10 @@ import { Member } from '@prisma/client';
 import { ButtonInteraction, Guild, Message, MessageFlags } from 'discord.js';
 
 import { recoveryThinkingButton } from '@/app/common/button_components';
-import { assertExistCheck } from '@/app/common/others';
 import { sendStickyMessage } from '@/app/common/sticky_message';
-import { StickyKey } from '@/app/constant/sticky_key';
+import { StickyKey } from '@/config/constants/sticky_key';
 import { ParticipantMember, ParticipantService } from '@/db/participant_service';
+import { assertExistCheck } from '@/shared/assert';
 
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
 import { memberListText } from '../common/member_list';

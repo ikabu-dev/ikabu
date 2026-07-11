@@ -1,10 +1,10 @@
 import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 
-import { commandNames } from '@/constant.js';
+import { commandNames } from '@/config/constants/commands';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { log4js_obj } from '@/log4js_settings.js';
+import { exists } from '@/shared/assert';
 
-import { exists } from '../common/others';
-import { ErrorTexts } from '../constant/error_texts.js';
 import { handleBan } from '../feat-admin/ban/ban';
 import { channelManagerHandler } from '../feat-admin/channel_manager/channel_manager_handler.js';
 import { channelSettingsHandler } from '../feat-admin/channel_settings/channel_settings_handler.js';

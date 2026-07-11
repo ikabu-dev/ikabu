@@ -7,9 +7,10 @@ import {
     EmbedBuilder,
 } from 'discord.js';
 
-import { assertExistCheck } from '@/app/common/others';
 import { sendEmbedsWebhook } from '@/app/common/webhook';
+import { env } from '@/config/env';
 import { ParticipantMember } from '@/db/participant_service';
+import { assertExistCheck } from '@/shared/assert';
 
 export async function sendRecruitButtonLog(
     interaction: ButtonInteraction<CacheType>,
@@ -31,6 +32,6 @@ export async function sendRecruitButtonLog(
     );
     embed.setColor(color);
     embed.setTimestamp(interaction.createdAt);
-    assertExistCheck(process.env.BUTTON_LOG_WEBHOOK_URL, 'BUTTON_LOG_WEBHOOK_URL');
-    void sendEmbedsWebhook(process.env.BUTTON_LOG_WEBHOOK_URL, [embed]);
+    assertExistCheck(env.buttonLogWebhookUrl, 'BUTTON_LOG_WEBHOOK_URL');
+    void sendEmbedsWebhook(env.buttonLogWebhookUrl, [embed]);
 }

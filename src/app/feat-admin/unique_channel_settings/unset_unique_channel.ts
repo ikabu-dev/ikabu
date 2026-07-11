@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
-import { isChannelKey } from '@/app/constant/channel_key';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { isChannelKey } from '@/config/constants/channel_key';
 import { ChannelService } from '@/db/channel_service';
 import { UniqueChannelService } from '@/db/unique_channel_service';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 

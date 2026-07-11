@@ -6,8 +6,8 @@ import {
     EmbedBuilder,
 } from 'discord.js';
 
-import { SupportCloseButton } from '@/app/constant/button_id';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { SupportCloseButton } from '@/config/constants/button_id';
 import { log4js_obj } from '@/log4js_settings';
 
 const logger = log4js_obj.getLogger('default');

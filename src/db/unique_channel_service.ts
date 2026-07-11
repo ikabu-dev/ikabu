@@ -1,6 +1,7 @@
+import { ChannelKey, isChannelKey } from '@/config/constants/channel_key';
+import { notExists } from '@/shared/assert';
+
 import { prisma } from './prisma';
-import { notExists } from '../app/common/others';
-import { ChannelKey, isChannelKey } from '../app/constant/channel_key';
 import { sendErrorLogs } from '../app/logs/error/send_error_logs';
 import { log4js_obj } from '../log4js_settings';
 

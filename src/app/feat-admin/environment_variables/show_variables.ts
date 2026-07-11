@@ -1,8 +1,8 @@
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 

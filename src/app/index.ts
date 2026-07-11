@@ -24,7 +24,16 @@ import {
     VoiceState,
 } from 'discord.js';
 
+import { ChannelKeySet } from '@/config/constants/channel_key';
+import { env } from '@/config/env';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
+
 import { MemberService } from '../db/member_service';
+import { ParticipantService } from '../db/participant_service';
+import { UniqueChannelService } from '../db/unique_channel_service';
+import { log4js_obj } from '../log4js_settings';
+import { registerSlashCommands } from '../register';
 import {
     inFallbackMode,
     updateLocale,
@@ -32,12 +41,6 @@ import {
 } from './common/apis/splatoon3.ink/splatoon3_ink';
 import { searchChannelById } from './common/manager/channel_manager';
 import { searchAPIMemberById } from './common/manager/member_manager';
-import { assertExistCheck, exists, getDeveloperMention, notExists } from './common/others';
-import { ChannelKeySet } from './constant/channel_key';
-import { ParticipantService } from '../db/participant_service';
-import { UniqueChannelService } from '../db/unique_channel_service';
-import { log4js_obj } from '../log4js_settings';
-import { registerSlashCommands } from '../register';
 import {
     deleteChannel,
     saveChannel,
@@ -85,7 +88,7 @@ export const client = new Client({
     ],
 });
 
-void client.login(process.env.DISCORD_BOT_TOKEN);
+void client.login(env.discordBotToken);
 
 const logger = log4js_obj.getLogger();
 
@@ -101,7 +104,7 @@ client.on('guildMemberAdd', async (member: GuildMember) => {
         if (notExists(client.user)) {
             throw new Error('client.user is null');
         }
-        if (guild.id === process.env.SERVER_ID) {
+        if (guild.id === env.serverId) {
             setEnrollmentCount(client.user, guild);
         }
         await guildMemberAddEvent(member); // 10分待つ可能性があるので最後に処理
@@ -152,7 +155,7 @@ client.on('guildMemberRemove', async (member: GuildMember | PartialGuildMember) 
             await retireLog.send(text);
         }
 
-        if (guild.id === process.env.SERVER_ID) {
+        if (guild.id === env.serverId) {
             assertExistCheck(client.user, 'client.user');
             setEnrollmentCount(client.user, guild);
         }
@@ -228,7 +231,7 @@ client.on('clientReady', async (client: Client<true>) => {
         await saveChannelAtLaunch(client);
         await saveRoleAtLaunch(client);
         await registerSlashCommands();
-        const guild = await client.guilds.fetch(process.env.SERVER_ID || '');
+        const guild = await client.guilds.fetch(env.serverId || '');
         setEnrollmentCount(client.user, guild);
         await updateSchedule();
         await updateLocale();
@@ -415,7 +418,7 @@ const job = new cron.CronJob(
         logger.info('cron job started');
 
         try {
-            const guild = await client.guilds.fetch(process.env.SERVER_ID || '');
+            const guild = await client.guilds.fetch(env.serverId || '');
 
             if (!inFallbackMode) {
                 // イベントマッチのイベント作成

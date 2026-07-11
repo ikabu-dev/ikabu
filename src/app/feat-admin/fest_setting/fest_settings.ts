@@ -1,9 +1,9 @@
 import { ChannelType, ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
 
 import { searchChannelById } from '@/app/common/manager/channel_manager';
-import { notExists } from '@/app/common/others';
-import { ChannelKeySet } from '@/app/constant/channel_key';
+import { ChannelKeySet } from '@/config/constants/channel_key';
 import { UniqueChannelService } from '@/db/unique_channel_service';
+import { notExists } from '@/shared/assert';
 
 import { festEnd } from './fest_end';
 import { festStart } from './fest_start';

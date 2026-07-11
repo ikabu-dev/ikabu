@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import { notExists } from '@/app/common/others';
-import { ChannelKeySet, getUniqueChannelNameByKey } from '@/app/constant/channel_key';
+import { ChannelKeySet, getUniqueChannelNameByKey } from '@/config/constants/channel_key';
 import { UniqueChannelService } from '@/db/unique_channel_service';
+import { notExists } from '@/shared/assert';
 
 export async function showAllUniqueChannelSettings(
     interaction: ChatInputCommandInteraction<'cached' | 'raw'>,

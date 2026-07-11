@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 
-import { exists } from '@/app/common/others';
 import { MessageCountService } from '@/db/message_count_service';
+import { exists } from '@/shared/assert';
 
 export async function chatCountUp(msg: Message<true>) {
     const id = msg.author.id;

@@ -1,7 +1,7 @@
 import { Client, NonThreadGuildBasedChannel } from 'discord.js';
 
-import { notExists } from '@/app/common/others';
 import { ChannelService } from '@/db/channel_service';
+import { notExists } from '@/shared/assert';
 
 export async function saveChannel(channel: NonThreadGuildBasedChannel) {
     await ChannelService.save(

@@ -11,7 +11,8 @@ import { ChatInputCommandInteraction, Message } from 'discord.js';
 
 import VoiceTextApi, { VoiceTextApiParams } from '@/app/common/apis/voice-text/voice_text';
 import { searchDBMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
+import { env } from '@/config/env';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const config = conf();
 interface VoiceTypes {
@@ -43,7 +44,7 @@ let voiceType = 'haruka';
 let speed = 100;
 let pitch = 100;
 
-const voiceTextApiKey = process.env.VOICE_TEXT_API_KEY;
+const voiceTextApiKey = env.voiceTextApiKey;
 assertExistCheck(voiceTextApiKey, 'VOICE_TEXT_API_KEY');
 readConfig();
 let voicePattern1 = voiceType; //初期時のよみあげ音声

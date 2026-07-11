@@ -15,9 +15,11 @@ import {
     setButtonDisable,
 } from '@/app/common/button_components';
 import { searchMessageById } from '@/app/common/manager/message_manager';
-import { assertExistCheck, exists, notExists, sleep } from '@/app/common/others';
-import { QuestionnaireParam } from '@/app/constant/button_id';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { QuestionnaireParam } from '@/config/constants/button_id';
+import { getEnvByKey } from '@/config/env';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { sleep } from '@/shared/sleep';
 
 export async function questionnaireButtonHandler(
     interaction: ButtonInteraction<'cached' | 'raw'>,
@@ -135,7 +137,7 @@ export async function sendQuestionnaireFollowUp(
 
         const urlKey = params.get('type') ?? '';
 
-        const url = process.env[urlKey];
+        const url = getEnvByKey(urlKey);
         if (notExists(url)) {
             throw new Error('アンケートURLが設定されていません');
         }

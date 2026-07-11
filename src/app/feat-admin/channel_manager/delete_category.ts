@@ -14,9 +14,9 @@ import {
 import { searchChannelById } from '@/app/common/manager/channel_manager';
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
 import { searchAPIMemberById } from '@/app/common/manager/member_manager';
-import { assertExistCheck, exists, notExists } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('ChannelManager');
 

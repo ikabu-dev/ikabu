@@ -12,11 +12,12 @@ import {
 } from 'discord.js';
 
 import { getAPIMemberByInteraction } from '@/app/common/manager/member_manager';
-import { Merge, notExists } from '@/app/common/others';
-import { VCLockButton } from '@/app/constant/button_id';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { VCLockButton } from '@/config/constants/button_id';
 import { ChannelService } from '@/db/channel_service';
 import { log4js_obj } from '@/log4js_settings';
+import { notExists } from '@/shared/assert';
+import { Merge } from '@/shared/types';
 
 import { createVCToolsButtons } from './vc_tools_message';
 

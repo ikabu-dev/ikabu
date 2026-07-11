@@ -4,8 +4,8 @@ import { Member } from '@prisma/client';
 import Canvas from 'canvas';
 
 import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
-import { exists, notExists } from '@/app/common/others.js';
-import { modalRecruit } from '@/constant.js';
+import { modalRecruit } from '@/config/constants/images';
+import { exists, notExists } from '@/shared/assert';
 
 import { RecruitOpCode } from './regenerate_canvas.js';
 

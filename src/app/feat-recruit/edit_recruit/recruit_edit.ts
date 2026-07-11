@@ -1,15 +1,15 @@
 import { BaseGuildTextChannel, MessageFlags, ModalSubmitInteraction } from 'discord.js';
 
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { assertExistCheck, notExists } from '@/app/common/others';
 import { sendStickyMessage } from '@/app/common/sticky_message';
-import { ErrorTexts } from '@/app/constant/error_texts';
-import { StickyKey } from '@/app/constant/sticky_key';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { sendEditRecruitLog } from '@/app/logs/modals/recruit_modal_log';
+import { ErrorTexts } from '@/config/constants/error_texts';
+import { StickyKey } from '@/config/constants/sticky_key';
 import { ParticipantService } from '@/db/participant_service';
 import { RecruitService, RecruitType } from '@/db/recruit_service';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck, notExists } from '@/shared/assert';
 
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
 import { regenerateEmbed } from '../common/embeds/regenerate_embed';

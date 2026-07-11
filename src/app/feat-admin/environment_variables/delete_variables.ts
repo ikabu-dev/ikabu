@@ -3,9 +3,10 @@ import path from 'path';
 
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 
-import { assertExistCheck } from '@/app/common/others';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
+import { deleteRuntimeEnv } from '@/config/env';
 import { log4js_obj } from '@/log4js_settings';
+import { assertExistCheck } from '@/shared/assert';
 
 const ENV_FILE_PATH = path.resolve('./', '.env');
 
@@ -27,7 +28,7 @@ export async function deleteVariables(interaction: ChatInputCommandInteraction<'
 
         const env_file = new AttachmentBuilder('./.env', { name: 'env.txt' });
         // 現在のprocess.env更新 (process.envから直接削除)
-        delete process.env[key];
+        deleteRuntimeEnv(key);
 
         await interaction.deleteReply();
         assertExistCheck(interaction.channel, 'channel');

@@ -4,13 +4,15 @@ import { disableThinkingButton, recoveryThinkingButton } from '@/app/common/butt
 import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
 import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
 import { searchMessageById } from '@/app/common/manager/message_manager.js';
-import { assertExistCheck, datetimeDiff, exists, notExists } from '@/app/common/others.js';
-import { ErrorTexts } from '@/app/constant/error_texts.js';
 import { sendRecruitButtonLog } from '@/app/logs/buttons/recruit_button_log.js';
 import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
+import { ErrorTexts } from '@/config/constants/error_texts';
+import { env } from '@/config/env';
 import { ParticipantService, ParticipantMember } from '@/db/participant_service.js';
 import { RecruitService } from '@/db/recruit_service.js';
 import { log4js_obj } from '@/log4js_settings.js';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { datetimeDiff } from '@/shared/datetime/date_calc';
 
 import { regenerateCanvas, RecruitOpCode } from '../common/canvases/regenerate_canvas.js';
 import { getMemberMentions } from '../common/member_list';
@@ -98,7 +100,7 @@ export async function close(
             await ParticipantService.deleteAllParticipant(guild.id, image1MsgId);
 
             // 環境変数にSERVER_IDが設定されている場合は、募集カウンタを増やす
-            if (guild.id === process.env.SERVER_ID) {
+            if (guild.id === env.serverId) {
                 await increaseRecruitCount(confirmedMemberIDList);
                 await increaseJoinCount(applicantIdList);
             }
@@ -132,7 +134,7 @@ export async function close(
             await ParticipantService.deleteAllParticipant(guild.id, image1MsgId);
 
             // 環境変数にSERVER_IDが設定されている場合は、募集カウンタを増やす
-            if (guild.id === process.env.SERVER_ID) {
+            if (guild.id === env.serverId) {
                 await increaseRecruitCount(confirmedMemberIDList);
                 await increaseJoinCount(applicantIdList);
             }

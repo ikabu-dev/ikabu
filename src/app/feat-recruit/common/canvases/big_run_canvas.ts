@@ -3,9 +3,9 @@ import Canvas from 'canvas';
 
 import { SalmonInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink.js';
 import { createRoundRect, drawArcImage, fillTextWithStroke } from '@/app/common/canvas_components';
-import { dateformat, formatDatetime } from '@/app/common/convert_datetime';
-import { exists, notExists } from '@/app/common/others.js';
-import { modalRecruit, placeHold } from '@/constant.js';
+import { modalRecruit, placeHold } from '@/config/constants/images';
+import { exists, notExists } from '@/shared/assert';
+import { dateformat, formatDatetime } from '@/shared/datetime/convert_datetime';
 
 import { RecruitOpCode } from './regenerate_canvas.js';
 

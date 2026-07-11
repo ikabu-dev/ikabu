@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import { RecruitParam } from '@/app/constant/button_id';
+import { RecruitParam } from '@/config/constants/button_id';
 
 export function joinRequestConfirmButtons(
     recruitId: string,

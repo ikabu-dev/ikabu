@@ -1,7 +1,7 @@
 import { ChannelType, Message } from 'discord.js';
 
 import { searchChannelById, searchChannelIdByName } from '@/app/common/manager/channel_manager';
-import { assertExistCheck, exists } from '@/app/common/others';
+import { assertExistCheck, exists } from '@/shared/assert';
 
 export async function deleteToken(message: Message<true>) {
     if (message.content.match('[a-zA-Z0-9_-]{23,28}\\.[a-zA-Z0-9_-]{6,7}\\.[a-zA-Z0-9_-]{27}')) {
