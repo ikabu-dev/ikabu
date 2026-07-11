@@ -112,21 +112,15 @@ async function regenRegularCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitRegularCanvas(
+    const recruitBuffer = await recruitRegularCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
-        submitMembersList[4],
-        submitMembersList[5],
-        submitMembersList[6],
-        submitMembersList[7],
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 8),
         condition,
         channelName,
-    );
+    });
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',
     });
@@ -160,17 +154,15 @@ async function regenEventCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitEventCanvas(
+    const recruitBuffer = await recruitEventCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 4),
         condition,
         channelName,
-    );
+    });
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',
     });
@@ -205,18 +197,16 @@ async function regenAnarchyCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitAnarchyCanvas(
+    const recruitBuffer = await recruitAnarchyCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 4),
         condition,
         rank,
         channelName,
-    );
+    });
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',
     });
@@ -251,18 +241,16 @@ async function regenSalmonCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitSalmonCanvas(
+    const recruitBuffer = await recruitSalmonCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 4),
         condition,
         channelName,
-        isTeamContest ? 'コンテスト' : undefined,
-    );
+        subTitle: isTeamContest ? 'コンテスト' : undefined,
+    });
 
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',
@@ -349,19 +337,17 @@ async function regenFesCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitFestCanvas(
+    const recruitBuffer = await recruitFestCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
-        teamRole.name,
-        teamRole.hexColor,
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 4),
+        team: teamRole.name,
+        color: teamRole.hexColor,
         condition,
         channelName,
-    );
+    });
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',
     });
@@ -394,17 +380,15 @@ async function regenBigRunCanvas(
 
     if (notExists(submitMembersList[0])) return;
 
-    const recruitBuffer = await recruitBigRunCanvas(
+    const recruitBuffer = await recruitBigRunCanvas({
         opCode,
-        remainingNum,
+        remaining: remainingNum,
         count,
-        submitMembersList[0],
-        submitMembersList[1],
-        submitMembersList[2],
-        submitMembersList[3],
+        recruiter: submitMembersList[0],
+        users: submitMembersList.slice(1, 4),
         condition,
         channelName,
-    );
+    });
 
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',

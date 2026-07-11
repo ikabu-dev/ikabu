@@ -110,17 +110,15 @@ async function getEventImageBuffers(
     const voiceChannel = recruitData.voiceChannel;
     const voiceChannelName = voiceChannel ? voiceChannel.name : null;
 
-    const recruitBuffer = await recruitEventCanvas(
-        RecruitOpCode.open,
-        recruitData.recruitNum,
-        recruitData.count,
-        recruitData.recruiter,
-        recruitData.attendee1,
-        recruitData.attendee2,
-        recruitData.attendee3,
-        recruitData.condition,
-        voiceChannelName,
-    );
+    const recruitBuffer = await recruitEventCanvas({
+        opCode: RecruitOpCode.open,
+        remaining: recruitData.recruitNum,
+        count: recruitData.count,
+        recruiter: recruitData.recruiter,
+        users: [recruitData.attendee1, recruitData.attendee2, recruitData.attendee3],
+        condition: recruitData.condition,
+        channelName: voiceChannelName,
+    });
 
     const ruleBuffer = await ruleEventCanvas(eventData);
 

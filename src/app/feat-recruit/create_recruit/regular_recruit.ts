@@ -111,21 +111,23 @@ async function getRegularImageBuffers(
     const voiceChannel = recruitData.voiceChannel;
     const voiceChannelName = voiceChannel ? voiceChannel.name : null;
 
-    const recruitBuffer = await recruitRegularCanvas(
-        RecruitOpCode.open,
-        recruitData.recruitNum,
-        recruitData.count,
-        recruitData.recruiter,
-        recruitData.attendee1,
-        recruitData.attendee2,
-        recruitData.attendee3,
-        null,
-        null,
-        null,
-        null,
-        recruitData.condition,
-        voiceChannelName,
-    );
+    const recruitBuffer = await recruitRegularCanvas({
+        opCode: RecruitOpCode.open,
+        remaining: recruitData.recruitNum,
+        count: recruitData.count,
+        recruiter: recruitData.recruiter,
+        users: [
+            recruitData.attendee1,
+            recruitData.attendee2,
+            recruitData.attendee3,
+            null,
+            null,
+            null,
+            null,
+        ],
+        condition: recruitData.condition,
+        channelName: voiceChannelName,
+    });
 
     const ruleBuffer = await ruleRegularCanvas(regularData);
 

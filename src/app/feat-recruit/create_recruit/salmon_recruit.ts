@@ -118,44 +118,38 @@ async function getSalmonImageBuffers(
     let recruitBuffer: Buffer;
     let ruleBuffer: Buffer;
     if (recruitType === RecruitType.SalmonRecruit) {
-        recruitBuffer = await recruitSalmonCanvas(
-            RecruitOpCode.open,
-            recruitData.recruitNum,
-            recruitData.count,
-            recruitData.recruiter,
-            recruitData.attendee1,
-            recruitData.attendee2,
-            null,
-            recruitData.condition,
-            voiceChannelName,
-        );
+        recruitBuffer = await recruitSalmonCanvas({
+            opCode: RecruitOpCode.open,
+            remaining: recruitData.recruitNum,
+            count: recruitData.count,
+            recruiter: recruitData.recruiter,
+            users: [recruitData.attendee1, recruitData.attendee2, null],
+            condition: recruitData.condition,
+            channelName: voiceChannelName,
+        });
         ruleBuffer = await ruleSalmonCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.BigRunRecruit) {
-        recruitBuffer = await recruitBigRunCanvas(
-            RecruitOpCode.open,
-            recruitData.recruitNum,
-            recruitData.count,
-            recruitData.recruiter,
-            recruitData.attendee1,
-            recruitData.attendee2,
-            null,
-            recruitData.condition,
-            voiceChannelName,
-        );
+        recruitBuffer = await recruitBigRunCanvas({
+            opCode: RecruitOpCode.open,
+            remaining: recruitData.recruitNum,
+            count: recruitData.count,
+            recruiter: recruitData.recruiter,
+            users: [recruitData.attendee1, recruitData.attendee2, null],
+            condition: recruitData.condition,
+            channelName: voiceChannelName,
+        });
         ruleBuffer = await ruleBigRunCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.TeamContestRecruit) {
-        recruitBuffer = await recruitSalmonCanvas(
-            RecruitOpCode.open,
-            recruitData.recruitNum,
-            recruitData.count,
-            recruitData.recruiter,
-            recruitData.attendee1,
-            recruitData.attendee2,
-            null,
-            recruitData.condition,
-            voiceChannelName,
-            'コンテスト',
-        );
+        recruitBuffer = await recruitSalmonCanvas({
+            opCode: RecruitOpCode.open,
+            remaining: recruitData.recruitNum,
+            count: recruitData.count,
+            recruiter: recruitData.recruiter,
+            users: [recruitData.attendee1, recruitData.attendee2, null],
+            condition: recruitData.condition,
+            channelName: voiceChannelName,
+            subTitle: 'コンテスト',
+        });
         ruleBuffer = await ruleSalmonCanvas(await getTeamContestData(recruitData.schedule, 0));
     } else {
         throw new Error('RecruitType not found');

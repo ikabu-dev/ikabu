@@ -129,18 +129,16 @@ async function getAnarchyImageBuffers(
     const voiceChannel = recruitData.voiceChannel;
     const voiceChannelName = voiceChannel ? voiceChannel.name : null;
 
-    const recruitBuffer = await recruitAnarchyCanvas(
-        RecruitOpCode.open,
-        recruitData.recruitNum,
-        recruitData.count,
-        recruitData.recruiter,
-        recruitData.attendee1,
-        recruitData.attendee2,
-        recruitData.attendee3,
-        recruitData.condition,
+    const recruitBuffer = await recruitAnarchyCanvas({
+        opCode: RecruitOpCode.open,
+        remaining: recruitData.recruitNum,
+        count: recruitData.count,
+        recruiter: recruitData.recruiter,
+        users: [recruitData.attendee1, recruitData.attendee2, recruitData.attendee3],
+        condition: recruitData.condition,
         rank,
-        voiceChannelName,
-    );
+        channelName: voiceChannelName,
+    });
 
     const ruleIconUrl = rule2image(anarchyData.rule);
     const ruleBuffer = await ruleAnarchyCanvas(anarchyData, ruleIconUrl);

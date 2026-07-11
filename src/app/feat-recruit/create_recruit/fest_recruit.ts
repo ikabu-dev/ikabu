@@ -116,19 +116,17 @@ async function getFestImageBuffers(
     const voiceChannel = recruitData.voiceChannel;
     const voiceChannelName = voiceChannel ? voiceChannel.name : null;
 
-    const recruitBuffer = await recruitFestCanvas(
-        RecruitOpCode.open,
-        recruitData.recruitNum,
-        recruitData.count,
-        recruitData.recruiter,
-        recruitData.attendee1,
-        recruitData.attendee2,
-        recruitData.attendee3,
-        teamRole.name,
-        teamRole.hexColor,
-        recruitData.condition,
-        voiceChannelName,
-    );
+    const recruitBuffer = await recruitFestCanvas({
+        opCode: RecruitOpCode.open,
+        remaining: recruitData.recruitNum,
+        count: recruitData.count,
+        recruiter: recruitData.recruiter,
+        users: [recruitData.attendee1, recruitData.attendee2, recruitData.attendee3],
+        team: teamRole.name,
+        color: teamRole.hexColor,
+        condition: recruitData.condition,
+        channelName: voiceChannelName,
+    });
 
     const ruleBuffer = await ruleFestCanvas(festData);
 
