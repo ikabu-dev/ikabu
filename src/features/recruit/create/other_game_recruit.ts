@@ -1,4 +1,7 @@
+import { basename } from 'node:path';
+
 import {
+    AttachmentBuilder,
     CacheType,
     ChannelType,
     ChatInputCommandInteraction,
@@ -94,10 +97,8 @@ async function monsterHunterWilds(
     const mention = role.toString();
     const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, 'モンハンワイルズ募集');
     const color = '#e39820';
-    const image =
-        'https://github.com/shngmsw/ikabu/blob/stg/images/games/MonsterHunterWilds.png?raw=true';
-    const logo =
-        'https://github.com/shngmsw/ikabu/blob/stg/images/games/MonsterHunterWilds_logo.png?raw=true';
+    const image = './images/games/MonsterHunterWilds.png';
+    const logo = './images/games/MonsterHunterWilds_logo.png';
     await sendOtherGames(
         interaction,
         guild,
@@ -130,10 +131,8 @@ async function apexLegends(
     const mention = role.toString();
     const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, 'ApexLegends募集');
     const color = '#F30100';
-    const image =
-        'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/ApexLegends.jpg';
-    const logo =
-        'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/ApexLegends_logo.png';
+    const image = './images/games/ApexLegends.jpg';
+    const logo = './images/games/ApexLegends_logo.png';
     await sendOtherGames(
         interaction,
         guild,
@@ -166,9 +165,8 @@ async function overwatch(
     const mention = role.toString();
     const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, 'Overwatch募集');
     const color = '#ED6516';
-    const image = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/Overwatch.jpg';
-    const logo =
-        'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/Overwatch_logo.png';
+    const image = './images/games/Overwatch.jpg';
+    const logo = './images/games/Overwatch_logo.png';
     await sendOtherGames(
         interaction,
         guild,
@@ -201,9 +199,8 @@ async function valorant(
     const mention = role.toString();
     const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, 'VALORANT募集');
     const color = '#FF4654';
-    const image = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/valorant.jpg';
-    const logo =
-        'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/valorant_logo.png';
+    const image = './images/games/valorant.jpg';
+    const logo = './images/games/valorant_logo.png';
     await sendOtherGames(
         interaction,
         guild,
@@ -235,8 +232,8 @@ async function others(
     const mention = `<@&${otherGamesRecruitRoleId}>`;
     const txt = buildOtherGameRecruitText(`<@${member.user.id}>`, `${title}募集`);
     const color = '#379C30';
-    const image = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/others.jpg';
-    const logo = 'https://raw.githubusercontent.com/shngmsw/ikabu/stg/images/games/others_logo.png';
+    const image = './images/games/others.jpg';
+    const logo = './images/games/others_logo.png';
     await sendOtherGames(
         interaction,
         guild,
@@ -278,6 +275,13 @@ async function sendOtherGames(
 
     assertExistCheck(recruiter, 'recruiter');
 
+    const imageName = basename(image);
+    const logoName = basename(logo);
+    const files = [
+        new AttachmentBuilder(image, { name: imageName }),
+        new AttachmentBuilder(logo, { name: logoName }),
+    ];
+
     const embed = new EmbedBuilder()
         .setAuthor({
             name: recruiter.displayName,
@@ -295,9 +299,9 @@ async function sendOtherGames(
                 value: condition,
             },
         ])
-        .setImage(image)
+        .setImage(`attachment://${imageName}`)
         .setTimestamp()
-        .setThumbnail(logo);
+        .setThumbnail(`attachment://${logoName}`);
 
     if (exists(voiceChannel)) {
         embed.addFields({
@@ -310,6 +314,7 @@ async function sendOtherGames(
         const embedMessage = await interaction.editReply({
             content: txt,
             embeds: [embed],
+            files: files,
         });
 
         let recruitNum = Number(recruitNumText);
