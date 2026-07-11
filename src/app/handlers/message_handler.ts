@@ -2,6 +2,15 @@ import { AttachmentBuilder, Message, PermissionsBitField } from 'discord.js';
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
+import { deleteToken } from '@/features/message_utils/delete_token';
+import { dispand } from '@/features/message_utils/dispander';
+import { removeRookie } from '@/features/onboarding/remove_rookie';
+import { sendIntentionConfirmReply } from '@/features/onboarding/send_questionnaire';
+import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
+import { stageInfo } from '@/features/stage_info/stageinfo';
+import { chatCountUp } from '@/features/stats/message_count';
+import { play } from '@/features/utils/voice/tts/discordjs_voice';
+import { vcToolsStickyFromMessage } from '@/features/vc_tools/vc_tools_message';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
@@ -9,15 +18,6 @@ import { exists } from '@/shared/assert';
 import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import { randomBool } from '@/shared/random';
 
-import { stageInfo } from '../event/cron/stageinfo';
-import { deleteToken } from '../event/message_related/delete_token';
-import { dispand } from '../event/message_related/dispander';
-import { chatCountUp } from '../event/message_related/message_count';
-import { removeRookie } from '../event/rookie/remove_rookie';
-import { sendIntentionConfirmReply } from '../event/rookie/send_questionnaire';
-import { vcToolsStickyFromMessage } from '../event/vctools_sticky/vc_tools_message';
-import { sendRecruitSticky } from '../feat-recruit/sticky/recruit_sticky_messages';
-import { play } from '../feat-utils/voice/tts/discordjs_voice';
 const logger = log4js_obj.getLogger('message');
 
 export async function call(message: Message<true>) {

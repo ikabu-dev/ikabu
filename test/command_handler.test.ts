@@ -78,83 +78,83 @@ const mocks = vi.hoisted(
         ) as Record<string, ReturnType<typeof vi.fn>>,
 );
 
-vi.mock('../src/app/feat-admin/shutdown/shutdown_process', () => ({ shutdown: mocks.shutdown }));
-vi.mock('../src/app/feat-admin/channel_manager/channel_manager_handler.js', () => ({
+vi.mock('@/features/admin/shutdown/shutdown_process', () => ({ shutdown: mocks.shutdown }));
+vi.mock('@/features/admin/channel_manager/channel_manager_handler', () => ({
     channelManagerHandler: mocks.channelManagerHandler,
 }));
-vi.mock('../src/app/feat-admin/channel_settings/channel_settings_handler.js', () => ({
+vi.mock('@/features/admin/channel_settings/channel_settings_handler', () => ({
     channelSettingsHandler: mocks.channelSettingsHandler,
 }));
-vi.mock('../src/app/feat-admin/environment_variables/variables_handler', () => ({
+vi.mock('@/features/admin/environment_variables/variables_handler', () => ({
     variablesHandler: mocks.variablesHandler,
 }));
-vi.mock('../src/app/feat-admin/fest_setting/fest_settings.js', () => ({
+vi.mock('@/features/admin/fest_setting/fest_settings', () => ({
     festSettingHandler: mocks.festSettingHandler,
 }));
-vi.mock('../src/app/feat-admin/joined_date_fixer/fix_joined_date.js', () => ({
+vi.mock('@/features/admin/joined_date_fixer/fix_joined_date', () => ({
     joinedAtFixer: mocks.joinedAtFixer,
 }));
-vi.mock('../src/app/feat-admin/unique_channel_settings/unique_channel_settings_handler.js', () => ({
+vi.mock('@/features/admin/unique_channel_settings/unique_channel_settings_handler', () => ({
     uniqueChannelSettingsHandler: mocks.uniqueChannelSettingsHandler,
 }));
-vi.mock('../src/app/feat-admin/unique_role_settings/unique_role_settings_handler.js', () => ({
+vi.mock('@/features/admin/unique_role_settings/unique_role_settings_handler', () => ({
     uniqueRoleSettingsHandler: mocks.uniqueRoleSettingsHandler,
 }));
-vi.mock('../src/app/feat-recruit/close_recruit/close_command.js', () => ({
+vi.mock('@/features/recruit/interactions/close_recruit/close_command', () => ({
     closeCommand: mocks.closeCommand,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/anarchy_recruit.js', () => ({
+vi.mock('@/features/recruit/create/anarchy_recruit', () => ({
     anarchyRecruit: mocks.anarchyRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/button_recruit.js', () => ({
+vi.mock('@/features/recruit/create/button_recruit', () => ({
     buttonRecruit: mocks.buttonRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/event_recruit.js', () => ({
+vi.mock('@/features/recruit/create/event_recruit', () => ({
     eventRecruit: mocks.eventRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/fest_recruit.js', () => ({
+vi.mock('@/features/recruit/create/fest_recruit', () => ({
     festRecruit: mocks.festRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/other_game_recruit', () => ({
+vi.mock('@/features/recruit/create/other_game_recruit', () => ({
     otherGameRecruit: mocks.otherGameRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/private_recruit', () => ({
+vi.mock('@/features/recruit/create/private_recruit', () => ({
     privateRecruit: mocks.privateRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/raiders_recruit.js', () => ({
+vi.mock('@/features/recruit/create/raiders_recruit', () => ({
     raidersRecruit: mocks.raidersRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/regular_recruit.js', () => ({
+vi.mock('@/features/recruit/create/regular_recruit', () => ({
     regularRecruit: mocks.regularRecruit,
 }));
-vi.mock('../src/app/feat-recruit/create_recruit/salmon_recruit.js', () => ({
+vi.mock('@/features/recruit/create/salmon_recruit', () => ({
     salmonRecruit: mocks.salmonRecruit,
 }));
-vi.mock('../src/app/feat-utils/other/experience.js', () => ({
+vi.mock('@/features/utils/other/experience', () => ({
     handleIkabuExperience: mocks.handleIkabuExperience,
 }));
-vi.mock('../src/app/feat-utils/other/friendcode', () => ({
+vi.mock('@/features/utils/other/friendcode', () => ({
     handleFriendCode: mocks.handleFriendCode,
 }));
-vi.mock('../src/app/feat-utils/other/help.js', () => ({ handleHelp: mocks.handleHelp }));
-vi.mock('../src/app/feat-utils/other/kansen.js', () => ({ handleKansen: mocks.handleKansen }));
-vi.mock('../src/app/feat-utils/other/pick.js', () => ({ handlePick: mocks.handlePick }));
-vi.mock('../src/app/feat-utils/other/timer.js', () => ({ handleTimer: mocks.handleTimer }));
-vi.mock('../src/app/feat-utils/other/wiki.js', () => ({ handleWiki: mocks.handleWiki }));
-vi.mock('../src/app/feat-utils/splat3/buki', () => ({ handleBuki: mocks.handleBuki }));
-vi.mock('../src/app/feat-utils/splat3/show', () => ({ handleShow: mocks.handleShow }));
-vi.mock('../src/app/feat-utils/team_divider/divider', () => ({
+vi.mock('@/features/utils/other/help', () => ({ handleHelp: mocks.handleHelp }));
+vi.mock('@/features/utils/other/kansen', () => ({ handleKansen: mocks.handleKansen }));
+vi.mock('@/features/utils/other/pick', () => ({ handlePick: mocks.handlePick }));
+vi.mock('@/features/utils/other/timer', () => ({ handleTimer: mocks.handleTimer }));
+vi.mock('@/features/utils/other/wiki', () => ({ handleWiki: mocks.handleWiki }));
+vi.mock('@/features/utils/splat3/buki', () => ({ handleBuki: mocks.handleBuki }));
+vi.mock('@/features/utils/splat3/show', () => ({ handleShow: mocks.handleShow }));
+vi.mock('@/features/utils/team_divider/divider', () => ({
     dividerInitialMessage: mocks.dividerInitialMessage,
 }));
-vi.mock('../src/app/feat-utils/voice/tts/discordjs_voice', () => ({
+vi.mock('@/features/utils/voice/tts/discordjs_voice', () => ({
     handleTTSCommand: mocks.handleTTSCommand,
 }));
-vi.mock('../src/app/feat-utils/voice/voice_locker', () => ({ voiceLocker: mocks.voiceLocker }));
-vi.mock('../src/app/feat-utils/voice/voice_mention.js', () => ({
+vi.mock('@/features/utils/voice/voice_locker', () => ({ voiceLocker: mocks.voiceLocker }));
+vi.mock('@/features/utils/voice/voice_mention', () => ({
     voiceMention: mocks.voiceMention,
 }));
-vi.mock('../src/app/feat-utils/voice/vpick.js', () => ({ handleVoicePick: mocks.handleVoicePick }));
-vi.mock('../src/app/feat-admin/ban/ban', () => ({ handleBan: mocks.handleBan }));
+vi.mock('@/features/utils/voice/vpick', () => ({ handleVoicePick: mocks.handleVoicePick }));
+vi.mock('@/features/admin/ban/ban', () => ({ handleBan: mocks.handleBan }));
 vi.mock('@/infra/logging/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
 vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
