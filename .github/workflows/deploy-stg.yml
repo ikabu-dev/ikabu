@@ -1,4 +1,4 @@
-name: Deploy to STG
+name: Deploy to stg
 
 on:
   issue_comment:
@@ -27,9 +27,15 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
         run: |
-          PR_JSON=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,headRefOid)
+          PR_JSON=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,headRefOid,baseRefName)
           HEAD_REF=$(echo "$PR_JSON" | jq -r '.headRefName')
           HEAD_SHA=$(echo "$PR_JSON" | jq -r '.headRefOid')
+          BASE_REF=$(echo "$PR_JSON" | jq -r '.baseRefName')
+
+          if [ "$BASE_REF" != "main" ]; then
+            echo "::notice::Skipped: PR #${PR_NUMBER} targets '${BASE_REF}', not 'main'."
+            exit 1
+          fi
 
           # ブランチ名のバリデーション（英数字、ハイフン、アンダースコア、スラッシュ、ドットのみ許可）
           if ! echo "$HEAD_REF" | grep -qE '^[a-zA-Z0-9/_.-]+$'; then
