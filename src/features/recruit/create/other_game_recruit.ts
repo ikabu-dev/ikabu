@@ -276,8 +276,8 @@ async function sendOtherGames(
     assertExistCheck(recruiter, 'recruiter');
 
     try {
-        const imageName = basename(image);
-        const logoName = basename(logo);
+        const imageName = `other-game-image-${basename(image)}`;
+        const logoName = `other-game-logo-${basename(logo)}`;
         const files = [
             new AttachmentBuilder(image, { name: imageName }),
             new AttachmentBuilder(logo, { name: logoName }),
