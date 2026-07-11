@@ -5,6 +5,7 @@ import { recruitAnarchyCanvas } from './anarchy_canvas';
 import { recruitBigRunCanvas } from './big_run_canvas';
 import { recruitEventCanvas } from './event_canvas';
 import { recruitFestCanvas } from './fest_canvas';
+import { recruitRaidersCanvas } from './raiders_canvas';
 import { recruitRegularCanvas } from './regular_canvas';
 import { recruitSalmonCanvas } from './salmon_canvas';
 import { ParticipantService, ParticipantMember } from '../../../../db/participant_service';
@@ -80,6 +81,9 @@ export async function regenerateCanvas(
                     opCode,
                     true,
                 );
+                break;
+            case RecruitType.RaidersRecruit:
+                await regenRaidersCanvas(message, recruit, participantsData, applicantNum, opCode);
                 break;
         }
     } catch (error) {
@@ -257,6 +261,51 @@ async function regenSalmonCanvas(
         condition,
         channelName,
         isTeamContest ? 'コンテスト' : undefined,
+    );
+
+    const recruitImage = new AttachmentBuilder(recruitBuffer, {
+        name: 'ikabu_recruit.png',
+    });
+
+    await message.edit({ files: [recruitImage] });
+}
+
+async function regenRaidersCanvas(
+    message: Message<true>,
+    recruit: Recruit,
+    participantsData: ParticipantMember[],
+    applicantNum: number,
+    opCode: number,
+) {
+    const applicantList: ParticipantMember[] = []; // 参加希望者リスト
+    for (const participant of participantsData) {
+        if (participant.userType === 2) {
+            applicantList.push(participant);
+        }
+    }
+    const recruitNum = recruit.recruitNum;
+    const remainingNum = recruitNum - applicantNum;
+    const count = remainingNum + participantsData.length; // 全体の枠数
+    const channelName = recruit.vcName;
+    const condition = recruit.condition;
+
+    const submitMembersList: (Member | null)[] = Array(count).fill(null); // 枠数までnull埋め
+    participantsData.forEach(
+        (participant, index) => (submitMembersList[index] = participant.member),
+    );
+
+    if (notExists(submitMembersList[0])) return;
+
+    const recruitBuffer = await recruitRaidersCanvas(
+        opCode,
+        remainingNum,
+        count,
+        submitMembersList[0],
+        submitMembersList[1],
+        submitMembersList[2],
+        submitMembersList[3],
+        condition,
+        channelName,
     );
 
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
