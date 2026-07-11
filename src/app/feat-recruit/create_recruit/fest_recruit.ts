@@ -136,8 +136,7 @@ async function getFestImageBuffers(
 
 async function getFestRecruitRole(
     interaction:
-        | ChatInputCommandInteraction<'cached' | 'raw'>
-        | ModalSubmitInteraction<'cached' | 'raw'>,
+        ChatInputCommandInteraction<'cached' | 'raw'> | ModalSubmitInteraction<'cached' | 'raw'>,
 ): Promise<Role> {
     assertExistCheck(interaction.channel, 'channel');
     const teamCharacterName = interaction.channel.name.slice(0, -2); // チャンネル名から'募集'を削除

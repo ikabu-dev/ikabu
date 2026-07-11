@@ -35,8 +35,7 @@ export type RecruitImageBuffersWithoutRule = {
 
 export async function sendRecruitCanvas(
     interaction:
-        | ChatInputCommandInteraction<'cached' | 'raw'>
-        | ModalSubmitInteraction<'cached' | 'raw'>,
+        ChatInputCommandInteraction<'cached' | 'raw'> | ModalSubmitInteraction<'cached' | 'raw'>,
     recruitRoleId: string | null,
     recruitData: RecruitData,
     imageBuffers: RecruitImageBuffers | RecruitImageBuffersWithoutRule,

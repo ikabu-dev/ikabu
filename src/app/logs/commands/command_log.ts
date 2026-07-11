@@ -10,8 +10,7 @@ import { sendEmbedsWebhook } from '../../common/webhook';
 
 export function sendCommandLog(
     interaction:
-        | MessageContextMenuCommandInteraction<CacheType>
-        | ChatInputCommandInteraction<CacheType>,
+        MessageContextMenuCommandInteraction<CacheType> | ChatInputCommandInteraction<CacheType>,
 ) {
     let authorName = '不明なユーザー';
     let authorId = '????????????????????';
