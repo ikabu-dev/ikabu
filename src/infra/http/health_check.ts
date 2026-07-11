@@ -14,7 +14,9 @@ const logger = log4js_obj.getLogger();
  * 監視側は正常と判断してしまっていた。
  */
 export function startHealthCheckServer() {
-    const port = env.port || 3000;
+    // env.port は文字列なので明示的に数値へ変換する
+    // (Node は数値文字列もポートとして解釈するが、型が string | number のままだと紛らわしい)
+    const port = env.port ? Number(env.port) : 3000;
 
     http.createServer((_request, response) => {
         if (client.isReady()) {

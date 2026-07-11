@@ -14,7 +14,8 @@ const logger = log4js_obj.getLogger();
  * スプラトゥーンのスケジュール更新に合わせて2時間毎に実行する。
  */
 export function startStageScheduleJob(client: Client) {
-    const job = new cron.CronJob(
+    // 第4引数の true で生成と同時に開始する
+    new cron.CronJob(
         '1 1-23/2 * * *',
         async () => {
             logger.info('cron job started');
@@ -38,6 +39,4 @@ export function startStageScheduleJob(client: Client) {
         true,
         'Asia/Tokyo',
     );
-
-    job.start();
 }
