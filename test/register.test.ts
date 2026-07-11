@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { commandDefinitions } from '../src/register';
+import { commandDefinitions } from '@/registry/register';
 
 describe('コマンド定義', () => {
     it('登録するSlash CommandのJSON表現を維持する', () => {
