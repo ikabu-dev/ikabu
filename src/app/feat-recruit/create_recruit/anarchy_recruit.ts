@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
-import { getAnarchyOpenData, MatchInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { RoleKeySet, isRoleKey, getUniqueRoleNameByKey } from '@/config/constants/role_key';
-import { RecruitType } from '@/db/recruit_service';
-import { UniqueRoleService } from '@/db/unique_role_service';
-import { log4js_obj } from '@/log4js_settings';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
+import { getAnarchyOpenData, MatchInfo } from '@/infra/external/splatoon3-ink/splatoon3_ink';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, notExists, exists } from '@/shared/assert';
 import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
 import { sleep } from '@/shared/sleep';

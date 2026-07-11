@@ -1,9 +1,9 @@
 import { Role } from '@prisma/client';
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
-import { getFesRegularData, MatchInfo } from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { RecruitType } from '@/db/recruit_service';
-import { RoleService } from '@/db/role_service';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
+import { RoleService } from '@/infra/db/repositories/role_service';
+import { getFesRegularData, MatchInfo } from '@/infra/external/splatoon3-ink/splatoon3_ink';
 import { assertExistCheck, notExists, exists } from '@/shared/assert';
 import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
 import { sleep } from '@/shared/sleep';

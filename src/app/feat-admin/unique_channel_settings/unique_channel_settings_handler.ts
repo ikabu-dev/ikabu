@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
 
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { log4js_obj } from '@/log4js_settings';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 
 import { setUniqueChannelCommand } from './set_unique_channel';
 import { showAllUniqueChannelSettings } from './show_all_unique_channel';

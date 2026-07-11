@@ -1,13 +1,13 @@
 import { ChannelType, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 
-import { searchDBMemberById } from '@/app/common/manager/member_manager';
 import { RecruitConditionError } from '@/app/feat-recruit/common/types/recruit_condition_error';
 import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { ErrorTexts } from '@/config/constants/error_texts';
-import { RecruitType } from '@/db/recruit_service';
-import { log4js_obj } from '@/log4js_settings';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists } from '@/shared/assert';
+import { searchDBMemberById } from '@/shared/discord_helpers/member_manager';
 
 import { buildRecruitText } from './recruit_text';
 import { validateRecruitNum } from '../validators/recruit_num_validator';

@@ -1,4 +1,4 @@
-import { RecruitCountService } from '@/db/recruit_count_service';
+import { RecruitCountService } from '@/infra/db/repositories/recruit_count_service';
 import { exists } from '@/shared/assert';
 
 export async function increaseRecruitCount(userIdList: string[]) {

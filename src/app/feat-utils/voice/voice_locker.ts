@@ -12,13 +12,13 @@ import {
     VoiceBasedChannel,
 } from 'discord.js';
 
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { searchAPIMemberById } from '@/app/common/manager/member_manager';
 import { sendVCToolsSticky } from '@/app/event/vctools_sticky/vc_tools_message';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { CommandVCLockButton } from '@/config/constants/button_id';
-import { log4js_obj } from '@/log4js_settings';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import { Merge } from '@/shared/types';
 const logger = log4js_obj.getLogger('interaction');
 

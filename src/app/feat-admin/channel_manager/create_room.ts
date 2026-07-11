@@ -12,18 +12,18 @@ import {
     Role,
 } from 'discord.js';
 
-import { createChannel } from '@/app/common/manager/channel_manager';
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { searchAPIMemberById } from '@/app/common/manager/member_manager';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { createChannel } from '@/shared/discord_helpers/channel_manager';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import {
     createRole,
     searchRoleById,
     setColorToRole,
     setRoleToMember,
-} from '@/app/common/manager/role_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { log4js_obj } from '@/log4js_settings';
-import { assertExistCheck, exists, notExists } from '@/shared/assert';
+} from '@/shared/discord_helpers/role_manager';
 
 // const INDEX_CATEGORY_ID = 0;
 const INDEX_CATEGORY_NAME = 1;

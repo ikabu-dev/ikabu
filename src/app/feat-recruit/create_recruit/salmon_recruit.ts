@@ -1,15 +1,15 @@
 import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
 
+import { RoleKeySet } from '@/config/constants/role_key';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import {
     getSchedule,
     checkBigRun,
     checkTeamContest,
     getSalmonData,
     getTeamContestData,
-} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { RoleKeySet } from '@/config/constants/role_key';
-import { RecruitType } from '@/db/recruit_service';
-import { UniqueRoleService } from '@/db/unique_role_service';
+} from '@/infra/external/splatoon3-ink/splatoon3_ink';
 import { assertExistCheck, exists } from '@/shared/assert';
 import { sleep } from '@/shared/sleep';
 

@@ -12,14 +12,14 @@ import {
     VoiceState,
 } from 'discord.js';
 
-import { sendStickyMessage } from '@/app/common/sticky_message';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
 import { VCLockButton, VCToolsButton } from '@/config/constants/button_id';
 import { StickyKey } from '@/config/constants/sticky_key';
 import { env } from '@/config/env';
-import { ChannelService } from '@/db/channel_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ChannelService } from '@/infra/db/repositories/channel_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists, notExists } from '@/shared/assert';
+import { sendStickyMessage } from '@/shared/discord_helpers/sticky_message';
 import { Merge } from '@/shared/types';
 
 import { createVCLockedButton } from './voice_lock';

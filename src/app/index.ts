@@ -26,21 +26,22 @@ import {
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
-import { assertExistCheck, exists, notExists } from '@/shared/assert';
-import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
-
-import { MemberService } from '../db/member_service';
-import { ParticipantService } from '../db/participant_service';
-import { UniqueChannelService } from '../db/unique_channel_service';
-import { log4js_obj } from '../log4js_settings';
-import { registerSlashCommands } from '../register';
+import { MemberService } from '@/infra/db/repositories/member_service';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import {
     inFallbackMode,
     updateLocale,
     updateSchedule,
-} from './common/apis/splatoon3.ink/splatoon3_ink';
-import { searchChannelById } from './common/manager/channel_manager';
-import { searchAPIMemberById } from './common/manager/member_manager';
+} from '@/infra/external/splatoon3-ink/splatoon3_ink';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
+import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
+
+import { registerSlashCommands } from '../register';
 import {
     deleteChannel,
     saveChannel,
@@ -65,7 +66,6 @@ import * as contextHandler from './handlers/context_handler';
 import * as messageHandler from './handlers/message_handler';
 import * as modalHandler from './handlers/modal_handler';
 import * as vcStateUpdateHandler from './handlers/vcState_update_handler';
-import { sendErrorLogs } from './logs/error/send_error_logs';
 
 export const client = new Client({
     intents: [

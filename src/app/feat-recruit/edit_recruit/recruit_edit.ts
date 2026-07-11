@@ -1,15 +1,15 @@
 import { BaseGuildTextChannel, MessageFlags, ModalSubmitInteraction } from 'discord.js';
 
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { sendStickyMessage } from '@/app/common/sticky_message';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { sendEditRecruitLog } from '@/app/logs/modals/recruit_modal_log';
 import { ErrorTexts } from '@/config/constants/error_texts';
 import { StickyKey } from '@/config/constants/sticky_key';
-import { ParticipantService } from '@/db/participant_service';
-import { RecruitService, RecruitType } from '@/db/recruit_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
+import { RecruitService, RecruitType } from '@/infra/db/repositories/recruit_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendEditRecruitLog } from '@/infra/logging/recruit_modal_log';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, notExists } from '@/shared/assert';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { sendStickyMessage } from '@/shared/discord_helpers/sticky_message';
 
 import { RecruitOpCode, regenerateCanvas } from '../common/canvases/regenerate_canvas';
 import { regenerateEmbed } from '../common/embeds/regenerate_embed';

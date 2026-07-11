@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, MessageFlags, PermissionsBitField } from 'discord.js';
 
-import { ChannelService } from '@/db/channel_service';
+import { ChannelService } from '@/infra/db/repositories/channel_service';
 import { notExists } from '@/shared/assert';
 
 import { deleteVariables } from './delete_variables';

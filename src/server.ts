@@ -12,5 +12,5 @@ http.createServer(function (
     response.writeHead(200, { 'Content-Type': 'text/plain' });
     response.end('Discord bot is active now \n');
 }).listen(env.port || 3000);
-require('./log4js_settings');
+require('@/infra/logging/log4js');
 require('./app/index.js');

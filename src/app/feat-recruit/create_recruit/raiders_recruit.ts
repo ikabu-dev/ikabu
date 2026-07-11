@@ -6,17 +6,17 @@ import {
     VoiceBasedChannel,
 } from 'discord.js';
 
-import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { searchAPIMemberById, searchDBMemberById } from '@/app/common/manager/member_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { sendRecruitModalLog } from '@/app/logs/modals/recruit_modal_log';
 import { ErrorTexts } from '@/config/constants/error_texts';
 import { RoleKeySet } from '@/config/constants/role_key';
-import { RecruitType } from '@/db/recruit_service';
-import { UniqueRoleService } from '@/db/unique_role_service';
-import { log4js_obj } from '@/log4js_settings';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
+import { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendRecruitModalLog } from '@/infra/logging/recruit_modal_log';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchAPIMemberById, searchDBMemberById } from '@/shared/discord_helpers/member_manager';
 import { sleep } from '@/shared/sleep';
 import { isEmpty } from '@/shared/string';
 

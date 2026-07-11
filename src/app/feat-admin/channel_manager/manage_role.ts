@@ -10,19 +10,19 @@ import {
     User,
 } from 'discord.js';
 
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager';
-import { searchAPIMemberById } from '@/app/common/manager/member_manager';
+import { ErrorTexts } from '@/config/constants/error_texts';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
+import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import {
     createRole,
     searchRoleById,
     searchRoleIdByName,
     setColorToRole,
     unassginRoleFromMembers,
-} from '@/app/common/manager/role_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { ErrorTexts } from '@/config/constants/error_texts';
-import { log4js_obj } from '@/log4js_settings';
-import { assertExistCheck, exists, notExists } from '@/shared/assert';
+} from '@/shared/discord_helpers/role_manager';
 
 const logger = log4js_obj.getLogger('RoleManager');
 

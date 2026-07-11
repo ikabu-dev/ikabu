@@ -1,6 +1,6 @@
 import { RecruitData } from '@/app/feat-recruit/common/types/recruit_data';
-import { ParticipantService } from '@/db/participant_service';
-import { RecruitType, RecruitService } from '@/db/recruit_service';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
+import { RecruitType, RecruitService } from '@/infra/db/repositories/recruit_service';
 import { exists } from '@/shared/assert';
 
 export async function registerRecruitData(

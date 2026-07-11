@@ -12,16 +12,16 @@ import {
     User,
 } from 'discord.js';
 
-import { searchChannelById } from '@/app/common/manager/channel_manager.js';
-import { getGuildByInteraction } from '@/app/common/manager/guild_manager.js';
-import { searchDBMemberById } from '@/app/common/manager/member_manager.js';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs.js';
 import { FriendCodeButton } from '@/config/constants/button_id';
 import { ChannelKeySet } from '@/config/constants/channel_key';
-import { FriendCodeService } from '@/db/friend_code_service.js';
-import { UniqueChannelService } from '@/db/unique_channel_service.js';
-import { log4js_obj } from '@/log4js_settings.js';
+import { FriendCodeService } from '@/infra/db/repositories/friend_code_service';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
+import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
+import { searchDBMemberById } from '@/shared/discord_helpers/member_manager';
 const logger = log4js_obj.getLogger();
 
 export async function handleFriendCode(interaction: ChatInputCommandInteraction<CacheType>) {

@@ -2,12 +2,13 @@ import { AttachmentBuilder, Message, PermissionsBitField } from 'discord.js';
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
-import { UniqueChannelService } from '@/db/unique_channel_service';
-import { log4js_obj } from '@/log4js_settings';
+import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists } from '@/shared/assert';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 import { randomBool } from '@/shared/random';
 
-import { searchAPIMemberById } from '../common/manager/member_manager';
 import { stageInfo } from '../event/cron/stageinfo';
 import { deleteToken } from '../event/message_related/delete_token';
 import { dispand } from '../event/message_related/dispander';
@@ -17,7 +18,6 @@ import { sendIntentionConfirmReply } from '../event/rookie/send_questionnaire';
 import { vcToolsStickyFromMessage } from '../event/vctools_sticky/vc_tools_message';
 import { sendRecruitSticky } from '../feat-recruit/sticky/recruit_sticky_messages';
 import { play } from '../feat-utils/voice/tts/discordjs_voice';
-import { sendErrorLogs } from '../logs/error/send_error_logs';
 const logger = log4js_obj.getLogger('message');
 
 export async function call(message: Message<true>) {

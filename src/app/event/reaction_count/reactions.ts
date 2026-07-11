@@ -1,7 +1,7 @@
 import { MessageReaction, User } from 'discord.js';
 
-import { ReactionService } from '@/db/reaction_service';
-import { UserReactionService } from '@/db/user_reaction_service';
+import { ReactionService } from '@/infra/db/repositories/reaction_service';
+import { UserReactionService } from '@/infra/db/repositories/user_reaction_service';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
 
 export async function emojiCountUp(reaction: MessageReaction, user: User) {

@@ -1,14 +1,14 @@
+import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
+import { getFestPeriodAlertText } from '@/app/feat-recruit/common/alert_texts/schedule_related_alerts';
+import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import {
     checkFes,
     checkBigRun,
     checkTeamContest,
     getEventData,
     inFallbackMode,
-} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
-import { RecruitAlertTexts } from '@/app/feat-recruit/common/alert_texts/alert_texts';
-import { getFestPeriodAlertText } from '@/app/feat-recruit/common/alert_texts/schedule_related_alerts';
-import { RecruitType } from '@/db/recruit_service';
+} from '@/infra/external/splatoon3-ink/splatoon3_ink';
+import { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
 import { notExists } from '@/shared/assert';
 
 type checkRecruitScheduleResponse = {

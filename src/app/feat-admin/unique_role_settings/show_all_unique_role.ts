@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
 import { RoleKeySet, getUniqueRoleNameByKey } from '@/config/constants/role_key';
-import { UniqueRoleService } from '@/db/unique_role_service';
+import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import { notExists } from '@/shared/assert';
 
 export async function showAllUniqueRoleSettings(

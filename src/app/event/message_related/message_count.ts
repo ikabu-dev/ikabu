@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-import { MessageCountService } from '@/db/message_count_service';
+import { MessageCountService } from '@/infra/db/repositories/message_count_service';
 import { exists } from '@/shared/assert';
 
 export async function chatCountUp(msg: Message<true>) {

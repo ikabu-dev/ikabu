@@ -7,6 +7,7 @@ import {
     CacheType,
 } from 'discord.js';
 
+import { ErrorTexts } from '@/config/constants/error_texts';
 import {
     getSchedule,
     checkFes,
@@ -17,14 +18,13 @@ import {
     getAnarchyOpenData,
     getXMatchData,
     inFallbackMode,
-} from '@/app/common/apis/splatoon3.ink/splatoon3_ink';
-import { Sp3Schedule } from '@/app/common/apis/splatoon3.ink/types/schedule';
-import { createRoundRect, fillTextWithStroke } from '@/app/common/canvas_components';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { ErrorTexts } from '@/config/constants/error_texts';
-import { log4js_obj } from '@/log4js_settings';
+} from '@/infra/external/splatoon3-ink/splatoon3_ink';
+import { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck } from '@/shared/assert';
 import { formatDatetime, dateformat } from '@/shared/datetime/convert_datetime';
+import { createRoundRect, fillTextWithStroke } from '@/shared/discord_helpers/canvas_components';
 import { rule2image } from '@/shared/splatoon/rule_image';
 
 const logger = log4js_obj.getLogger('interaction');

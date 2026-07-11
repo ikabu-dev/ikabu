@@ -15,10 +15,10 @@ import {
     getXMatchList,
     rule2txt,
     stage2txt,
-} from '../src/app/common/apis/splatoon3.ink/splatoon3_ink';
+} from '@/infra/external/splatoon3-ink/splatoon3_ink';
 
-import type { Sp3Locale } from '../src/app/common/apis/splatoon3.ink/types/locale';
-import type { Sp3Schedule } from '../src/app/common/apis/splatoon3.ink/types/schedule';
+import type { Sp3Locale } from '@/infra/external/splatoon3-ink/types/locale';
+import type { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
 
 const past = '2000-01-01T00:00:00.000Z';
 const future = '2099-01-01T00:00:00.000Z';

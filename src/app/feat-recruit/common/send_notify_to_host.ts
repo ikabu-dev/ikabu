@@ -11,13 +11,13 @@ import {
     TextBasedChannel,
 } from 'discord.js';
 
-import { searchChannelById } from '@/app/common/manager/channel_manager';
-import { searchAPIMemberById } from '@/app/common/manager/member_manager';
-import { searchMessageById } from '@/app/common/manager/message_manager';
-import { sendErrorLogs } from '@/app/logs/error/send_error_logs';
-import { ParticipantMember } from '@/db/participant_service';
-import { log4js_obj } from '@/log4js_settings';
+import { ParticipantMember } from '@/infra/db/repositories/participant_service';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists } from '@/shared/assert';
+import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
+import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
+import { searchMessageById } from '@/shared/discord_helpers/message_manager';
 import { sleep } from '@/shared/sleep';
 
 import { messageLinkButtons } from '../create_recruit/common/create_recruit_buttons';
