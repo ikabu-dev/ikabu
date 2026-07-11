@@ -83,8 +83,7 @@
       "better-sqlite3",
       "canvas",
       "ffmpeg-static",
-      "prisma",
-      "sqlite3"
+      "prisma"
     ]
   }
 }
