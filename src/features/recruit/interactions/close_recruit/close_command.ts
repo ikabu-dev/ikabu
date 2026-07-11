@@ -1,15 +1,17 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 
-import { createNewRecruitButton } from '@/features/recruit/ui/buttons/create_recruit_buttons';
-import { getCloseEmbed, getCommandHelpEmbed } from '@/features/recruit/ui/recruit_embeds';
-import { assertExistCheck } from '@/shared/assert';
+import { closeCommand } from '@/features/recruit/interactions/close_recruit/close_by_command';
 
-export async function closeCommand(interaction: ChatInputCommandInteraction<'cached'>) {
-    assertExistCheck(interaction.channel, 'channel');
-    const embed = getCloseEmbed();
-    const channelName = interaction.channel.name;
-    await interaction.reply({
-        embeds: [embed, await getCommandHelpEmbed(interaction.guild, channelName)],
-        components: [createNewRecruitButton(channelName)],
-    });
-}
+import type { GuildChatInputCommand } from '@/registry/types';
+
+const closeRecruit = new SlashCommandBuilder()
+    .setName('close')
+    .setDescription('募集を〆ます。ボタンが使えないときに使ってください。')
+    .setDMPermission(false);
+
+export const closeRecruitCommand: GuildChatInputCommand = {
+    kind: 'chatInput',
+    guildOnly: true,
+    definition: closeRecruit,
+    execute: closeCommand,
+};

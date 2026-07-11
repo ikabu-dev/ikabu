@@ -9,8 +9,8 @@ import { sendIntentionConfirmReply } from '@/features/onboarding/send_questionna
 import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
 import { stageInfo } from '@/features/stage_info/stageinfo';
 import { chatCountUp } from '@/features/stats/message_count';
-import { play } from '@/features/utils/voice/tts/discordjs_voice';
-import { vcToolsStickyFromMessage } from '@/features/utils/voice/vc_tools/vc_tools_message';
+import { play } from '@/features/voice/tts/discordjs_voice';
+import { vcToolsStickyFromMessage } from '@/features/voice/vc_tools/vc_tools_message';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
