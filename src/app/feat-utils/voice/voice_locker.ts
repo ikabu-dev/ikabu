@@ -307,21 +307,21 @@ export function createVCLEmbed(channelState: ChannelState) {
         .setTitle('ボイスチャンネル情報')
         .addFields([{ name: '対象のチャンネル', value: '<#' + channelState.id + '>' }]);
     if (channelState.isLock) {
-        embed.addFields([
+        (embed.addFields([
             {
                 name: '状態',
                 value: '制限中',
             },
         ]),
-            embed.setColor('#d83c3e');
+            embed.setColor('#d83c3e'));
     } else {
-        embed.addFields([
+        (embed.addFields([
             {
                 name: '状態',
                 value: '制限なし',
             },
         ]),
-            embed.setColor('#2d7d46');
+            embed.setColor('#2d7d46'));
     }
     embed.addFields([{ name: '人数制限', value: String(limit) }]);
     return embed;
