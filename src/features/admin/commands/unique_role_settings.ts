@@ -1,15 +1,17 @@
 import {
     SlashCommandBuilder,
-    SlashCommandSubcommandBuilder,
-    SlashCommandStringOption,
     SlashCommandRoleOption,
+    SlashCommandStringOption,
+    SlashCommandSubcommandBuilder,
 } from 'discord.js';
 
-import { commandNames } from '@/config/constants/commands';
 import { RoleKeySet } from '@/config/constants/role_key';
+import { uniqueRoleSettingsHandler } from '@/features/admin/unique_role_settings/unique_role_settings_handler';
 
-export const uniqueRoleSettings = new SlashCommandBuilder()
-    .setName(commandNames.uniqueRoleSetting)
+import type { GuildChatInputCommand } from '@/registry/types';
+
+const uniqueRoleSettings = new SlashCommandBuilder()
+    .setName('固有ロール設定')
     .setDescription('固有ロールの設定ができます。')
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
         subcommand.setName('全設定表示').setDescription('すべての固有ロールの設定を表示します。'),
@@ -50,3 +52,10 @@ function addUniqueRoleChoices(stringOption: SlashCommandStringOption) {
     }
     return stringOption;
 }
+
+export const uniqueRoleSettingsCommand: GuildChatInputCommand = {
+    kind: 'chatInput',
+    guildOnly: true,
+    definition: uniqueRoleSettings,
+    execute: uniqueRoleSettingsHandler,
+};

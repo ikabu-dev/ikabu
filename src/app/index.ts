@@ -54,12 +54,12 @@ import {
 } from '@/infra/external/splatoon3-ink/splatoon3_ink';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
+import { registerSlashCommands } from '@/registry/register';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
 import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
 import { getDeveloperMention } from '@/shared/discord_helpers/developer_mention';
 import { searchAPIMemberById } from '@/shared/discord_helpers/member_manager';
 
-import { registerSlashCommands } from '../register';
 import * as buttonHandler from './handlers/button_handler';
 import * as commandHandler from './handlers/command_handler';
 import * as contextHandler from './handlers/context_handler';

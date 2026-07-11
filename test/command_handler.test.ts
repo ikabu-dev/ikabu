@@ -158,38 +158,37 @@ vi.mock('@/features/admin/ban/ban', () => ({ handleBan: mocks.handleBan }));
 vi.mock('@/infra/logging/command_log', () => ({ sendCommandLog: mocks.sendCommandLog }));
 vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
-import { commandNames } from '@/config/constants/commands';
-
 import { call } from '../src/app/handlers/command_handler';
 
+// [Discord に登録されるコマンド名, dispatch されるべきハンドラ]
 const cases: [string, string][] = [
     ['shutdown', 'shutdown'],
-    ['vclock', 'voiceLocker'],
+    ['ボイスロック', 'voiceLocker'],
     ['close', 'closeCommand'],
-    ['team_divider', 'dividerInitialMessage'],
-    ['regular', 'regularRecruit'],
-    ['anarchy', 'anarchyRecruit'],
-    ['event', 'eventRecruit'],
-    ['salmon', 'salmonRecruit'],
-    ['raiders', 'raidersRecruit'],
-    ['fesA', 'festRecruit'],
-    ['fesB', 'festRecruit'],
-    ['fesC', 'festRecruit'],
-    ['other_game', 'otherGameRecruit'],
-    ['private', 'privateRecruit'],
-    ['buttonRecruit', 'buttonRecruit'],
-    ['voiceChannelMention', 'voiceMention'],
-    ['channelSetting', 'channelSettingsHandler'],
-    ['uniqueChannelSetting', 'uniqueChannelSettingsHandler'],
-    ['uniqueRoleSetting', 'uniqueRoleSettingsHandler'],
-    ['variablesSettings', 'variablesHandler'],
-    ['voice_pick', 'handleVoicePick'],
+    ['チーム分け', 'dividerInitialMessage'],
+    ['ナワバリ募集', 'regularRecruit'],
+    ['バンカラ募集', 'anarchyRecruit'],
+    ['イベマ募集', 'eventRecruit'],
+    ['サーモンラン募集', 'salmonRecruit'],
+    ['レイダース募集', 'raidersRecruit'],
+    ['フウカ陣営', 'festRecruit'],
+    ['マンタロー陣営', 'festRecruit'],
+    ['ウツホ陣営', 'festRecruit'],
+    ['別ゲー募集', 'otherGameRecruit'],
+    ['プラベ募集', 'privateRecruit'],
+    ['募集ボタン', 'buttonRecruit'],
+    ['ボイスメンション', 'voiceMention'],
+    ['チャンネル設定', 'channelSettingsHandler'],
+    ['固有チャンネル設定', 'uniqueChannelSettingsHandler'],
+    ['固有ロール設定', 'uniqueRoleSettingsHandler'],
+    ['環境変数設定', 'variablesHandler'],
+    ['vpick', 'handleVoicePick'],
     ['ban', 'handleBan'],
-    ['joinedDateFixer', 'joinedAtFixer'],
-    ['festivalSettings', 'festSettingHandler'],
-    ['experience', 'handleIkabuExperience'],
+    ['入部日修正', 'joinedAtFixer'],
+    ['フェスカテゴリ設定', 'festSettingHandler'],
+    ['イカ部歴', 'handleIkabuExperience'],
     ['voice', 'handleTTSCommand'],
-    ['ch_manager', 'channelManagerHandler'],
+    ['ch_management', 'channelManagerHandler'],
     ['friend_code', 'handleFriendCode'],
     ['wiki', 'handleWiki'],
     ['kansen', 'handleKansen'],
@@ -203,9 +202,9 @@ const cases: [string, string][] = [
 describe('command_handler dispatch', () => {
     beforeEach(() => vi.clearAllMocks());
 
-    it.each(cases)('%s を正しいハンドラへ1回dispatchする', async (commandKey, handler) => {
+    it.each(cases)('%s を正しいハンドラへ1回dispatchする', async (commandName, handler) => {
         const interaction = {
-            commandName: commandNames[commandKey as keyof typeof commandNames],
+            commandName,
             replied: false,
             deferred: false,
             channel: { isDMBased: () => false },
@@ -222,7 +221,7 @@ describe('command_handler dispatch', () => {
 
     it('返信済みのボイスロックは再dispatchしない', async () => {
         await call({
-            commandName: commandNames.vclock,
+            commandName: 'ボイスロック',
             replied: true,
             deferred: false,
             inCachedGuild: () => true,
