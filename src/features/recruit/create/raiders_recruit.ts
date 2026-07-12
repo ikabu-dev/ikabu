@@ -8,21 +8,19 @@ import {
 
 import { ErrorTexts } from '@/config/constants/error_texts';
 import { RoleKeySet } from '@/config/constants/role_key';
-import { registerRecruitData } from '@/features/recruit/create/common/register_recruit_data';
-import { removeDeleteButton } from '@/features/recruit/create/common/remove_delete_button';
 import {
-    sendRecruitCanvas,
-    RecruitImageBuffersWithoutRule,
-} from '@/features/recruit/create/common/send_recruit_message';
+    createRecruit,
+    RecruitCreateInteraction,
+    RecruitSpec,
+    voiceChannelName,
+} from '@/features/recruit/create/common/recruit_pipeline';
 import { RecruitConditionError } from '@/features/recruit/domain/types/recruit_condition_error';
 import { RecruitData } from '@/features/recruit/domain/types/recruit_data';
 import { validateRecruitNum } from '@/features/recruit/domain/validators/recruit_num_validator';
 import { validateVoiceChannel } from '@/features/recruit/domain/validators/vc_validator';
-import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
 import { recruitRaidersCanvas } from '@/features/recruit/ui/canvases/raiders_canvas';
 import { RecruitOpCode } from '@/features/recruit/ui/canvases/regenerate_canvas';
 import { buildRecruitText } from '@/features/recruit/ui/recruit_text';
-import { createRecruitEvent } from '@/features/recruit/vc_reservation/recruit_event';
 import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
@@ -32,7 +30,6 @@ import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
 import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
 import { searchAPIMemberById, searchDBMemberById } from '@/shared/discord_helpers/member_manager';
-import { sleep } from '@/shared/sleep';
 import { isEmpty } from '@/shared/string';
 
 const logger = log4js_obj.getLogger('recruit');
@@ -52,83 +49,65 @@ const emptySchedule: Sp3Schedule = {
     },
 };
 
-export async function raidersRecruit(
-    interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,
-) {
-    assertExistCheck(interaction.channel, 'channel');
-    // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({});
+const spec: RecruitSpec<undefined> = {
+    recruitName: 'レイダース募集',
+    eventName: 'レイダース',
+    autoClose: false,
 
-    const recruitName = 'レイダース募集';
-    const recruitRoleId = await UniqueRoleService.getRoleIdByKey(
-        interaction.guildId,
-        RoleKeySet.RaidersRecruit.key,
-    );
-
-    if (notExists(recruitRoleId)) {
-        await interaction.channel.send(
-            '設定がおかしいでし！\n「お手数ですがサポートセンターまでご連絡お願いします。」でし！',
+    prepare: async (interaction) => {
+        assertExistCheck(interaction.channel, 'channel');
+        const recruitRoleId = await UniqueRoleService.getRoleIdByKey(
+            interaction.guildId,
+            RoleKeySet.RaidersRecruit.key,
         );
-        return;
-    }
 
-    let recruitData: RecruitData;
-    if (interaction.isChatInputCommand()) {
-        try {
-            recruitData = await arrangeRaidersRecruitData(interaction, recruitName);
-        } catch (error) {
-            return;
+        if (notExists(recruitRoleId)) {
+            await interaction.channel.send(
+                '設定がおかしいでし！\n「お手数ですがサポートセンターまでご連絡お願いします。」でし！',
+            );
+            return null;
         }
-    } else if (interaction.isModalSubmit()) {
-        try {
-            recruitData = await arrangeRaidersModalRecruitData(interaction, recruitName);
-        } catch (error) {
-            return;
+
+        return {
+            recruitType: RecruitType.RaidersRecruit,
+            recruitRoleId,
+            context: undefined,
+        };
+    },
+
+    // レイダースにはスケジュールがないため、共通の整形処理（スケジュール検証を伴う）は使わない
+    arrange: async (interaction, recruitName) => {
+        if (interaction.isChatInputCommand()) {
+            return await arrangeRaidersRecruitData(interaction, recruitName);
         }
-    } else {
-        throw new Error('interaction type is invalid');
-    }
+        return await arrangeRaidersModalRecruitData(interaction, recruitName);
+    },
 
-    const raidersBuffers = await getRaidersImageBuffers(recruitData);
+    build: async (recruitData) => {
+        const recruitBuffer = await recruitRaidersCanvas(
+            RecruitOpCode.open,
+            recruitData.recruitNum,
+            recruitData.count,
+            recruitData.recruiter,
+            recruitData.attendee1,
+            recruitData.attendee2,
+            null,
+            recruitData.condition,
+            voiceChannelName(recruitData),
+        );
 
-    const recruitMessageList = await sendRecruitCanvas(
-        interaction,
-        recruitRoleId,
-        recruitData,
-        raidersBuffers,
-    );
+        return {
+            // レイダースにはルール画像がないため、募集カードをイベントのサムネイルに使う
+            imageBuffers: { recruitBuffer, ruleBuffer: null },
+            eventImage: recruitBuffer,
+            eventStartTime: new Date(),
+            option: null,
+        };
+    },
+};
 
-    let eventId: string | null = null;
-    if (exists(recruitData.voiceChannel)) {
-        eventId = (
-            await createRecruitEvent(
-                recruitData.guild,
-                `レイダース - ${recruitData.recruiter.displayName}`,
-                recruitData.recruiter.userId,
-                recruitData.voiceChannel,
-                raidersBuffers.recruitBuffer,
-                new Date(),
-            )
-        ).id;
-    }
-
-    await registerRecruitData(
-        recruitMessageList.recruitMessage.id,
-        RecruitType.RaidersRecruit,
-        recruitData,
-        eventId,
-        null,
-    );
-
-    // 募集リスト更新
-    await sendRecruitSticky({
-        channelOpt: { guild: recruitData.guild, channelId: recruitData.recruitChannel.id },
-    });
-
-    // 15秒後に削除ボタンを消す
-    await sleep(15);
-
-    await removeDeleteButton(recruitData, recruitMessageList.deleteButtonMessage.id);
+export async function raidersRecruit(interaction: RecruitCreateInteraction) {
+    await createRecruit(interaction, spec);
 }
 
 /*
@@ -283,24 +262,4 @@ async function arrangeRaidersModalRecruitData(
         }
         throw error;
     }
-}
-
-async function getRaidersImageBuffers(
-    recruitData: RecruitData,
-): Promise<RecruitImageBuffersWithoutRule> {
-    const voiceChannel = recruitData.voiceChannel;
-    const voiceChannelName = voiceChannel ? voiceChannel.name : null;
-
-    const recruitBuffer = await recruitRaidersCanvas(
-        RecruitOpCode.open,
-        recruitData.recruitNum,
-        recruitData.count,
-        recruitData.recruiter,
-        recruitData.attendee1,
-        recruitData.attendee2,
-        null,
-        recruitData.condition,
-        voiceChannelName,
-    );
-    return { recruitBuffer: recruitBuffer, ruleBuffer: null };
 }
