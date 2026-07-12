@@ -373,6 +373,8 @@ async function sendOtherGames(
         await sentMessage.edit({
             components: [recruitActionRow(embedMessage)],
         });
+        // 自動〆でボタンを無効化できるように、ボタンメッセージのIDを保存する
+        await RecruitService.updateButtonMessageId(guild.id, embedMessage.id, sentMessage.id);
 
         await interaction.followUp({
             content: '募集完了でし！参加者が来るまで待つでし！\n15秒間は募集を取り消せるでし！',

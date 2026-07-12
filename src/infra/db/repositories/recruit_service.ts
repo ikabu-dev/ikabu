@@ -119,6 +119,28 @@ export class RecruitService {
         });
     }
 
+    /**
+     * 募集にボタンメッセージIDを紐付ける。
+     *
+     * プラベ・別ゲーはボタンを募集登録の後に送るため、登録時点では ID が無い。
+     * 自動〆はこの ID からボタンメッセージを引いて無効化する。
+     */
+    static async updateButtonMessageId(
+        guildId: string,
+        messageId: string,
+        buttonMessageId: string,
+    ) {
+        await prisma.recruit.updateMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+            data: {
+                buttonMessageId: buttonMessageId,
+            },
+        });
+    }
+
     static async getRecruit(guildId: string, messageId: string) {
         const recruit = await prisma.recruit.findUnique({
             where: {

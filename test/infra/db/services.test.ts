@@ -136,3 +136,28 @@ describe('締切対象の募集スキャン', () => {
         await expect(RecruitService.getRecruitsToClose(now)).rejects.toThrow('db');
     });
 });
+
+describe('ボタンメッセージIDの保存', () => {
+    beforeEach(() => vi.clearAllMocks());
+
+    // プラベ・別ゲーはボタンを募集登録の後に送るため、登録時には ID が無い。
+    // 自動〆はこの ID が無いとボタンを無効化できず、ゾンビボタンが残る。
+    it('募集にボタンメッセージIDを紐付ける', async () => {
+        mocks.recruit.updateMany.mockResolvedValue({ count: 1 });
+
+        await RecruitService.updateButtonMessageId('g', 'm', 'btn');
+
+        expect(mocks.recruit.updateMany).toHaveBeenCalledWith({
+            where: { guildId: 'g', messageId: 'm' },
+            data: { buttonMessageId: 'btn' },
+        });
+    });
+
+    it('DB障害は握り潰さず throw する', async () => {
+        mocks.recruit.updateMany.mockRejectedValueOnce(new Error('db'));
+
+        await expect(RecruitService.updateButtonMessageId('g', 'm', 'btn')).rejects.toThrow(
+            'db',
+        );
+    });
+});
