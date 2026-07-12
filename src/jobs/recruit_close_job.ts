@@ -19,10 +19,21 @@ const logger = log4js_obj.getLogger('recruit');
  */
 export function startRecruitCloseJob(client: Client) {
     // 第4引数の true で生成と同時に開始する
+    let isRunning = false;
+
     new cron.CronJob(
         '* * * * *',
         async () => {
-            await closeExpiredRecruits(client);
+            if (isRunning) return;
+            isRunning = true;
+
+            try {
+                await closeExpiredRecruits(client);
+            } catch (error) {
+                await sendErrorLogs(logger, error);
+            } finally {
+                isRunning = false;
+            }
         },
         null,
         true,
