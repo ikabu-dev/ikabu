@@ -1,16 +1,14 @@
-import { ChatInputCommandInteraction, ModalSubmitInteraction } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 import { RoleKeySet } from '@/config/constants/role_key';
-import { arrangeCommandRecruitData } from '@/features/recruit/create/common/arrange_command_data';
-import { arrangeModalRecruitData } from '@/features/recruit/create/common/arrange_modal_data';
-import { registerRecruitData } from '@/features/recruit/create/common/register_recruit_data';
-import { removeDeleteButton } from '@/features/recruit/create/common/remove_delete_button';
 import {
-    sendRecruitCanvas,
-    RecruitImageBuffers,
-} from '@/features/recruit/create/common/send_recruit_message';
+    createRecruit,
+    RecruitBuild,
+    RecruitCreateInteraction,
+    RecruitSpec,
+    voiceChannelName,
+} from '@/features/recruit/create/common/recruit_pipeline';
 import { RecruitData } from '@/features/recruit/domain/types/recruit_data';
-import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
 import {
     recruitBigRunCanvas,
     ruleBigRunCanvas,
@@ -20,7 +18,6 @@ import {
     recruitSalmonCanvas,
     ruleSalmonCanvas,
 } from '@/features/recruit/ui/canvases/salmon_canvas';
-import { createRecruitEvent } from '@/features/recruit/vc_reservation/recruit_event';
 import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import {
@@ -30,99 +27,54 @@ import {
     getSalmonData,
     getTeamContestData,
 } from '@/infra/external/splatoon3-ink/splatoon3_ink';
-import { assertExistCheck, exists } from '@/shared/assert';
-import { sleep } from '@/shared/sleep';
+import { assertExistCheck } from '@/shared/assert';
 
-export async function salmonRecruit(
-    interaction: ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>,
-) {
-    assertExistCheck(interaction.channel, 'channel');
-    // 'インタラクションに失敗'が出ないようにするため
-    await interaction.deferReply({});
+const spec: RecruitSpec<undefined> = {
+    recruitName: 'バイト募集',
+    eventName: 'サーモンラン',
+    autoClose: false,
 
-    const recruitName = 'バイト募集';
-    let recruitType;
-    const recruitRoleId = await UniqueRoleService.getRoleIdByKey(
-        interaction.guildId,
-        RoleKeySet.SalmonRecruit.key,
-    );
-
-    let recruitData: RecruitData;
-    if (interaction.isChatInputCommand()) {
-        recruitType = getRecruitType(interaction);
-        try {
-            recruitData = await arrangeCommandRecruitData(interaction, recruitName, recruitType);
-        } catch (error) {
-            return;
-        }
-    } else if (interaction.isModalSubmit()) {
-        try {
-            const schedule = await getSchedule();
-            assertExistCheck(schedule, 'schedule');
-            if (checkBigRun(schedule, 0)) {
-                recruitType = RecruitType.BigRunRecruit;
-            } else if (checkTeamContest(schedule, 0)) {
-                recruitType = RecruitType.TeamContestRecruit;
-            } else {
-                recruitType = RecruitType.SalmonRecruit;
+    prepare: async (interaction) => {
+        let recruitType: RecruitType;
+        if (interaction.isChatInputCommand()) {
+            recruitType = getRecruitTypeFromSubcommand(interaction);
+        } else {
+            try {
+                recruitType = await getRecruitTypeFromSchedule();
+            } catch (error) {
+                return null;
             }
-
-            recruitData = await arrangeModalRecruitData(interaction, recruitName, recruitType);
-        } catch (error) {
-            return;
         }
-    } else {
-        throw new Error('interaction type is invalid');
-    }
 
-    const salmonBuffers = await getSalmonImageBuffers(recruitData, recruitType);
+        return {
+            recruitType,
+            recruitRoleId: await UniqueRoleService.getRoleIdByKey(
+                interaction.guildId,
+                RoleKeySet.SalmonRecruit.key,
+            ),
+            context: undefined,
+        };
+    },
 
-    const recruitMessageList = await sendRecruitCanvas(
-        interaction,
-        recruitRoleId,
-        recruitData,
-        salmonBuffers,
-    );
+    build: async (recruitData, { recruitType }) => {
+        const buffers = await getSalmonImageBuffers(recruitData, recruitType);
+        return {
+            ...buffers,
+            eventStartTime: new Date(),
+            option: null,
+        };
+    },
+};
 
-    let eventId: string | null = null;
-    if (exists(recruitData.voiceChannel)) {
-        eventId = (
-            await createRecruitEvent(
-                recruitData.guild,
-                `サーモンラン - ${recruitData.recruiter.displayName}`,
-                recruitData.recruiter.userId,
-                recruitData.voiceChannel,
-                salmonBuffers.ruleBuffer,
-                new Date(),
-            )
-        ).id;
-    }
-
-    await registerRecruitData(
-        recruitMessageList.recruitMessage.id,
-        recruitType,
-        recruitData,
-        eventId,
-        null,
-    );
-
-    // 募集リスト更新
-    await sendRecruitSticky({
-        channelOpt: { guild: recruitData.guild, channelId: recruitData.recruitChannel.id },
-    });
-
-    // 15秒後に削除ボタンを消す
-    await sleep(15);
-
-    await removeDeleteButton(recruitData, recruitMessageList.deleteButtonMessage.id);
+export async function salmonRecruit(interaction: RecruitCreateInteraction) {
+    await createRecruit(interaction, spec);
 }
 
 async function getSalmonImageBuffers(
     recruitData: RecruitData,
     recruitType: RecruitType,
-): Promise<RecruitImageBuffers> {
-    const voiceChannel = recruitData.voiceChannel;
-    const voiceChannelName = voiceChannel ? voiceChannel.name : null;
+): Promise<Pick<RecruitBuild, 'imageBuffers' | 'eventImage'>> {
+    const voiceChannel = voiceChannelName(recruitData);
 
     let recruitBuffer: Buffer;
     let ruleBuffer: Buffer;
@@ -136,7 +88,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannelName,
+            voiceChannel,
         );
         ruleBuffer = await ruleSalmonCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.BigRunRecruit) {
@@ -149,7 +101,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannelName,
+            voiceChannel,
         );
         ruleBuffer = await ruleBigRunCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.TeamContestRecruit) {
@@ -162,7 +114,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannelName,
+            voiceChannel,
             'コンテスト',
         );
         ruleBuffer = await ruleSalmonCanvas(await getTeamContestData(recruitData.schedule, 0));
@@ -170,10 +122,29 @@ async function getSalmonImageBuffers(
         throw new Error('RecruitType not found');
     }
 
-    return { recruitBuffer: recruitBuffer, ruleBuffer: ruleBuffer };
+    return {
+        imageBuffers: { recruitBuffer, ruleBuffer },
+        eventImage: ruleBuffer,
+    };
 }
 
-function getRecruitType(interaction: ChatInputCommandInteraction<'cached' | 'raw'>): RecruitType {
+/** モーダルからの募集では、現在のスケジュールからバイトの種別を判定する */
+async function getRecruitTypeFromSchedule(): Promise<RecruitType> {
+    const schedule = await getSchedule();
+    assertExistCheck(schedule, 'schedule');
+
+    if (checkBigRun(schedule, 0)) {
+        return RecruitType.BigRunRecruit;
+    }
+    if (checkTeamContest(schedule, 0)) {
+        return RecruitType.TeamContestRecruit;
+    }
+    return RecruitType.SalmonRecruit;
+}
+
+function getRecruitTypeFromSubcommand(
+    interaction: ChatInputCommandInteraction<'cached'>,
+): RecruitType {
     const subcommand = interaction.options.getSubcommand();
     if (subcommand === 'run') {
         return RecruitType.SalmonRecruit;
