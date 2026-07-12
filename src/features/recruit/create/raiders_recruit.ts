@@ -100,7 +100,6 @@ const spec: RecruitSpec<undefined> = {
             // レイダースにはルール画像がないため、募集カードをイベントのサムネイルに使う
             imageBuffers: { recruitBuffer, ruleBuffer: null },
             eventImage: recruitBuffer,
-            eventStartTime: new Date(),
             option: null,
         };
     },
