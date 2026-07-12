@@ -1,7 +1,9 @@
 import cron from 'cron';
 import { Client } from 'discord.js';
 
+import { RECRUIT_CLOSE_SCAN_LIMIT } from '@/config/constants/recruit';
 import { recruitAutoClose } from '@/features/recruit/interactions/close_recruit/auto_close';
+import { ParticipantService } from '@/infra/db/repositories/participant_service';
 import { RecruitService } from '@/infra/db/repositories/recruit_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
@@ -42,10 +44,31 @@ export async function closeExpiredRecruits(client: Client) {
 
     const expiredRecruits = await RecruitService.getRecruitsToClose(new Date());
 
+    if (expiredRecruits.length === RECRUIT_CLOSE_SCAN_LIMIT) {
+        // 黙って切り捨てない。溢れた分は次の tick で拾う
+        logger.info(
+            `scan limit reached. closing ${RECRUIT_CLOSE_SCAN_LIMIT} recruits in this tick.`,
+        );
+    }
+
     for (const recruit of expiredRecruits) {
-        // Bot が抜けたサーバーの募集は、毎分リトライして失敗し続けるだけなので触らない
         const guild = client.guilds.cache.get(recruit.guildId);
-        if (guild === undefined) continue;
+
+        // Bot が抜けたサーバーでは Discord 側を掃除しようがないので、DB の行だけ消す。
+        // 残すと closeAt が過去のまま毎分スキャンに載り続ける。
+        if (guild === undefined) {
+            try {
+                await RecruitService.deleteRecruit(recruit.guildId, recruit.messageId);
+                await ParticipantService.deleteAllParticipant(
+                    recruit.guildId,
+                    recruit.messageId,
+                );
+                logger.info(`recruit[${recruit.messageId}] has been deleted. [bot has left]`);
+            } catch (error) {
+                await sendErrorLogs(logger, error);
+            }
+            continue;
+        }
 
         try {
             await recruitAutoClose(guild, recruit);
