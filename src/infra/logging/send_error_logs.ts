@@ -61,7 +61,36 @@ async function notifyErrorLogChannel(error: unknown) {
         return defaultLogger.warn('error log channel is not text based.');
     }
 
+    await errorLogChannel.send('### エラーログ\n' + '```\n' + formatError(error) + '\n```');
+}
+
+/** Discord の1メッセージ上限(2000文字)からコードブロックの装飾分を引いた余裕 */
+const MAX_ERROR_LENGTH = 1900;
+
+/**
+ * 通知本文を組み立てる。
+ *
+ * 以前は `error instanceof Error` のときしか送信していなかったため、
+ * 文字列やオブジェクトを渡している呼び出し箇所(interaction のエラーなど)は
+ * Discord への通知が一切飛んでいなかった。スタックが無いだけで通知価値はあるので、
+ * Error でなくても送る。
+ */
+function formatError(error: unknown): string {
+    const text = stringifyError(error);
+    return text.length > MAX_ERROR_LENGTH ? text.slice(0, MAX_ERROR_LENGTH) + '\n…(省略)' : text;
+}
+
+function stringifyError(error: unknown): string {
     if (error instanceof Error) {
-        await errorLogChannel.send('### エラーログ\n' + '```\n' + (error.stack ?? error) + '\n```');
+        return error.stack ?? String(error);
+    }
+    if (typeof error === 'string') {
+        return error;
+    }
+    try {
+        return JSON.stringify(error, null, 2) ?? String(error);
+    } catch {
+        // 循環参照などで JSON 化できない場合
+        return String(error);
     }
 }

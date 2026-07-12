@@ -71,4 +71,41 @@ describe('sendErrorLogs', () => {
 
         await expect(sendErrorLogs(fakeLogger(), new Error('original'))).resolves.toBeUndefined();
     });
+
+    // 以前は `error instanceof Error` のときしか送信していなかったため、
+    // 文字列やオブジェクトを渡している呼び出し箇所は通知が一切飛んでいなかった。
+    describe('Error でない値も通知する', () => {
+        beforeEach(() => mocks.getChannelIdByKey.mockResolvedValue('c1'));
+
+        it('文字列', async () => {
+            await sendErrorLogs(fakeLogger(), 'rankRoleKey is not RoleKey');
+
+            expect(vi.mocked(mocks.send).mock.calls[0][0]).toContain('rankRoleKey is not RoleKey');
+        });
+
+        it('オブジェクト(interaction のエラー詳細など)', async () => {
+            await sendErrorLogs(fakeLogger(), { content: 'Command failed', replied: true });
+
+            const sent = vi.mocked(mocks.send).mock.calls[0][0] as string;
+            expect(sent).toContain('Command failed');
+            expect(sent).toContain('replied');
+        });
+
+        it('循環参照があっても throw しない', async () => {
+            const circular: Record<string, unknown> = {};
+            circular.self = circular;
+
+            await expect(sendErrorLogs(fakeLogger(), circular)).resolves.toBeUndefined();
+            expect(mocks.send).toHaveBeenCalledOnce();
+        });
+    });
+
+    it('Discordの文字数上限を超えないよう切り詰める', async () => {
+        mocks.getChannelIdByKey.mockResolvedValue('c1');
+
+        await sendErrorLogs(fakeLogger(), 'a'.repeat(5000));
+
+        const sent = vi.mocked(mocks.send).mock.calls[0][0] as string;
+        expect(sent.length).toBeLessThanOrEqual(2000);
+    });
 });

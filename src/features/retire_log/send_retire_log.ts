@@ -13,12 +13,13 @@ const logger = log4js_obj.getLogger();
  * 退部したメンバーの情報を退部ログチャンネルに送る。
  * joinedAt が Discord から取得できない場合は DB の記録で補う。
  *
- * @returns 退部ログチャンネルが設定されていれば true
+ * 退部ログチャンネルが未設定でも、部員数の更新など後続の処理は行われるべきなので、
+ * ここでは警告を出して戻るだけにする。
  */
 export async function sendRetireLog(
     member: GuildMember | PartialGuildMember,
     guild: Guild,
-): Promise<boolean> {
+): Promise<void> {
     const displayName = member.displayName;
     const username = member.user.username;
     let joinedAt = member.joinedAt;
@@ -46,11 +47,10 @@ export async function sendRetireLog(
     );
     if (notExists(logChannelId)) {
         logger.warn(`${ChannelKeySet.RetireLog.key} is not set. [${guild.name}]`);
-        return false;
+        return;
     }
     const retireLog = await searchChannelById(guild, logChannelId);
     if (retireLog?.isTextBased()) {
         await retireLog.send(text);
     }
-    return true;
 }
