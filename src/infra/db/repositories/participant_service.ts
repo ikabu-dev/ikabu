@@ -2,9 +2,6 @@ import { Member } from '@prisma/client';
 
 import { prisma } from '@/infra/db/prisma';
 import { RecruitService } from '@/infra/db/repositories/recruit_service';
-import { log4js_obj } from '@/infra/logging/log4js';
-import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-const logger = log4js_obj.getLogger('database');
 
 export type ParticipantMember = {
     member: Member;
@@ -20,30 +17,26 @@ export class ParticipantService {
         userType: number,
         joinedAt: Date,
     ) {
-        try {
-            await prisma.participant.upsert({
-                where: {
-                    guildId_messageId_userId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                        userId: userId,
-                    },
-                },
-                update: {
-                    userType: userType,
-                    joinedAt: joinedAt,
-                },
-                create: {
+        await prisma.participant.upsert({
+            where: {
+                guildId_messageId_userId: {
                     guildId: guildId,
                     messageId: messageId,
                     userId: userId,
-                    userType: userType,
-                    joinedAt: joinedAt,
                 },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+            },
+            update: {
+                userType: userType,
+                joinedAt: joinedAt,
+            },
+            create: {
+                guildId: guildId,
+                messageId: messageId,
+                userId: userId,
+                userType: userType,
+                joinedAt: joinedAt,
+            },
+        });
     }
 
     static async registerParticipantFromMember(
@@ -52,73 +45,64 @@ export class ParticipantService {
         member: Member,
         userType: number,
     ) {
-        try {
-            await prisma.participant.upsert({
-                where: {
-                    guildId_messageId_userId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                        userId: member.userId,
-                    },
-                },
-                update: {
-                    userType: userType,
-                },
-                create: {
+        await prisma.participant.upsert({
+            where: {
+                guildId_messageId_userId: {
                     guildId: guildId,
                     messageId: messageId,
                     userId: member.userId,
-                    userType: userType,
                 },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+            },
+            update: {
+                userType: userType,
+            },
+            create: {
+                guildId: guildId,
+                messageId: messageId,
+                userId: member.userId,
+                userType: userType,
+            },
+        });
     }
 
+    /**
+     * 参加者を削除する。
+     *
+     * キャンセルボタンの二重クリックなどで対象行が既に無いのは正常系のため、
+     * 0件マッチで throw しない deleteMany を使う。
+     */
     static async deleteParticipant(guildId: string, messageId: string, userId: string) {
-        try {
-            await prisma.participant.delete({
-                where: {
-                    guildId_messageId_userId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                        userId: userId,
-                    },
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.participant.deleteMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+                userId: userId,
+            },
+        });
     }
 
     static async deleteAllParticipant(guildId: string, messageId: string) {
-        try {
-            await prisma.participant.deleteMany({
-                where: {
-                    guildId: guildId,
-                    messageId: messageId,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.participant.deleteMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+        });
     }
 
     static async deleteUnuseParticipant() {
-        try {
-            const messageIdList = await RecruitService.getAllMessageId();
+        // getAllMessageId() が DB エラー時に throw することで、ここに到達しない。
+        // 空配列は「募集が1件も存在しない」という正当な状態のみを意味する
+        // （notIn: [] は全行にマッチするため、DBエラーを握り潰してはならない）。
+        const messageIdList = await RecruitService.getAllMessageId();
 
-            await prisma.participant.deleteMany({
-                where: {
-                    messageId: {
-                        notIn: messageIdList,
-                    },
+        await prisma.participant.deleteMany({
+            where: {
+                messageId: {
+                    notIn: messageIdList,
                 },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+            },
+        });
     }
 
     static async getParticipant(
@@ -126,59 +110,49 @@ export class ParticipantService {
         messageId: string,
         userId: string,
     ): Promise<ParticipantMember | null> {
-        try {
-            const participant = await prisma.participant.findUnique({
-                where: {
-                    guildId_messageId_userId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                        userId: userId,
-                    },
+        const participant = await prisma.participant.findUnique({
+            where: {
+                guildId_messageId_userId: {
+                    guildId: guildId,
+                    messageId: messageId,
+                    userId: userId,
                 },
-                select: {
-                    userId: true,
-                    userType: true,
-                    joinedAt: true,
-                    member: true,
-                },
-            });
-            return participant;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+            select: {
+                userId: true,
+                userType: true,
+                joinedAt: true,
+                member: true,
+            },
+        });
+        return participant;
     }
 
     static async getAllParticipants(
         guildId: string,
         messageId: string,
     ): Promise<ParticipantMember[]> {
-        try {
-            const participants = await prisma.participant.findMany({
-                where: {
-                    guildId: guildId,
-                    messageId: messageId,
+        const participants = await prisma.participant.findMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+            select: {
+                userId: true,
+                userType: true,
+                joinedAt: true,
+                member: true,
+            },
+            orderBy: [
+                {
+                    userType: 'asc',
                 },
-                select: {
-                    userId: true,
-                    userType: true,
-                    joinedAt: true,
-                    member: true,
+                {
+                    joinedAt: 'asc',
                 },
-                orderBy: [
-                    {
-                        userType: 'asc',
-                    },
-                    {
-                        joinedAt: 'asc',
-                    },
-                ],
-            });
+            ],
+        });
 
-            return participants;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return participants;
     }
 }

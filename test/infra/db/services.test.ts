@@ -1,22 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-    sendErrorLogs: vi.fn(),
     recruit: {
         findUnique: vi.fn(),
         findMany: vi.fn(),
         create: vi.fn(),
-        delete: vi.fn(),
-        update: vi.fn(),
+        deleteMany: vi.fn(),
+        updateMany: vi.fn(),
         findFirst: vi.fn(),
     },
     member: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn() },
-    uniqueChannel: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), delete: vi.fn() },
-    uniqueRole: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), delete: vi.fn() },
+    uniqueChannel: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), deleteMany: vi.fn() },
+    uniqueRole: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), deleteMany: vi.fn() },
 }));
 
 vi.mock('@/infra/db/prisma', () => ({ prisma: mocks }));
-vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { RoleKeySet } from '@/config/constants/role_key';
@@ -25,66 +23,90 @@ import { RecruitService } from '@/infra/db/repositories/recruit_service';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 
-describe('DBサービスの例外安全網', () => {
+describe('DBサービスは失敗を呼び出し側に伝える', () => {
     beforeEach(() => vi.clearAllMocks());
 
-    it('RecruitService は成功結果を返し、例外時はnullまたは空配列を返す', async () => {
-        const recruit = { guildId: 'g', messageId: 'm' };
-        mocks.recruit.findUnique.mockResolvedValue(recruit);
-        await expect(RecruitService.getRecruit('g', 'm')).resolves.toBe(recruit);
-        mocks.recruit.findMany.mockResolvedValue([recruit]);
-        await expect(RecruitService.getRecruitsByChannelId('g', 'c')).resolves.toEqual([recruit]);
+    // 以前は全メソッドが try/catch でエラーをログに出すだけで正常終了しており、
+    // 「募集がDBに入っていないのに Discord にはメッセージだけ送信される」といった
+    // データ不整合が、表面上は成功して見えるまま起きていた。
+    it('DB障害は握り潰さず throw する', async () => {
         mocks.recruit.findUnique.mockRejectedValueOnce(new Error('db'));
-        await expect(RecruitService.getRecruit('g', 'm')).resolves.toBeNull();
+        await expect(RecruitService.getRecruit('g', 'm')).rejects.toThrow('db');
+
         mocks.recruit.findMany.mockRejectedValueOnce(new Error('db'));
-        await expect(RecruitService.getRecruitsByChannelId('g', 'c')).resolves.toEqual([]);
-        expect(mocks.sendErrorLogs).toHaveBeenCalledTimes(2);
-    });
+        await expect(RecruitService.getRecruitsByChannelId('g', 'c')).rejects.toThrow('db');
 
-    it('MemberService は成功結果を返し、例外時はnullまたは空配列を返す', async () => {
-        const member = { guildId: 'g', userId: 'u' };
-        mocks.member.findUnique.mockResolvedValue(member);
-        await expect(MemberService.getMemberByUserId('g', 'u')).resolves.toBe(member as never);
-        mocks.member.findMany.mockResolvedValue([{ guildId: 'g1' }, { guildId: 'g2' }]);
-        await expect(MemberService.getMemberGuildIdsByUserId('u')).resolves.toEqual(['g1', 'g2']);
-        mocks.member.findUnique.mockRejectedValueOnce(new Error('db'));
-        await expect(MemberService.getMemberByUserId('g', 'u')).resolves.toBeNull();
-        mocks.member.findMany.mockRejectedValueOnce(new Error('db'));
-        await expect(MemberService.getMemberGuildIdsByUserId('u')).resolves.toEqual([]);
-    });
-
-    it('UniqueChannelService は値を取り出し、例外時はnullまたは空配列を返す', async () => {
-        mocks.uniqueChannel.findUnique.mockResolvedValue({ channelId: 'c' });
+        mocks.recruit.create.mockRejectedValueOnce(new Error('db'));
         await expect(
-            UniqueChannelService.getChannelIdByKey('g', ChannelKeySet.Lobby.key),
-        ).resolves.toBe('c');
-        mocks.uniqueChannel.findMany.mockResolvedValue([
-            { guildId: 'g', key: ChannelKeySet.Lobby.key, channelId: 'c' },
-        ]);
-        await expect(UniqueChannelService.getAllUniqueChannels('g')).resolves.toHaveLength(1);
+            RecruitService.registerRecruit('g', 'c', 'm', 'u', 4, 'なし', null, null, 2),
+        ).rejects.toThrow('db');
+
+        mocks.member.upsert.mockRejectedValueOnce(new Error('db'));
+        await expect(
+            MemberService.saveMember('g', 'u', 'name', 'icon', new Date(), false),
+        ).rejects.toThrow('db');
+
         mocks.uniqueChannel.findUnique.mockRejectedValueOnce(new Error('db'));
         await expect(
             UniqueChannelService.getChannelIdByKey('g', ChannelKeySet.Lobby.key),
-        ).resolves.toBeNull();
-        mocks.uniqueChannel.findMany.mockRejectedValueOnce(new Error('db'));
-        await expect(UniqueChannelService.getAllUniqueChannels('g')).resolves.toEqual([]);
+        ).rejects.toThrow('db');
     });
 
-    it('UniqueRoleService は値を取り出し、例外時はnullまたは空配列を返す', async () => {
+    it('正常時は結果を返す', async () => {
+        const recruit = { guildId: 'g', messageId: 'm' };
+        mocks.recruit.findUnique.mockResolvedValue(recruit);
+        await expect(RecruitService.getRecruit('g', 'm')).resolves.toBe(recruit);
+
+        mocks.recruit.findMany.mockResolvedValue([recruit]);
+        await expect(RecruitService.getRecruitsByChannelId('g', 'c')).resolves.toEqual([recruit]);
+
         mocks.uniqueRole.findUnique.mockResolvedValue({ roleId: 'r' });
         await expect(UniqueRoleService.getRoleIdByKey('g', RoleKeySet.Developer.key)).resolves.toBe(
             'r',
         );
-        mocks.uniqueRole.findMany.mockResolvedValue([
-            { guildId: 'g', key: RoleKeySet.Developer.key, roleId: 'r' },
-        ]);
-        await expect(UniqueRoleService.getAllUniqueRoles('g')).resolves.toHaveLength(1);
-        mocks.uniqueRole.findUnique.mockRejectedValueOnce(new Error('db'));
+    });
+
+    it('レコードが無い場合は null を返す(エラーではない)', async () => {
+        mocks.uniqueChannel.findUnique.mockResolvedValue(null);
+        await expect(
+            UniqueChannelService.getChannelIdByKey('g', ChannelKeySet.Lobby.key),
+        ).resolves.toBeNull();
+
+        mocks.uniqueRole.findUnique.mockResolvedValue(null);
         await expect(
             UniqueRoleService.getRoleIdByKey('g', RoleKeySet.Developer.key),
         ).resolves.toBeNull();
-        mocks.uniqueRole.findMany.mockRejectedValueOnce(new Error('db'));
-        await expect(UniqueRoleService.getAllUniqueRoles('g')).resolves.toEqual([]);
-        expect(mocks.sendErrorLogs).toHaveBeenCalledTimes(2);
+
+        mocks.member.findUnique.mockResolvedValue(null);
+        await expect(MemberService.getMemberByUserId('g', 'u')).resolves.toBeNull();
+    });
+
+    // 〆ボタンと自動締切ジョブが競合して二重削除になるのは正常系のため、
+    // 0件マッチで throw しない deleteMany を使っている。
+    it('募集の二重削除は正常系として扱う', async () => {
+        mocks.recruit.deleteMany.mockResolvedValue({ count: 0 });
+
+        await expect(RecruitService.deleteRecruit('g', 'm')).resolves.toBeUndefined();
+        expect(mocks.recruit.deleteMany).toHaveBeenCalledWith({
+            where: { guildId: 'g', messageId: 'm' },
+        });
+    });
+
+    it('ユニークチャンネルの解除は、解除できたかを boolean で返す', async () => {
+        mocks.uniqueChannel.deleteMany.mockResolvedValue({ count: 1 });
+        await expect(UniqueChannelService.delete('g', ChannelKeySet.Lobby.key)).resolves.toBe(true);
+
+        mocks.uniqueChannel.deleteMany.mockResolvedValue({ count: 0 });
+        await expect(UniqueChannelService.delete('g', ChannelKeySet.Lobby.key)).resolves.toBe(
+            false,
+        );
+    });
+
+    it('ユニークロールの解除は、解除できたかを boolean で返す', async () => {
+        mocks.uniqueRole.deleteMany.mockResolvedValue({ count: 1 });
+        await expect(UniqueRoleService.delete('g', RoleKeySet.Developer.key)).resolves.toBe(true);
+
+        mocks.uniqueRole.deleteMany.mockResolvedValue({ count: 0 });
+        await expect(UniqueRoleService.delete('g', RoleKeySet.Developer.key)).resolves.toBe(false);
     });
 });
