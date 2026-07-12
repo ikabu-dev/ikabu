@@ -1,4 +1,5 @@
-import { Logger } from 'log4js';
+import type { Logger } from 'log4js';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
@@ -56,10 +57,11 @@ describe('sendErrorLogs', () => {
     it('DB参照が失敗しても throw せず、元のエラーはログに残す', async () => {
         mocks.getChannelIdByKey.mockRejectedValue(new Error('db is down'));
         const logger = fakeLogger();
+        const original = new Error('original');
 
-        await expect(sendErrorLogs(logger, new Error('original'))).resolves.toBeUndefined();
+        await expect(sendErrorLogs(logger, original)).resolves.toBeUndefined();
 
-        expect(logger.error).toHaveBeenCalledWith(new Error('original'));
+        expect(logger.error).toHaveBeenCalledWith(original);
         expect(mocks.send).not.toHaveBeenCalled();
     });
 
