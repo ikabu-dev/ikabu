@@ -131,9 +131,6 @@ export async function createRecruit<TContext>(
         recruitData,
         eventId,
         build.option,
-        // 自動締切の期限を DB に持たせる。以前はここから2時間 sleep して〆ていたため、
-        // デプロイや再起動のたびに進行中の募集の締切が消滅していた。
-        // 実際に〆るのは recruit_close_job の定期スキャン。
         spec.autoClose ? new Date(Date.now() + AUTO_CLOSE_AFTER_SEC * 1000) : null,
         recruitMessageList.buttonMessage.id,
     );

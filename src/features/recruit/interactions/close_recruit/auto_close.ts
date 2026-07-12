@@ -11,13 +11,7 @@ import { setButtonDisable } from '@/shared/discord_helpers/button_components';
 import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
 import { searchMessageById } from '@/shared/discord_helpers/message_manager';
 
-/**
- * 期限切れの募集を〆る。
- *
- * 以前はインタラクションハンドラ内で2時間 sleep して呼んでいたため、
- * デプロイや再起動のたびに進行中の募集の締切が消滅していた。
- * 現在は closeAt 列を定期ジョブがスキャンして、DB の募集情報だけを元にここを呼ぶ。
- */
+/** 期限切れの募集を〆る。 */
 export async function recruitAutoClose(guild: Guild, recruit: Recruit) {
     const participants = await ParticipantService.getAllParticipants(
         recruit.guildId,

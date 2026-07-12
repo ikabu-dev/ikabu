@@ -11,10 +11,6 @@ const logger = log4js_obj.getLogger('recruit');
 /**
  * 期限切れの募集を〆る。
  *
- * 締切のスケジュールはプロセス内の sleep ではなく Recruit.closeAt に持たせてあるため、
- * デプロイや再起動で進行中の募集の締切が消えることはない。停止中に期限を過ぎた募集も、
- * 起動後の最初のスキャンでまとめて〆られる。
- *
  * 自動締切は2時間後という粒度の処理なので、1分間隔のスキャンで十分。
  */
 export function startRecruitCloseJob(client: Client) {

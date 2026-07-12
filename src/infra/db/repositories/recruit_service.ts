@@ -60,12 +60,7 @@ export class RecruitService {
         }
     }
 
-    /**
-     * 自動締切の期限を過ぎた募集を返す。
-     *
-     * 締切をプロセス内の sleep ではなく DB に持たせているため、
-     * 再起動をまたいでも期限切れの募集は次のスキャンで拾える。
-     */
+    /** 自動締切の期限を過ぎた募集を返す。 */
     static async getExpiredRecruits(now: Date) {
         try {
             return await prisma.recruit.findMany({
