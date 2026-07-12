@@ -3,6 +3,7 @@ import { registerDiscordEvents } from '@/gateway/events';
 import { client } from '@/infra/discord/client';
 import { startHealthCheckServer } from '@/infra/http/health_check';
 import { log4js_obj } from '@/infra/logging/log4js';
+import { startRecruitCloseJob } from '@/jobs/recruit_close_job';
 import { startStageScheduleJob } from '@/jobs/stage_schedule_job';
 
 const logger = log4js_obj.getLogger();
@@ -22,6 +23,7 @@ export async function bootstrap() {
 
     // 3. 定期実行ジョブを登録する
     startStageScheduleJob(client);
+    startRecruitCloseJob(client);
 
     // 4. 死活監視のエンドポイントを立てる
     startHealthCheckServer();

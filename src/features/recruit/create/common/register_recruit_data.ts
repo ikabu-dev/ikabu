@@ -9,6 +9,10 @@ export async function registerRecruitData(
     recruitData: RecruitData,
     eventId: string | null,
     option: string | null,
+    /** 自動締切の期限。自動締切を行わない募集では null */
+    closeAt: Date | null,
+    /** 自動締切時に無効化する参加ボタンのメッセージID */
+    buttonMessageId: string | null,
 ) {
     const guildId = recruitData.guild.id;
     // DBに募集情報を登録
@@ -23,6 +27,8 @@ export async function registerRecruitData(
         eventId,
         recruitType,
         option,
+        closeAt,
+        buttonMessageId,
     );
 
     // DBに参加者情報を登録

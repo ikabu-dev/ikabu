@@ -60,7 +60,6 @@ const spec: RecruitSpec<undefined> = {
         const buffers = await getSalmonImageBuffers(recruitData, recruitType);
         return {
             ...buffers,
-            eventStartTime: new Date(),
             option: null,
         };
     },

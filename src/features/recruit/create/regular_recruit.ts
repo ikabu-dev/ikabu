@@ -53,8 +53,8 @@ const spec: RecruitSpec<undefined> = {
         return {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
-            eventStartTime: regularData.startTime,
-            eventEndTime: regularData.endTime,
+            scheduleStartTime: regularData.startTime,
+            scheduleEndTime: regularData.endTime,
             option: null,
         };
     },

@@ -34,6 +34,9 @@ export class RecruitService {
         eventId: string | null,
         recruitType: number,
         option?: string | null,
+        // 自動締切を行う募集のみ。null なら定期ジョブのスキャン対象にならない
+        closeAt?: Date | null,
+        buttonMessageId?: string | null,
     ) {
         try {
             await prisma.recruit.create({
@@ -48,10 +51,26 @@ export class RecruitService {
                     eventId: eventId,
                     recruitType: recruitType,
                     option: option,
+                    closeAt: closeAt,
+                    buttonMessageId: buttonMessageId,
                 },
             });
         } catch (error) {
             await sendErrorLogs(logger, error);
+        }
+    }
+
+    /** 自動締切の期限を過ぎた募集を返す。 */
+    static async getExpiredRecruits(now: Date) {
+        try {
+            return await prisma.recruit.findMany({
+                where: {
+                    closeAt: { not: null, lte: now },
+                },
+            });
+        } catch (error) {
+            await sendErrorLogs(logger, error);
+            return [];
         }
     }
 

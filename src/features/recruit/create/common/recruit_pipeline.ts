@@ -10,7 +10,6 @@ import {
     RecruitImageBuffersWithoutRule,
 } from '@/features/recruit/create/common/send_recruit_message';
 import { RecruitData } from '@/features/recruit/domain/types/recruit_data';
-import { recruitAutoClose } from '@/features/recruit/interactions/close_recruit/auto_close';
 import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
 import { createRecruitEvent } from '@/features/recruit/vc_reservation/recruit_event';
 import { RecruitType } from '@/infra/db/repositories/recruit_service';
@@ -35,9 +34,13 @@ export type RecruitBuild = {
     imageBuffers: RecruitImageBuffers | RecruitImageBuffersWithoutRule;
     /** VC予約イベントのサムネイルに使う画像 */
     eventImage: Buffer;
-    eventStartTime: Date;
-    /** 終了時刻が定まらない募集（バイト・レイダース）では省略する */
-    eventEndTime?: Date;
+    /**
+     * この募集が対象とするスケジュール（now / next）の開始・終了時刻。
+     * VC予約イベントの開始・終了時刻と、自動締切の期限に使う。
+     * スケジュールを持たない募集（バイト・レイダース）では省略する。
+     */
+    scheduleStartTime?: Date;
+    scheduleEndTime?: Date;
     /** Recruit テーブルの option 列に保存する値（ウデマエ・チーム名・イベント名など） */
     option: string | null;
 };
@@ -117,11 +120,16 @@ export async function createRecruit<TContext>(
                 recruitData.recruiter.userId,
                 recruitData.voiceChannel,
                 build.eventImage,
-                build.eventStartTime,
-                build.eventEndTime,
+                // スケジュールを持たない募集は、今すぐ始まる扱いにする
+                build.scheduleStartTime ?? new Date(),
+                build.scheduleEndTime,
             )
         ).id;
     }
+
+    // 募集はそのスケジュールのルール・ステージに対して立てられるので、
+    // スケジュールが終わったら〆る
+    const closeAt = spec.autoClose ? (build.scheduleEndTime ?? null) : null;
 
     await registerRecruitData(
         recruitMessageList.recruitMessage.id,
@@ -129,6 +137,8 @@ export async function createRecruit<TContext>(
         recruitData,
         eventId,
         build.option,
+        closeAt,
+        recruitMessageList.buttonMessage.id,
     );
 
     // 募集リスト更新
@@ -140,17 +150,6 @@ export async function createRecruit<TContext>(
     await sleep(15);
 
     await removeDeleteButton(recruitData, recruitMessageList.deleteButtonMessage.id);
-
-    if (!spec.autoClose) return;
-
-    // 2時間後にボタンを無効化する
-    await sleep(7200 - 15);
-
-    await recruitAutoClose(
-        recruitData,
-        recruitMessageList.recruitMessage.id,
-        recruitMessageList.buttonMessage,
-    );
 }
 
 async function arrangeRecruitData(
