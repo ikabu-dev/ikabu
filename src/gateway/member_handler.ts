@@ -33,12 +33,10 @@ export async function handleGuildMemberRemove(
     try {
         const guild = await member.guild.fetch();
 
-        const retireLogChannelExists = await sendRetireLog(member, guild);
-
-        // 移行前は「退部ログチャンネルが未設定なら early return」だったため、
-        // その場合は部員数の更新も行われていなかった。挙動を変えないためここで打ち切る。
-        // (意図した仕様ではなさそうなので、別途修正を検討する)
-        if (!retireLogChannelExists) return;
+        // 退部ログの送信可否と部員数の更新は独立している。
+        // 以前は退部ログチャンネルが未設定だと early return していたため、
+        // ログチャンネルを設定していないサーバーでは部員数が更新されなかった。
+        await sendRetireLog(member, guild);
 
         if (guild.id === env.serverId) {
             assertExistCheck(client.user, 'client.user');
