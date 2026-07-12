@@ -19,14 +19,18 @@ export async function processQueue() {
     if (isProcessing) return;
     isProcessing = true;
 
-    while (messageQueue.length > 0) {
-        const task = messageQueue.shift();
-        if (task) {
-            await task();
+    // タスクが投げると isProcessing が立ったままになり、
+    // 以降このプロセスが生きている間ずっとキューが止まる。必ず戻すこと。
+    try {
+        while (messageQueue.length > 0) {
+            const task = messageQueue.shift();
+            if (task) {
+                await task();
+            }
         }
+    } finally {
+        isProcessing = false;
     }
-
-    isProcessing = false;
 }
 
 /**

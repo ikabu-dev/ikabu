@@ -18,6 +18,10 @@ async function main() {
     }
 }
 
+// 拾いそこねた例外(unhandledRejection / uncaughtException)は、Node の既定動作に任せる。
+// 既定でスタックトレースを stderr に出して exit(1) するため、systemd が再起動する。
+// ハンドラを自前で登録しても、ログを stderr に出して落とす以上のことはできない。
+
 void main().catch((error) => {
     // 環境変数の検証で落ちた場合はロガーがまだ使えないため、標準エラー出力に出す
     console.error('起動に失敗しました', error);
