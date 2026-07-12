@@ -76,15 +76,21 @@ export class RecruitService {
             where: { closeAt: { not: null, lte: now } },
         });
 
-        const ttlRecruits = await prisma.recruit.findMany({
+        // 上限ちょうどで割り切れた(=溢れが無い)ケースを誤って capped 扱いしないよう、
+        // 上限+1件を取得し、実際に溢れていたかを件数で判定する。
+        const ttlRecruitsWithExtra = await prisma.recruit.findMany({
             where: { closeAt: null, createdAt: { lte: ttlThreshold } },
             orderBy: { createdAt: 'asc' },
-            take: RECRUIT_CLOSE_SCAN_LIMIT,
+            take: RECRUIT_CLOSE_SCAN_LIMIT + 1,
         });
+        const ttlScanCapped = ttlRecruitsWithExtra.length > RECRUIT_CLOSE_SCAN_LIMIT;
+        const ttlRecruits = ttlScanCapped
+            ? ttlRecruitsWithExtra.slice(0, RECRUIT_CLOSE_SCAN_LIMIT)
+            : ttlRecruitsWithExtra;
 
         return {
             recruits: [...closeAtRecruits, ...ttlRecruits],
-            ttlScanCapped: ttlRecruits.length === RECRUIT_CLOSE_SCAN_LIMIT,
+            ttlScanCapped,
         };
     }
 

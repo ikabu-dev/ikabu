@@ -121,10 +121,11 @@ describe('締切対象の募集スキャン', () => {
             where: { closeAt: { not: null, lte: now } },
         });
         // 持たない募集(バイト・レイダース・プラベ・別ゲー)は作成から7日。バックログdrain用に上限を設ける
+        // ちょうど上限件数で溢れが無いケースを capped と誤判定しないよう、上限+1件を取得する
         expect(mocks.recruit.findMany).toHaveBeenNthCalledWith(2, {
             where: { closeAt: null, createdAt: { lte: ttlThreshold } },
             orderBy: { createdAt: 'asc' },
-            take: RECRUIT_CLOSE_SCAN_LIMIT,
+            take: RECRUIT_CLOSE_SCAN_LIMIT + 1,
         });
     });
 
@@ -141,13 +142,19 @@ describe('締切対象の募集スキャン', () => {
     });
 
     it('TTLクエリがスキャン上限に達したときだけ ttlScanCapped が true になる', async () => {
-        const cappedTtlRecruits = Array.from({ length: RECRUIT_CLOSE_SCAN_LIMIT }, (_, i) => ({
-            messageId: `ttl${i}`,
-        }));
-        mocks.recruit.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce(cappedTtlRecruits);
+        // 上限+1件返ってきた(=溢れがある)ケースだけ capped
+        const overflowingTtlRecruits = Array.from(
+            { length: RECRUIT_CLOSE_SCAN_LIMIT + 1 },
+            (_, i) => ({ messageId: `ttl${i}` }),
+        );
+        mocks.recruit.findMany
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce(overflowingTtlRecruits);
 
         const capped = await RecruitService.getRecruitsToClose(now);
         expect(capped.ttlScanCapped).toBe(true);
+        // 溢れた分は切り落として上限件数までしか返さない
+        expect(capped.recruits).toHaveLength(RECRUIT_CLOSE_SCAN_LIMIT);
 
         mocks.recruit.findMany
             .mockResolvedValueOnce([])
@@ -155,6 +162,20 @@ describe('締切対象の募集スキャン', () => {
 
         const notCapped = await RecruitService.getRecruitsToClose(now);
         expect(notCapped.ttlScanCapped).toBe(false);
+    });
+
+    it('TTLの backlog がちょうど上限件数で溢れが無い場合は ttlScanCapped が false になる', async () => {
+        const exactlyFullTtlRecruits = Array.from({ length: RECRUIT_CLOSE_SCAN_LIMIT }, (_, i) => ({
+            messageId: `ttl${i}`,
+        }));
+        mocks.recruit.findMany
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce(exactlyFullTtlRecruits);
+
+        const result = await RecruitService.getRecruitsToClose(now);
+
+        expect(result.ttlScanCapped).toBe(false);
+        expect(result.recruits).toHaveLength(RECRUIT_CLOSE_SCAN_LIMIT);
     });
 
     it('DB障害は握り潰さず throw する', async () => {
