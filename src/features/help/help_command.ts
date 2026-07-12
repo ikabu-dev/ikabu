@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from 'discord.js';
 
 import { handleHelp } from '@/features/help/help';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const help = new SlashCommandBuilder()
     .setName('help')

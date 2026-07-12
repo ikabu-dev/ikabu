@@ -8,7 +8,7 @@ import {
 import { RoleKeySet } from '@/config/constants/role_key';
 import { uniqueRoleSettingsHandler } from '@/features/unique_role_settings/unique_role_settings_handler';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const uniqueRoleSettings = new SlashCommandBuilder()
     .setName('固有ロール設定')

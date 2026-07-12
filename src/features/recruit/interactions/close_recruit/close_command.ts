@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 
 import { closeCommand } from '@/features/recruit/interactions/close_recruit/close_by_command';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const closeRecruit = new SlashCommandBuilder()
     .setName('close')

@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandUserOption }
 
 import { handleBan } from '@/features/ban/ban';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const ban = new SlashCommandBuilder()
     .setName('ban')

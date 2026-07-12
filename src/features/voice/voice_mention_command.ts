@@ -8,7 +8,7 @@ import {
 
 import { voiceMention } from '@/features/voice/voice_mention';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const voiceChannelMention = new SlashCommandBuilder()
     .setName('ボイスメンション')

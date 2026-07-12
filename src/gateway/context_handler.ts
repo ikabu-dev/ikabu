@@ -6,7 +6,7 @@ import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { messageContextMenuCommands } from '@/registry/command_registry';
 import { exists } from '@/shared/assert';
 
-import type { MessageContextMenuCommand } from '@/registry/types';
+import type { MessageContextMenuCommand } from '@/shared/command_types';
 
 const logger = log4js_obj.getLogger('interaction');
 

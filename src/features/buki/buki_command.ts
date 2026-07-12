@@ -6,7 +6,7 @@ import {
 
 import { handleBuki } from '@/features/buki/buki';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const buki = new SlashCommandBuilder()
     .setName('buki')

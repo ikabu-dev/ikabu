@@ -11,7 +11,7 @@ import {
 import { RoleKeySet } from '@/config/constants/role_key';
 import { anarchyRecruit } from '@/features/recruit/create/anarchy_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const rankOption = new SlashCommandStringOption()
     .setName('募集ウデマエ')

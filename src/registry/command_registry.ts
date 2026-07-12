@@ -38,7 +38,11 @@ import { voiceMentionCommand } from '@/features/voice/voice_mention_command';
 import { vpickCommand } from '@/features/voice/vpick_command';
 import { wikiCommand } from '@/features/wiki/wiki_command';
 
-import type { ChatInputCommand, CommandModule, MessageContextMenuCommand } from './types';
+import type {
+    ChatInputCommand,
+    CommandModule,
+    MessageContextMenuCommand,
+} from '@/shared/command_types';
 
 /**
  * Bot が提供する全コマンド。

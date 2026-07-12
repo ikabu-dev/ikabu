@@ -6,7 +6,7 @@ import {
 
 import { buttonRecruit as buttonRecruitHandler } from '@/features/recruit/create/button_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const buttonRecruit = new SlashCommandBuilder()
     .setName('募集ボタン')

@@ -6,7 +6,7 @@ import {
 
 import { handleTTSCommand } from '@/features/voice/tts/discordjs_voice';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const voice = new SlashCommandBuilder()
     .setName('voice')

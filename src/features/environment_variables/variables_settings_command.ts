@@ -6,7 +6,7 @@ import {
 
 import { variablesHandler } from '@/features/environment_variables/variables_handler';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const variablesSettings = new SlashCommandBuilder()
     .setName('環境変数設定')

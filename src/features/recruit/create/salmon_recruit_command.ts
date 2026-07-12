@@ -10,7 +10,7 @@ import {
 
 import { salmonRecruit } from '@/features/recruit/create/salmon_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const salmonRun = new SlashCommandBuilder()
     .setName('サーモンラン募集')

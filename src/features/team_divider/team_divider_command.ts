@@ -7,7 +7,7 @@ import {
 
 import { dividerInitialMessage } from '@/features/team_divider/divider';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const teamDivider = new SlashCommandBuilder()
     .setName('チーム分け')
