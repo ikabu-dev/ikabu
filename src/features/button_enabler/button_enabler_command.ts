@@ -2,7 +2,7 @@ import { ApplicationCommandType, ContextMenuCommandBuilder } from 'discord.js';
 
 import { buttonEnable } from '@/features/button_enabler/enable_button';
 
-import type { MessageContextMenuCommand } from '@/registry/types';
+import type { MessageContextMenuCommand } from '@/shared/command_types';
 
 const buttonEnabler = new ContextMenuCommandBuilder()
     .setName('ボタンを有効化する')

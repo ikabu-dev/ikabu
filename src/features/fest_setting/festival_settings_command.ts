@@ -7,7 +7,7 @@ import {
 
 import { festSettingHandler } from '@/features/fest_setting/fest_settings';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const festStart = new SlashCommandSubcommandBuilder()
     .setName('開始')

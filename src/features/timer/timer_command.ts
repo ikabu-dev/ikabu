@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandIntegerOption } from 'discord.js';
 
 import { handleTimer } from '@/features/timer/timer';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const minutesTimer = new SlashCommandBuilder()
     .setName('timer')

@@ -6,7 +6,7 @@ import {
 
 import { handleFriendCode } from '@/features/friend_code/friendcode';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const friendCode = new SlashCommandBuilder()
     .setName('friend_code')

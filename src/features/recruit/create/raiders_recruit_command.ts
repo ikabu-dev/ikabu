@@ -10,7 +10,7 @@ import {
 
 import { raidersRecruit } from '@/features/recruit/create/raiders_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const raidersMatch = new SlashCommandBuilder()
     .setName('レイダース募集')

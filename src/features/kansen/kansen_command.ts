@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandIntegerOption } from 'discord.js';
 
 import { handleKansen } from '@/features/kansen/kansen';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const kansen = new SlashCommandBuilder()
     .setName('kansen')
