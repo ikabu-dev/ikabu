@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import * as buttonId from '@/config/constants/button_id';
 import { RecruitType, isRecruitType } from '@/infra/db/repositories/recruit_service';
-
-import * as buttonId from '../src/config/constants/button_id';
 
 describe('button_id 型ガード', () => {
     it.each([
