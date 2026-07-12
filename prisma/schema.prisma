@@ -125,19 +125,25 @@ model UserReaction {
 }
 
 model Recruit {
-  guildId     String   @map("guild_id")
-  channelId   String   @map("channel_id")
-  messageId   String   @map("message_id")
-  authorId    String   @map("author_id")
-  recruitNum  Int      @map("recruit_num")
-  condition   String   @default("なし")
-  vcName      String?  @map("vc_name")
-  eventId     String?  @map("event_id")
-  recruitType Int      @map("recruit_type")
-  option      String?
-  createdAt   DateTime @default(now()) @map("created_at")
+  guildId         String    @map("guild_id")
+  channelId       String    @map("channel_id")
+  messageId       String    @map("message_id")
+  authorId        String    @map("author_id")
+  recruitNum      Int       @map("recruit_num")
+  condition       String    @default("なし")
+  vcName          String?   @map("vc_name")
+  eventId         String?   @map("event_id")
+  recruitType     Int       @map("recruit_type")
+  option          String?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  // 自動締切の期限。null は自動締切を行わない募集(バイト・レイダース・プラベ・別ゲー)。
+  // プロセス内の sleep ではなくこの列を定期ジョブがスキャンするため、再起動しても締切は消えない。
+  closeAt         DateTime? @map("close_at")
+  // 自動締切時に無効化する参加ボタンのメッセージID。募集カード本体とは別メッセージ。
+  buttonMessageId String?   @map("button_message_id")
 
   @@unique([guildId, messageId])
+  @@index([closeAt])
   @@map("recruit")
 }
 

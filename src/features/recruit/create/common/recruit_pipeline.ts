@@ -10,12 +10,14 @@ import {
     RecruitImageBuffersWithoutRule,
 } from '@/features/recruit/create/common/send_recruit_message';
 import { RecruitData } from '@/features/recruit/domain/types/recruit_data';
-import { recruitAutoClose } from '@/features/recruit/interactions/close_recruit/auto_close';
 import { sendRecruitSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
 import { createRecruitEvent } from '@/features/recruit/vc_reservation/recruit_event';
 import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
 import { sleep } from '@/shared/sleep';
+
+/** 募集を開始してから自動で〆るまでの時間 */
+const AUTO_CLOSE_AFTER_SEC = 7200;
 
 /** 募集を開始できるインタラクション（スラッシュコマンド、または募集ボタンから開くモーダル） */
 export type RecruitCreateInteraction =
@@ -129,6 +131,11 @@ export async function createRecruit<TContext>(
         recruitData,
         eventId,
         build.option,
+        // 自動締切の期限を DB に持たせる。以前はここから2時間 sleep して〆ていたため、
+        // デプロイや再起動のたびに進行中の募集の締切が消滅していた。
+        // 実際に〆るのは recruit_close_job の定期スキャン。
+        spec.autoClose ? new Date(Date.now() + AUTO_CLOSE_AFTER_SEC * 1000) : null,
+        recruitMessageList.buttonMessage.id,
     );
 
     // 募集リスト更新
@@ -140,17 +147,6 @@ export async function createRecruit<TContext>(
     await sleep(15);
 
     await removeDeleteButton(recruitData, recruitMessageList.deleteButtonMessage.id);
-
-    if (!spec.autoClose) return;
-
-    // 2時間後にボタンを無効化する
-    await sleep(7200 - 15);
-
-    await recruitAutoClose(
-        recruitData,
-        recruitMessageList.recruitMessage.id,
-        recruitMessageList.buttonMessage,
-    );
 }
 
 async function arrangeRecruitData(
