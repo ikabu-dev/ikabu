@@ -74,7 +74,7 @@ async function getSalmonImageBuffers(
     recruitData: RecruitData,
     recruitType: RecruitType,
 ): Promise<Pick<RecruitBuild, 'imageBuffers' | 'eventImage'>> {
-    const voiceChannel = voiceChannelName(recruitData);
+    const vcName = voiceChannelName(recruitData);
 
     let recruitBuffer: Buffer;
     let ruleBuffer: Buffer;
@@ -88,7 +88,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannel,
+            vcName,
         );
         ruleBuffer = await ruleSalmonCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.BigRunRecruit) {
@@ -101,7 +101,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannel,
+            vcName,
         );
         ruleBuffer = await ruleBigRunCanvas(await getSalmonData(recruitData.schedule, 0));
     } else if (recruitType === RecruitType.TeamContestRecruit) {
@@ -114,7 +114,7 @@ async function getSalmonImageBuffers(
             recruitData.attendee2,
             null,
             recruitData.condition,
-            voiceChannel,
+            vcName,
             'コンテスト',
         );
         ruleBuffer = await ruleSalmonCanvas(await getTeamContestData(recruitData.schedule, 0));
