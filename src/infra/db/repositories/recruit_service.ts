@@ -32,7 +32,8 @@ export class RecruitService {
         eventId: string | null,
         recruitType: number,
         option?: string | null,
-        // 自動締切を行う募集のみ。null なら定期ジョブのスキャン対象にならない
+        // スケジュール終了時刻を持つ募集のみ設定する。null の場合、定期ジョブは
+        // 作成から RECRUIT_FALLBACK_TTL_DAYS 経過をもって締切扱いにする(スキャン対象外にはならない)
         closeAt?: Date | null,
         buttonMessageId?: string | null,
     ) {
@@ -61,23 +62,30 @@ export class RecruitService {
      * スケジュール終了時刻が無いため、作成から RECRUIT_FALLBACK_TTL_DAYS 経過を期限とみなす。
      * つまり期限は closeAt ?? createdAt + TTL。
      *
-     * 1回に返す件数には上限を設ける。溢れた分は次のスキャンで拾う。
+     * closeAt 側は通常運用の自動締切そのものなので上限を設けずに全件返す。
+     * TTL 側(closeAt: null の掃除)だけ 1回に返す件数の上限を設ける。
+     * 作成日時が古い(=期限をより過ぎている)行から優先して拾い、溢れた分は次のスキャンで拾う。
+     * この上限に達したかどうかは ttlScanCapped で呼び出し側に伝える。
      */
     static async getRecruitsToClose(now: Date) {
         const ttlThreshold = new Date(
             now.getTime() - RECRUIT_FALLBACK_TTL_DAYS * 24 * 60 * 60 * 1000,
         );
 
-        return await prisma.recruit.findMany({
-            where: {
-                OR: [
-                    { closeAt: { not: null, lte: now } },
-                    { closeAt: null, createdAt: { lte: ttlThreshold } },
-                ],
-            },
+        const closeAtRecruits = await prisma.recruit.findMany({
+            where: { closeAt: { not: null, lte: now } },
+        });
+
+        const ttlRecruits = await prisma.recruit.findMany({
+            where: { closeAt: null, createdAt: { lte: ttlThreshold } },
             orderBy: { createdAt: 'asc' },
             take: RECRUIT_CLOSE_SCAN_LIMIT,
         });
+
+        return {
+            recruits: [...closeAtRecruits, ...ttlRecruits],
+            ttlScanCapped: ttlRecruits.length === RECRUIT_CLOSE_SCAN_LIMIT,
+        };
     }
 
     /**

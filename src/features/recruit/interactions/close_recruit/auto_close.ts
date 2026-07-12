@@ -2,14 +2,21 @@ import { Recruit } from '@prisma/client';
 import { Guild } from 'discord.js';
 
 import { getMemberMentions } from '@/features/recruit/common/member_list';
-import { sendCloseEmbedSticky } from '@/features/recruit/sticky/recruit_sticky_messages';
+import {
+    getStickyChannelId,
+    sendCloseEmbedSticky,
+    sendRecruitSticky,
+} from '@/features/recruit/sticky/recruit_sticky_messages';
 import { regenerateCanvas, RecruitOpCode } from '@/features/recruit/ui/canvases/regenerate_canvas';
 import { ParticipantService } from '@/infra/db/repositories/participant_service';
 import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { log4js_obj } from '@/infra/logging/log4js';
 import { exists, notExists } from '@/shared/assert';
 import { setButtonDisable } from '@/shared/discord_helpers/button_components';
 import { searchChannelById } from '@/shared/discord_helpers/channel_manager';
 import { searchMessageById } from '@/shared/discord_helpers/message_manager';
+
+const logger = log4js_obj.getLogger('recruit');
 
 /** 期限切れの募集を〆る。 */
 export async function recruitAutoClose(guild: Guild, recruit: Recruit) {
@@ -31,7 +38,17 @@ export async function recruitAutoClose(guild: Guild, recruit: Recruit) {
 
     const recruitChannel = await searchChannelById(guild, recruit.channelId);
     if (exists(recruitChannel)) {
-        await sendCloseEmbedSticky(guild, recruitChannel);
+        if (recruitChannel.isThread()) {
+            // フォーラムやスレッドの場合は、テキストの募集チャンネルにSticky Messageを送信する
+            const stickyChannelId = await getStickyChannelId(recruit);
+            if (exists(stickyChannelId)) {
+                await sendRecruitSticky({
+                    channelOpt: { guild: guild, channelId: stickyChannelId },
+                });
+            }
+        } else {
+            await sendCloseEmbedSticky(guild, recruitChannel);
+        }
     }
 }
 
@@ -46,8 +63,19 @@ async function disableRecruitButtons(guild: Guild, recruit: Recruit, memberList:
     // 募集者がボタンメッセージを消していることがある
     if (notExists(buttonMessage)) return;
 
-    await buttonMessage.edit({
-        content: '`[自動〆]`\n' + `<@${recruit.authorId}>たんの募集は〆！\n${memberList}`,
-        components: setButtonDisable(buttonMessage),
-    });
+    try {
+        await buttonMessage.edit({
+            content: '`[自動〆]`\n' + `<@${recruit.authorId}>たんの募集は〆！\n${memberList}`,
+            components: setButtonDisable(buttonMessage),
+        });
+    } catch (error) {
+        // フォーラムのスレッドは最大7日でアーカイブされ、アーカイブ済みスレッド内の
+        // メッセージ編集は Discord 側に拒否される。TTL 掃除(7日)はこのケースにほぼ確実に当たる。
+        // DBの行は既に削除済みで掃除自体は進んでいるため、ボタン無効化の失敗はエラーログへ
+        // 送らず warn に留める。スレッドをアンアーカイブしてまで無効化はしない
+        // (死んだ募集スレッドをフォーラムの先頭に戻さないという判断)。
+        logger.warn(
+            `failed to disable recruit buttons for recruit[${recruit.messageId}]. ${String(error)}`,
+        );
+    }
 }

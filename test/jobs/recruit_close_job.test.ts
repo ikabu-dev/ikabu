@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
     deleteAllParticipant: vi.fn(),
     recruitAutoClose: vi.fn(),
     sendErrorLogs: vi.fn(),
+    loggerInfo: vi.fn(),
 }));
 
 vi.mock('@/infra/db/repositories/recruit_service', () => ({
@@ -22,6 +23,9 @@ vi.mock('@/features/recruit/interactions/close_recruit/auto_close', () => ({
     recruitAutoClose: mocks.recruitAutoClose,
 }));
 vi.mock('@/infra/logging/send_error_logs', () => ({ sendErrorLogs: mocks.sendErrorLogs }));
+vi.mock('@/infra/logging/log4js', () => ({
+    log4js_obj: { getLogger: () => ({ info: mocks.loggerInfo }) },
+}));
 
 import { closeExpiredRecruits } from '@/jobs/recruit_close_job';
 
@@ -40,7 +44,10 @@ describe('期限切れ募集の自動締切スキャン', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('期限切れの募集を〆る', async () => {
-        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit]);
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [expiredRecruit],
+            ttlScanCapped: false,
+        });
 
         await closeExpiredRecruits(clientWithGuilds(['g1']));
 
@@ -48,7 +55,10 @@ describe('期限切れ募集の自動締切スキャン', () => {
     });
 
     it('Botが抜けたサーバーの募集は、Discordを触らずDBの行だけ削除する', async () => {
-        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit]);
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [expiredRecruit],
+            ttlScanCapped: false,
+        });
 
         await closeExpiredRecruits(clientWithGuilds([]));
 
@@ -61,7 +71,10 @@ describe('期限切れ募集の自動締切スキャン', () => {
     it('Botが抜けたサーバーの行削除に失敗しても、残りの募集は〆る', async () => {
         const inGuild = { guildId: 'g1', messageId: 'm2', channelId: 'c1' };
         const leftGuild = { guildId: 'gone', messageId: 'm1', channelId: 'c1' };
-        mocks.getRecruitsToClose.mockResolvedValue([leftGuild, inGuild]);
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [leftGuild, inGuild],
+            ttlScanCapped: false,
+        });
         mocks.deleteRecruit.mockRejectedValueOnce(new Error('db'));
 
         await closeExpiredRecruits(clientWithGuilds(['g1']));
@@ -72,12 +85,37 @@ describe('期限切れ募集の自動締切スキャン', () => {
 
     it('1件の締切に失敗しても、残りの募集は〆る', async () => {
         const other = { ...expiredRecruit, messageId: 'm2' };
-        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit, other]);
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [expiredRecruit, other],
+            ttlScanCapped: false,
+        });
         mocks.recruitAutoClose.mockRejectedValueOnce(new Error('discord'));
 
         await closeExpiredRecruits(clientWithGuilds(['g1']));
 
         expect(mocks.recruitAutoClose).toHaveBeenCalledTimes(2);
         expect(mocks.sendErrorLogs).toHaveBeenCalledTimes(1);
+    });
+
+    it('TTLスキャンが上限に達したときはログを出す', async () => {
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [],
+            ttlScanCapped: true,
+        });
+
+        await closeExpiredRecruits(clientWithGuilds(['g1']));
+
+        expect(mocks.loggerInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('TTLスキャンが上限に達していないときは上限到達ログを出さない', async () => {
+        mocks.getRecruitsToClose.mockResolvedValue({
+            recruits: [],
+            ttlScanCapped: false,
+        });
+
+        await closeExpiredRecruits(clientWithGuilds(['g1']));
+
+        expect(mocks.loggerInfo).not.toHaveBeenCalled();
     });
 });

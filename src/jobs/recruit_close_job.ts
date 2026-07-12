@@ -42,12 +42,14 @@ export function startRecruitCloseJob(client: Client) {
 export async function closeExpiredRecruits(client: Client) {
     if (!client.isReady()) return;
 
-    const expiredRecruits = await RecruitService.getRecruitsToClose(new Date());
+    const { recruits: expiredRecruits, ttlScanCapped } = await RecruitService.getRecruitsToClose(
+        new Date(),
+    );
 
-    if (expiredRecruits.length === RECRUIT_CLOSE_SCAN_LIMIT) {
+    if (ttlScanCapped) {
         // 黙って切り捨てない。溢れた分は次の tick で拾う
         logger.info(
-            `scan limit reached. closing ${RECRUIT_CLOSE_SCAN_LIMIT} recruits in this tick.`,
+            `TTL scan limit reached. closing up to ${RECRUIT_CLOSE_SCAN_LIMIT} TTL-expired recruits in this tick.`,
         );
     }
 
@@ -59,10 +61,7 @@ export async function closeExpiredRecruits(client: Client) {
         if (guild === undefined) {
             try {
                 await RecruitService.deleteRecruit(recruit.guildId, recruit.messageId);
-                await ParticipantService.deleteAllParticipant(
-                    recruit.guildId,
-                    recruit.messageId,
-                );
+                await ParticipantService.deleteAllParticipant(recruit.guildId, recruit.messageId);
                 logger.info(`recruit[${recruit.messageId}] has been deleted. [bot has left]`);
             } catch (error) {
                 await sendErrorLogs(logger, error);

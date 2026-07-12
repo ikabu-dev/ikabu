@@ -111,23 +111,50 @@ describe('締切対象の募集スキャン', () => {
     // now から 7 日前
     const ttlThreshold = new Date('2026-07-05T12:00:00Z');
 
-    it('closeAt 期限切れと、closeAt なしで作成から7日経った募集の両方を拾う', async () => {
-        mocks.recruit.findMany.mockResolvedValue([]);
+    it('closeAt 期限切れはキャップ無しのクエリ、closeAt なしで作成から7日経った募集はキャップ付きのクエリで拾う', async () => {
+        mocks.recruit.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
         await RecruitService.getRecruitsToClose(now);
 
-        expect(mocks.recruit.findMany).toHaveBeenCalledWith({
-            where: {
-                OR: [
-                    // スケジュール終了時刻を持つ募集
-                    { closeAt: { not: null, lte: now } },
-                    // 持たない募集(バイト・レイダース・プラベ・別ゲー)は作成から7日
-                    { closeAt: null, createdAt: { lte: ttlThreshold } },
-                ],
-            },
+        // スケジュール終了時刻を持つ募集。通常運用の自動締切そのものなので上限を設けない
+        expect(mocks.recruit.findMany).toHaveBeenNthCalledWith(1, {
+            where: { closeAt: { not: null, lte: now } },
+        });
+        // 持たない募集(バイト・レイダース・プラベ・別ゲー)は作成から7日。バックログdrain用に上限を設ける
+        expect(mocks.recruit.findMany).toHaveBeenNthCalledWith(2, {
+            where: { closeAt: null, createdAt: { lte: ttlThreshold } },
             orderBy: { createdAt: 'asc' },
             take: RECRUIT_CLOSE_SCAN_LIMIT,
         });
+    });
+
+    it('closeAt 期限切れの結果を先頭に、TTL経過分をその後ろに連結して返す', async () => {
+        const closeAtRecruit = { messageId: 'a' };
+        const ttlRecruit = { messageId: 'b' };
+        mocks.recruit.findMany
+            .mockResolvedValueOnce([closeAtRecruit])
+            .mockResolvedValueOnce([ttlRecruit]);
+
+        const result = await RecruitService.getRecruitsToClose(now);
+
+        expect(result.recruits).toEqual([closeAtRecruit, ttlRecruit]);
+    });
+
+    it('TTLクエリがスキャン上限に達したときだけ ttlScanCapped が true になる', async () => {
+        const cappedTtlRecruits = Array.from({ length: RECRUIT_CLOSE_SCAN_LIMIT }, (_, i) => ({
+            messageId: `ttl${i}`,
+        }));
+        mocks.recruit.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce(cappedTtlRecruits);
+
+        const capped = await RecruitService.getRecruitsToClose(now);
+        expect(capped.ttlScanCapped).toBe(true);
+
+        mocks.recruit.findMany
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([{ messageId: 'x' }]);
+
+        const notCapped = await RecruitService.getRecruitsToClose(now);
+        expect(notCapped.ttlScanCapped).toBe(false);
     });
 
     it('DB障害は握り潰さず throw する', async () => {
@@ -156,8 +183,6 @@ describe('ボタンメッセージIDの保存', () => {
     it('DB障害は握り潰さず throw する', async () => {
         mocks.recruit.updateMany.mockRejectedValueOnce(new Error('db'));
 
-        await expect(RecruitService.updateButtonMessageId('g', 'm', 'btn')).rejects.toThrow(
-            'db',
-        );
+        await expect(RecruitService.updateButtonMessageId('g', 'm', 'btn')).rejects.toThrow('db');
     });
 });
