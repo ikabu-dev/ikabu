@@ -30,10 +30,12 @@ export async function handleFriendCode(interaction: ChatInputCommandInteraction<
 
     const options = interaction.options;
     const subCommand = options.getSubcommand();
+    // void で投げっぱなしにすると、例外を command_handler の try/catch が受け取れず、
+    // そのまま unhandled rejection (= プロセス停止) になるため await する
     if (subCommand === 'add') {
-        void insertFriendCode(interaction);
+        await insertFriendCode(interaction);
     } else if (subCommand === 'show') {
-        void selectFriendCode(interaction);
+        await selectFriendCode(interaction);
     }
 }
 

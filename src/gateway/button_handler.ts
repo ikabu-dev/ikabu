@@ -12,6 +12,7 @@ import {
     isTeamDividerParam,
     isVCLockButton,
 } from '@/config/constants/button_id';
+import { ErrorTexts } from '@/config/constants/error_texts';
 import { deleteFriendCode } from '@/features/friend_code/friendcode';
 import { questionnaireButtonHandler } from '@/features/onboarding/send_questionnaire';
 import { recruitButtonHandler } from '@/features/recruit/interactions/recruit_button_handler';
@@ -21,9 +22,25 @@ import { joinTTS, killTTS } from '@/features/voice/tts/discordjs_voice';
 import { sendRadioRequest } from '@/features/voice/vc_tools/radio_request';
 import { voiceLockUpdate } from '@/features/voice/vc_tools/voice_lock';
 import { voiceLockCommandUpdate } from '@/features/voice/voice_locker';
+import { log4js_obj } from '@/infra/logging/log4js';
+import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { exists } from '@/shared/assert';
 
+const logger = log4js_obj.getLogger('interaction');
+
 export async function call(interaction: ButtonInteraction<CacheType>) {
+    try {
+        await dispatch(interaction);
+    } catch (error) {
+        await sendErrorLogs(logger, error);
+        const buttonChannel = interaction.channel;
+        if (exists(buttonChannel) && buttonChannel.isSendable()) {
+            await buttonChannel.send(ErrorTexts.UndefinedError);
+        }
+    }
+}
+
+async function dispatch(interaction: ButtonInteraction<CacheType>) {
     const customId = interaction.customId;
 
     // サーバとDM両方で動くボタン

@@ -28,17 +28,19 @@ export async function routeInteraction(client: Client, interaction: Interaction<
             }
         }
 
+        // void で投げっぱなしにすると、ハンドラ内で起きた例外をこの try が受け取れず、
+        // そのまま unhandled rejection (= プロセス停止) になるため await する
         if (interaction.isRepliable()) {
             if (interaction.isButton()) {
-                void buttonHandler.call(interaction);
+                await buttonHandler.call(interaction);
             } else if (interaction.isModalSubmit()) {
-                void modalHandler.call(interaction);
+                await modalHandler.call(interaction);
             } else if (interaction.isMessageContextMenuCommand()) {
-                void contextHandler.call(interaction);
+                await contextHandler.call(interaction);
             } else if (interaction.isUserContextMenuCommand()) {
                 // interaction.isCommand()はcontextMenu系も含むため条件分岐しておく
             } else if (interaction.isChatInputCommand()) {
-                void commandHandler.call(interaction);
+                await commandHandler.call(interaction);
             }
         }
     } catch (error) {

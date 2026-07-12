@@ -42,6 +42,7 @@ export default tseslint.config(
                         'test/gateway/*.ts',
                         'test/infra/db/*.ts',
                         'test/infra/external/splatoon3-ink/*.ts',
+                        'test/infra/logging/*.ts',
                         'test/jobs/*.ts',
                         'test/registry/*.ts',
                         'test/shared/*.ts',
