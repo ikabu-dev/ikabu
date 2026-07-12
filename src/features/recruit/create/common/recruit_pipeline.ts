@@ -34,12 +34,12 @@ export type RecruitBuild = {
     imageBuffers: RecruitImageBuffers | RecruitImageBuffersWithoutRule;
     /** VC予約イベントのサムネイルに使う画像 */
     eventImage: Buffer;
-    eventStartTime: Date;
     /**
-     * この募集が対象とするスケジュール（now / next）の終了時刻。
-     * VC予約イベントの終了時刻と、自動締切の期限に使う。
+     * この募集が対象とするスケジュール（now / next）の開始・終了時刻。
+     * VC予約イベントの開始・終了時刻と、自動締切の期限に使う。
      * スケジュールを持たない募集（バイト・レイダース）では省略する。
      */
+    scheduleStartTime?: Date;
     scheduleEndTime?: Date;
     /** Recruit テーブルの option 列に保存する値（ウデマエ・チーム名・イベント名など） */
     option: string | null;
@@ -120,7 +120,8 @@ export async function createRecruit<TContext>(
                 recruitData.recruiter.userId,
                 recruitData.voiceChannel,
                 build.eventImage,
-                build.eventStartTime,
+                // スケジュールを持たない募集は、今すぐ始まる扱いにする
+                build.scheduleStartTime ?? new Date(),
                 build.scheduleEndTime,
             )
         ).id;

@@ -44,9 +44,9 @@ const spec: RecruitSpec<undefined> = {
         return {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
-            eventStartTime: eventData?.startTime ?? new Date(),
-            // 開催中のイベントが無い場合は終了時刻が定まらない(募集カードも'えらー'になる)。
-            // 現在時刻を入れると即座に〆られてしまうため、期限なしとして扱う
+            // 開催中のイベントが無い場合はスケジュールが定まらない(募集カードも'えらー'になる)。
+            // 終了時刻に現在時刻を入れると即座に〆られてしまうため、期限なしとして扱う
+            scheduleStartTime: eventData?.startTime,
             scheduleEndTime: eventData?.endTime,
             option: eventData?.title ?? 'えらー',
         };
