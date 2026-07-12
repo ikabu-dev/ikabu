@@ -1,8 +1,5 @@
 import { ObjectValueList } from '@/config/constants/constant_common';
 import { prisma } from '@/infra/db/prisma';
-import { log4js_obj } from '@/infra/logging/log4js';
-import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-const logger = log4js_obj.getLogger('database');
 
 export const RecruitType = {
     None: 0,
@@ -38,172 +35,126 @@ export class RecruitService {
         closeAt?: Date | null,
         buttonMessageId?: string | null,
     ) {
-        try {
-            await prisma.recruit.create({
-                data: {
-                    guildId: guildId,
-                    channelId: channelId,
-                    messageId: messageId,
-                    authorId: authorId,
-                    recruitNum: recruitNum,
-                    condition: condition,
-                    vcName: vcName,
-                    eventId: eventId,
-                    recruitType: recruitType,
-                    option: option,
-                    closeAt: closeAt,
-                    buttonMessageId: buttonMessageId,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.recruit.create({
+            data: {
+                guildId: guildId,
+                channelId: channelId,
+                messageId: messageId,
+                authorId: authorId,
+                recruitNum: recruitNum,
+                condition: condition,
+                vcName: vcName,
+                eventId: eventId,
+                recruitType: recruitType,
+                option: option,
+                closeAt: closeAt,
+                buttonMessageId: buttonMessageId,
+            },
+        });
     }
 
     /** 自動締切の期限を過ぎた募集を返す。 */
     static async getExpiredRecruits(now: Date) {
-        try {
-            return await prisma.recruit.findMany({
-                where: {
-                    closeAt: { not: null, lte: now },
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return await prisma.recruit.findMany({
+            where: {
+                closeAt: { not: null, lte: now },
+            },
+        });
     }
 
+    /**
+     * 募集を削除する。
+     *
+     * 〆ボタン・自動締切ジョブ・キャンセル・sticky の掃除が競合して
+     * 二重削除になるのは正常系のため、0件マッチで throw しない deleteMany を使う。
+     */
     static async deleteRecruit(guildId: string, messageId: string) {
-        try {
-            await prisma.recruit.delete({
-                where: {
-                    guildId_messageId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                    },
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.recruit.deleteMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+        });
     }
 
     static async updateRecruitNum(guildId: string, messageId: string, recruitNum: number) {
-        try {
-            await prisma.recruit.update({
-                where: {
-                    guildId_messageId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                    },
-                },
-                data: {
-                    recruitNum: recruitNum,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.recruit.updateMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+            data: {
+                recruitNum: recruitNum,
+            },
+        });
     }
 
     static async updateCondition(guildId: string, messageId: string, condition: string) {
-        try {
-            await prisma.recruit.update({
-                where: {
-                    guildId_messageId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                    },
-                },
-                data: {
-                    condition: condition,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-        }
+        await prisma.recruit.updateMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+            data: {
+                condition: condition,
+            },
+        });
     }
 
     static async getRecruit(guildId: string, messageId: string) {
-        try {
-            const recruit = await prisma.recruit.findUnique({
-                where: {
-                    guildId_messageId: {
-                        guildId: guildId,
-                        messageId: messageId,
-                    },
+        const recruit = await prisma.recruit.findUnique({
+            where: {
+                guildId_messageId: {
+                    guildId: guildId,
+                    messageId: messageId,
                 },
-            });
-            return recruit;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+        });
+        return recruit;
     }
 
     static async getRecruitByEventId(guildId: string, eventId: string) {
-        try {
-            const recruit = await prisma.recruit.findFirst({
-                where: {
-                    guildId: guildId,
-                    eventId: eventId,
-                },
-            });
-            return recruit;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+        const recruit = await prisma.recruit.findFirst({
+            where: {
+                guildId: guildId,
+                eventId: eventId,
+            },
+        });
+        return recruit;
     }
 
     static async getRecruitsByRecruitType(guildId: string, recruitType: number) {
-        try {
-            const recruits = await prisma.recruit.findMany({
-                where: {
-                    guildId: guildId,
-                    recruitType: recruitType,
-                },
-            });
-            return recruits;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        const recruits = await prisma.recruit.findMany({
+            where: {
+                guildId: guildId,
+                recruitType: recruitType,
+            },
+        });
+        return recruits;
     }
 
     static async getRecruitsByChannelId(guildId: string, channelId: string) {
-        try {
-            const recruits = await prisma.recruit.findMany({
-                where: {
-                    guildId: guildId,
-                    channelId: channelId,
-                },
-            });
-            return recruits;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        const recruits = await prisma.recruit.findMany({
+            where: {
+                guildId: guildId,
+                channelId: channelId,
+            },
+        });
+        return recruits;
     }
 
     static async getAllMessageId() {
-        try {
-            const recruits = await prisma.recruit.findMany({
-                select: {
-                    messageId: true,
-                },
-                distinct: ['messageId'],
-            });
+        const recruits = await prisma.recruit.findMany({
+            select: {
+                messageId: true,
+            },
+            distinct: ['messageId'],
+        });
 
-            const result = recruits.map((recruit) => {
-                return recruit.messageId;
-            });
+        const result = recruits.map((recruit) => {
+            return recruit.messageId;
+        });
 
-            return result;
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return result;
     }
 }

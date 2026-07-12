@@ -1,10 +1,7 @@
+import { Channel } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 import { prisma } from '@/infra/db/prisma';
-import { log4js_obj } from '@/infra/logging/log4js';
-import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-
-const logger = log4js_obj.getLogger('database');
 
 export class ChannelService {
     static async save(
@@ -15,141 +12,126 @@ export class ChannelService {
         position: number,
         parentId?: string | null,
     ) {
-        try {
-            return await prisma.channel.upsert({
-                where: {
-                    guildId_channelId: {
-                        guildId: guildId,
-                        channelId: channelId,
-                    },
-                },
-                update: {
-                    guildId: guildId,
-                    name: channelName,
-                    type: channelType,
-                    position: position,
-                    parentId: parentId,
-                },
-                create: {
+        return await prisma.channel.upsert({
+            where: {
+                guildId_channelId: {
                     guildId: guildId,
                     channelId: channelId,
-                    name: channelName,
-                    type: channelType,
-                    position: position,
-                    parentId: parentId === undefined ? null : parentId,
-                    isVCToolsEnabled: false,
-                    isAdminChannel: false,
                 },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+            update: {
+                guildId: guildId,
+                name: channelName,
+                type: channelType,
+                position: position,
+                parentId: parentId,
+            },
+            create: {
+                guildId: guildId,
+                channelId: channelId,
+                name: channelName,
+                type: channelType,
+                position: position,
+                parentId: parentId === undefined ? null : parentId,
+                isVCToolsEnabled: false,
+                isAdminChannel: false,
+            },
+        });
     }
 
-    static async setVCToolsEnabled(guildId: string, channelId: string, isVCToolsEnabled = true) {
-        try {
-            return await prisma.channel.update({
-                where: {
-                    guildId_channelId: {
-                        guildId: guildId,
-                        channelId: channelId,
-                    },
+    // update() は対象行が無いと P2025 で throw するため、冪等に扱いたいここでは updateMany を使う。
+    // ただし updateMany は更新した行そのものを返さない（{count} のみ）ので、
+    // 呼び出し側が Channel レコード（type / channelId）を参照できるよう findUnique で取り直して返す。
+    // 戻り値の null は「そのチャンネルが DB に存在しない」ことを表す（DB 障害は throw される）。
+    static async setVCToolsEnabled(
+        guildId: string,
+        channelId: string,
+        isVCToolsEnabled = true,
+    ): Promise<Channel | null> {
+        await prisma.channel.updateMany({
+            where: {
+                guildId: guildId,
+                channelId: channelId,
+            },
+            data: {
+                isVCToolsEnabled: isVCToolsEnabled,
+            },
+        });
+
+        return await prisma.channel.findUnique({
+            where: {
+                guildId_channelId: {
+                    guildId: guildId,
+                    channelId: channelId,
                 },
-                data: {
-                    isVCToolsEnabled: isVCToolsEnabled,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+        });
     }
 
-    static async setAdminChannel(guildId: string, channelId: string, isAdminChannel = true) {
-        try {
-            return await prisma.channel.update({
-                where: {
-                    guildId_channelId: {
-                        guildId: guildId,
-                        channelId: channelId,
-                    },
+    // setVCToolsEnabled と同じ理由で updateMany + findUnique の組み合わせにしている。
+    static async setAdminChannel(
+        guildId: string,
+        channelId: string,
+        isAdminChannel = true,
+    ): Promise<Channel | null> {
+        await prisma.channel.updateMany({
+            where: {
+                guildId: guildId,
+                channelId: channelId,
+            },
+            data: {
+                isAdminChannel: isAdminChannel,
+            },
+        });
+
+        return await prisma.channel.findUnique({
+            where: {
+                guildId_channelId: {
+                    guildId: guildId,
+                    channelId: channelId,
                 },
-                data: {
-                    isAdminChannel: isAdminChannel,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+        });
     }
 
-    static async delete(guildId: string, channelId: string) {
-        try {
-            return await prisma.channel.delete({
-                where: {
-                    guildId_channelId: {
-                        guildId: guildId,
-                        channelId: channelId,
-                    },
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+    static async delete(guildId: string, channelId: string): Promise<void> {
+        await prisma.channel.deleteMany({
+            where: {
+                guildId: guildId,
+                channelId: channelId,
+            },
+        });
     }
 
     static async getChannel(guildId: string, channelId: string) {
-        try {
-            return await prisma.channel.findUnique({
-                where: {
-                    guildId_channelId: {
-                        guildId: guildId,
-                        channelId: channelId,
-                    },
+        return await prisma.channel.findUnique({
+            where: {
+                guildId_channelId: {
+                    guildId: guildId,
+                    channelId: channelId,
                 },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return null;
-        }
+            },
+        });
     }
 
     static async getChannelsByCategoryId(guildId: string, categoryId: string) {
-        try {
-            return await prisma.channel.findMany({
-                where: {
-                    guildId: guildId,
-                    parentId: categoryId,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return await prisma.channel.findMany({
+            where: {
+                guildId: guildId,
+                parentId: categoryId,
+            },
+        });
     }
 
     static async getAllGuildChannels(guildId: string) {
-        try {
-            return await prisma.channel.findMany({
-                where: {
-                    guildId: guildId,
-                },
-            });
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return await prisma.channel.findMany({
+            where: {
+                guildId: guildId,
+            },
+        });
     }
 
     static async getAllChannels() {
-        try {
-            return await prisma.channel.findMany();
-        } catch (error) {
-            await sendErrorLogs(logger, error);
-            return [];
-        }
+        return await prisma.channel.findMany();
     }
 }

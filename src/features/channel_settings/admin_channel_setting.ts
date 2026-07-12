@@ -11,7 +11,7 @@ import {
 import { ChannelService } from '@/infra/db/repositories/channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-import { exists, notExists } from '@/shared/assert';
+import { exists } from '@/shared/assert';
 import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
 
 const logger = log4js_obj.getLogger('interaction');
@@ -41,16 +41,10 @@ export async function adminChannelSetting(
                 storedChannel.channelId,
             );
 
+            // カテゴリ配下のチャンネルにも同じ設定を反映する。
+            // 更新に失敗すれば throw されるため、成否の確認は不要
             for (const channel of channels) {
-                const result = await ChannelService.setAdminChannel(
-                    guild.id,
-                    channel.channelId,
-                    isAdminChannel,
-                );
-
-                if (notExists(result)) {
-                    return null;
-                }
+                await ChannelService.setAdminChannel(guild.id, channel.channelId, isAdminChannel);
             }
         }
 

@@ -5,7 +5,7 @@ import { ChannelService } from '@/infra/db/repositories/channel_service';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { assertExistCheck, notExists } from '@/shared/assert';
 
 const logger = log4js_obj.getLogger('interaction');
 
@@ -35,22 +35,22 @@ export async function unsetUniqueChannelCommand(
             return;
         }
 
-        const deletedChannel = await UniqueChannelService.delete(interaction.guildId, key);
+        // DB障害は throw されるようになったため、false は「解除する行が無かった」
+        // (取得してから解除するまでの間に他の経路で解除された) を意味する
+        const deleted = await UniqueChannelService.delete(interaction.guildId, key);
 
-        if (exists(deletedChannel)) {
-            const channel = await ChannelService.getChannel(
-                interaction.guildId,
-                deletedChannel.channelId,
-            );
-            assertExistCheck(channel, 'storedChannel');
-            await interaction.editReply({
-                content: `\`${channel.name}\`を\`${key}\`の設定から解除したでし！`,
-            });
-        } else {
+        if (!deleted) {
             await interaction.editReply({
                 content: '設定の解除に失敗したでし！',
             });
+            return;
         }
+
+        const channel = await ChannelService.getChannel(interaction.guildId, storedChannelId);
+        assertExistCheck(channel, 'storedChannel');
+        await interaction.editReply({
+            content: `\`${channel.name}\`を\`${key}\`の設定から解除したでし！`,
+        });
     } catch (error) {
         await sendErrorLogs(logger, error);
     }

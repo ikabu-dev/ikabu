@@ -5,7 +5,7 @@ import { Guild, GuildMember, Interaction, Message } from 'discord.js';
 import { MemberService } from '@/infra/db/repositories/member_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
-import { assertExistCheck, exists, notExists } from '@/shared/assert';
+import { assertExistCheck, notExists } from '@/shared/assert';
 import { getGuildByInteraction } from '@/shared/discord_helpers/guild_manager';
 
 const logger = log4js_obj.getLogger('MemberManager');
@@ -71,19 +71,12 @@ export async function searchDBMemberById(guild: Guild, userId: string): Promise<
 
         assertExistCheck(guildMember.joinedAt, 'joinedAt');
 
+        // 登録に失敗すれば throw され、境界で通知される
         const newMember = await MemberService.saveMemberFromGuildMember(guildMember);
 
-        if (exists(newMember)) {
-            logger.warn(
-                `member missing (ikabu DB) => member was registered successfully.\n [guildId: ${guild.id}, userId: ${userId}]`,
-            );
-        } else {
-            await sendErrorLogs(
-                logger,
-                `member missing (ikabu DB) => Failed to register.\n [guildId: ${guild.id}, userId: ${userId}]`,
-            );
-            return null;
-        }
+        logger.warn(
+            `member missing (ikabu DB) => member was registered successfully.\n [guildId: ${guild.id}, userId: ${userId}]`,
+        );
 
         return newMember;
     } else if (!(await isUrlValid(member.iconUrl))) {
@@ -97,19 +90,12 @@ export async function searchDBMemberById(guild: Guild, userId: string): Promise<
             return null;
         }
 
+        // 更新に失敗すれば throw され、境界で通知される
         const newMember = await MemberService.saveMemberFromGuildMember(guildMember);
 
-        if (exists(newMember)) {
-            logger.warn(
-                `member Icon invalid => Icon URL was updated successfully.\n [guildId: ${guild.id}, userId: ${userId}]`,
-            );
-        } else {
-            await sendErrorLogs(
-                logger,
-                `member Icon invalid => Failed to update Icon URL.\n [guildId: ${guild.id}, userId: ${userId}]`,
-            );
-            return null;
-        }
+        logger.warn(
+            `member Icon invalid => Icon URL was updated successfully.\n [guildId: ${guild.id}, userId: ${userId}]`,
+        );
 
         return newMember;
     } else {
