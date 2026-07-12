@@ -16,9 +16,6 @@ import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
 import { sleep } from '@/shared/sleep';
 
-/** 募集を開始してから自動で〆るまでの時間 */
-const AUTO_CLOSE_AFTER_SEC = 7200;
-
 /** 募集を開始できるインタラクション（スラッシュコマンド、または募集ボタンから開くモーダル） */
 export type RecruitCreateInteraction =
     ChatInputCommandInteraction<'cached'> | ModalSubmitInteraction<'cached' | 'raw'>;
@@ -38,8 +35,12 @@ export type RecruitBuild = {
     /** VC予約イベントのサムネイルに使う画像 */
     eventImage: Buffer;
     eventStartTime: Date;
-    /** 終了時刻が定まらない募集（バイト・レイダース）では省略する */
-    eventEndTime?: Date;
+    /**
+     * この募集が対象とするスケジュール（now / next）の終了時刻。
+     * VC予約イベントの終了時刻と、自動締切の期限に使う。
+     * スケジュールを持たない募集（バイト・レイダース）では省略する。
+     */
+    scheduleEndTime?: Date;
     /** Recruit テーブルの option 列に保存する値（ウデマエ・チーム名・イベント名など） */
     option: string | null;
 };
@@ -120,10 +121,14 @@ export async function createRecruit<TContext>(
                 recruitData.voiceChannel,
                 build.eventImage,
                 build.eventStartTime,
-                build.eventEndTime,
+                build.scheduleEndTime,
             )
         ).id;
     }
+
+    // 募集はそのスケジュールのルール・ステージに対して立てられるので、
+    // スケジュールが終わったら〆る
+    const closeAt = spec.autoClose ? (build.scheduleEndTime ?? null) : null;
 
     await registerRecruitData(
         recruitMessageList.recruitMessage.id,
@@ -131,7 +136,7 @@ export async function createRecruit<TContext>(
         recruitData,
         eventId,
         build.option,
-        spec.autoClose ? new Date(Date.now() + AUTO_CLOSE_AFTER_SEC * 1000) : null,
+        closeAt,
         recruitMessageList.buttonMessage.id,
     );
 

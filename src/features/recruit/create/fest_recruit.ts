@@ -51,7 +51,7 @@ const spec: RecruitSpec<Role> = {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
             eventStartTime: festData.startTime,
-            eventEndTime: festData.endTime,
+            scheduleEndTime: festData.endTime,
             option: teamRole.name, // フェスのチーム名
         };
     },

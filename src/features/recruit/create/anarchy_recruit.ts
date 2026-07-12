@@ -62,7 +62,7 @@ const spec: RecruitSpec<AnarchyContext> = {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
             eventStartTime: anarchyData.startTime,
-            eventEndTime: anarchyData.endTime,
+            scheduleEndTime: anarchyData.endTime,
             option: rank,
         };
     },
