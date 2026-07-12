@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock('@/infra/db/prisma', () => ({ prisma: mocks }));
 
 import { ChannelKeySet } from '@/config/constants/channel_key';
+import { RECRUIT_CLOSE_SCAN_LIMIT } from '@/config/constants/recruit';
 import { RoleKeySet } from '@/config/constants/role_key';
 import { MemberService } from '@/infra/db/repositories/member_service';
 import { RecruitService } from '@/infra/db/repositories/recruit_service';
@@ -100,5 +101,38 @@ describe('DBサービスは失敗を呼び出し側に伝える', () => {
         await expect(UniqueChannelService.delete('g', ChannelKeySet.Lobby.key)).resolves.toBe(
             false,
         );
+    });
+});
+
+describe('締切対象の募集スキャン', () => {
+    beforeEach(() => vi.clearAllMocks());
+
+    const now = new Date('2026-07-12T12:00:00Z');
+    // now から 7 日前
+    const ttlThreshold = new Date('2026-07-05T12:00:00Z');
+
+    it('closeAt 期限切れと、closeAt なしで作成から7日経った募集の両方を拾う', async () => {
+        mocks.recruit.findMany.mockResolvedValue([]);
+
+        await RecruitService.getRecruitsToClose(now);
+
+        expect(mocks.recruit.findMany).toHaveBeenCalledWith({
+            where: {
+                OR: [
+                    // スケジュール終了時刻を持つ募集
+                    { closeAt: { not: null, lte: now } },
+                    // 持たない募集(バイト・レイダース・プラベ・別ゲー)は作成から7日
+                    { closeAt: null, createdAt: { lte: ttlThreshold } },
+                ],
+            },
+            orderBy: { createdAt: 'asc' },
+            take: RECRUIT_CLOSE_SCAN_LIMIT,
+        });
+    });
+
+    it('DB障害は握り潰さず throw する', async () => {
+        mocks.recruit.findMany.mockRejectedValueOnce(new Error('db'));
+
+        await expect(RecruitService.getRecruitsToClose(now)).rejects.toThrow('db');
     });
 });

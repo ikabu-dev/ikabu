@@ -2,13 +2,13 @@ import { Client } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-    getExpiredRecruits: vi.fn(),
+    getRecruitsToClose: vi.fn(),
     recruitAutoClose: vi.fn(),
     sendErrorLogs: vi.fn(),
 }));
 
 vi.mock('@/infra/db/repositories/recruit_service', () => ({
-    RecruitService: { getExpiredRecruits: mocks.getExpiredRecruits },
+    RecruitService: { getRecruitsToClose: mocks.getRecruitsToClose },
 }));
 vi.mock('@/features/recruit/interactions/close_recruit/auto_close', () => ({
     recruitAutoClose: mocks.recruitAutoClose,
@@ -32,7 +32,7 @@ describe('期限切れ募集の自動締切スキャン', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('期限切れの募集を〆る', async () => {
-        mocks.getExpiredRecruits.mockResolvedValue([expiredRecruit]);
+        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit]);
 
         await closeExpiredRecruits(clientWithGuilds(['g1']));
 
@@ -40,7 +40,7 @@ describe('期限切れ募集の自動締切スキャン', () => {
     });
 
     it('Botが抜けたサーバーの募集には触らない', async () => {
-        mocks.getExpiredRecruits.mockResolvedValue([expiredRecruit]);
+        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit]);
 
         await closeExpiredRecruits(clientWithGuilds([]));
 
@@ -50,7 +50,7 @@ describe('期限切れ募集の自動締切スキャン', () => {
 
     it('1件の締切に失敗しても、残りの募集は〆る', async () => {
         const other = { ...expiredRecruit, messageId: 'm2' };
-        mocks.getExpiredRecruits.mockResolvedValue([expiredRecruit, other]);
+        mocks.getRecruitsToClose.mockResolvedValue([expiredRecruit, other]);
         mocks.recruitAutoClose.mockRejectedValueOnce(new Error('discord'));
 
         await closeExpiredRecruits(clientWithGuilds(['g1']));

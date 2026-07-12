@@ -40,7 +40,7 @@ export function startRecruitCloseJob(client: Client) {
 export async function closeExpiredRecruits(client: Client) {
     if (!client.isReady()) return;
 
-    const expiredRecruits = await RecruitService.getExpiredRecruits(new Date());
+    const expiredRecruits = await RecruitService.getRecruitsToClose(new Date());
 
     for (const recruit of expiredRecruits) {
         // Bot が抜けたサーバーの募集は、毎分リトライして失敗し続けるだけなので触らない

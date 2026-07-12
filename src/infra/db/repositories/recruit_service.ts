@@ -1,4 +1,5 @@
 import { ObjectValueList } from '@/config/constants/constant_common';
+import { RECRUIT_CLOSE_SCAN_LIMIT, RECRUIT_FALLBACK_TTL_DAYS } from '@/config/constants/recruit';
 import { prisma } from '@/infra/db/prisma';
 
 export const RecruitType = {
@@ -53,12 +54,29 @@ export class RecruitService {
         });
     }
 
-    /** 自動締切の期限を過ぎた募集を返す。 */
-    static async getExpiredRecruits(now: Date) {
+    /**
+     * 締切の期限を過ぎた募集を返す。
+     *
+     * 期限は closeAt。closeAt を持たない募集(バイト・レイダース・プラベ・別ゲー)は
+     * スケジュール終了時刻が無いため、作成から RECRUIT_FALLBACK_TTL_DAYS 経過を期限とみなす。
+     * つまり期限は closeAt ?? createdAt + TTL。
+     *
+     * 1回に返す件数には上限を設ける。溢れた分は次のスキャンで拾う。
+     */
+    static async getRecruitsToClose(now: Date) {
+        const ttlThreshold = new Date(
+            now.getTime() - RECRUIT_FALLBACK_TTL_DAYS * 24 * 60 * 60 * 1000,
+        );
+
         return await prisma.recruit.findMany({
             where: {
-                closeAt: { not: null, lte: now },
+                OR: [
+                    { closeAt: { not: null, lte: now } },
+                    { closeAt: null, createdAt: { lte: ttlThreshold } },
+                ],
             },
+            orderBy: { createdAt: 'asc' },
+            take: RECRUIT_CLOSE_SCAN_LIMIT,
         });
     }
 
