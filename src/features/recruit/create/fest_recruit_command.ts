@@ -10,7 +10,7 @@ import {
 
 import { festRecruit } from '@/features/recruit/create/fest_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 /**
  * フェス募集コマンドは陣営ごとに存在するが、陣営名以外はすべて同一。

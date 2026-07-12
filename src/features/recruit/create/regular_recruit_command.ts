@@ -10,7 +10,7 @@ import {
 
 import { regularRecruit } from '@/features/recruit/create/regular_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const regularMatch = new SlashCommandBuilder()
     .setName('ナワバリ募集')

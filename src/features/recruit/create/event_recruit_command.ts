@@ -10,7 +10,7 @@ import {
 
 import { eventRecruit } from '@/features/recruit/create/event_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const eventMatch = new SlashCommandBuilder()
     .setName('イベマ募集')

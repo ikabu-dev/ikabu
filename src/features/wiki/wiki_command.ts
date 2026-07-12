@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandStringOption } from 'discord.js';
 
 import { handleWiki } from '@/features/wiki/wiki';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const wiki = new SlashCommandBuilder()
     .setName('wiki')

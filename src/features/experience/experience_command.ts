@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 
 import { handleIkabuExperience } from '@/features/experience/experience';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const experience = new SlashCommandBuilder()
     .setName('イカ部歴')

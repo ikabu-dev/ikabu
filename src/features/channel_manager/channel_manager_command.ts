@@ -8,7 +8,7 @@ import {
 
 import { channelManagerHandler } from '@/features/channel_manager/channel_manager_handler';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const chManager = new SlashCommandBuilder()
     .setName('ch_management')

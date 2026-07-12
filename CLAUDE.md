@@ -30,20 +30,40 @@ mise exec -- pnpm run create-migrate  # Prisma マイグレーションファイ
 
 ```
 src/
-  app/
-    common/        # 共通コンポーネント
-    constant/      # 定数
-    event/         # Discord イベントハンドラ
-    feat-admin/    # 管理系機能
-    feat-recruit/  # リクルート機能（メイン機能）
-    feat-utils/    # ユーティリティ系機能
-    handlers/      # コマンドハンドラ
-  db/              # DB アクセス層
+  gateway/         # Discord イベント受信・ルーティング
+  registry/        # コマンド定義の集約・登録
+  jobs/            # 定期実行ジョブ
+  features/        # 機能別モジュール（リクルート、VC、おみくじ等）
+  infra/           # インフラ層（DB・外部API・ログ・HTTP）
+    db/            #   Prisma クライアント・リポジトリ
+    discord/       #   Discord クライアント
+    external/      #   外部 API クライアント
+    http/          #   HTTP サーバー
+    logging/       #   ログ
+  shared/          # 機能横断の共有ユーティリティ
+  config/          # 環境変数・定数・設定
   server.ts        # エントリポイント
 prisma/            # Prisma スキーマ・マイグレーション
 config/            # アプリ設定 (node-config)
 images/            # Bot が生成する画像の素材
+test/              # テスト（src/ のミラー構造）
 ```
+
+### 依存方向
+
+ESLint `import/no-restricted-paths` で以下の依存方向を強制している。逆方向の import は lint エラーになる。
+
+```
+gateway / registry / jobs  →  features  →  infra / shared / config
+```
+
+- feature 間の直接 import は禁止。共有が必要なら `shared/` に上げるか `gateway` / `registry` で合成する
+- `config/` は葉。他のどの層にも依存しない
+
+### コマンドの追加手順
+
+1. `src/features/<機能名>/` に `<コマンド名>_command.ts` を作成し、`GuildChatInputCommand` または `GlobalChatInputCommand` を実装する
+2. `src/registry/command_registry.ts` に 1 行追加してコマンドを登録する
 
 ## 環境変数
 

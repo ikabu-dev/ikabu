@@ -8,7 +8,7 @@ import {
 import { ChannelKeySet } from '@/config/constants/channel_key';
 import { uniqueChannelSettingsHandler } from '@/features/unique_channel_settings/unique_channel_settings_handler';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 function addUniqueChannelChoices(stringOption: SlashCommandStringOption) {
     for (const { name, key } of Object.values(ChannelKeySet)) {

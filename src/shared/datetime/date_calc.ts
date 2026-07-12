@@ -1,4 +1,4 @@
-import { exists, notExists } from '../assert';
+import { exists, notExists } from '@/shared/assert';
 
 /*
  *  日数または月数を加算

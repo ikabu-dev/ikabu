@@ -6,7 +6,7 @@ import {
 
 import { channelSettingsHandler } from '@/features/channel_settings/channel_settings_handler';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const channelSettings = new SlashCommandBuilder()
     .setName('チャンネル設定')

@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from 'discord.js';
 
 import { handleShow } from '@/features/stage_info/show';
 
-import type { GlobalChatInputCommand } from '@/registry/types';
+import type { GlobalChatInputCommand } from '@/shared/command_types';
 
 const show = new SlashCommandBuilder()
     .setName('show')

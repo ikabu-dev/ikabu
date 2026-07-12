@@ -8,7 +8,7 @@ import {
 
 import { otherGameRecruit } from '@/features/recruit/create/other_game_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const otherGame = new SlashCommandBuilder()
     .setName('別ゲー募集')

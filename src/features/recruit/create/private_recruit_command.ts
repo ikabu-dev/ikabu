@@ -6,7 +6,7 @@ import {
 
 import { privateRecruit } from '@/features/recruit/create/private_recruit';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const privateMatch = new SlashCommandBuilder()
     .setName('プラベ募集')

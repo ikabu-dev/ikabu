@@ -7,7 +7,7 @@ import {
 
 import { joinedAtFixer } from '@/features/joined_date_fixer/fix_joined_date';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const joinedDateFixer = new SlashCommandBuilder()
     .setName('入部日修正')

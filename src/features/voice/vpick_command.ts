@@ -2,7 +2,7 @@ import { SlashCommandBuilder, SlashCommandIntegerOption } from 'discord.js';
 
 import { handleVoicePick } from '@/features/voice/vpick';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const vpick = new SlashCommandBuilder()
     .setName('vpick')

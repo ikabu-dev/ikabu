@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 
 import { shutdown as shutdownHandler } from '@/features/shutdown/shutdown_process';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const shutdown = new SlashCommandBuilder()
     .setName('shutdown')

@@ -6,7 +6,7 @@ import {
 
 import { voiceLocker } from '@/features/voice/voice_locker';
 
-import type { GuildChatInputCommand } from '@/registry/types';
+import type { GuildChatInputCommand } from '@/shared/command_types';
 
 const voiceLock = new SlashCommandBuilder()
     .setName('ボイスロック')
