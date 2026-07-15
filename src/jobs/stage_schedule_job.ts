@@ -30,7 +30,9 @@ export function startStageScheduleJob(client: Client) {
                 // ステージ情報の送信
                 await stageInfo(guild);
             } catch (error) {
-                await sendErrorLogs(logger, 'schedule job failed: \n' + error);
+                // 文字列連結するとスタックトレースが消えるため、Error のまま渡す
+                logger.error('schedule job failed');
+                await sendErrorLogs(logger, error);
             }
 
             logger.info('cron job finished');
