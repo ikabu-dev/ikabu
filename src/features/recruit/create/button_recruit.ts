@@ -91,6 +91,10 @@ export async function buttonRecruit(interaction: ChatInputCommandInteraction<'ca
         null,
         null,
         recruitType,
+        null,
+        null,
+        // この経路はボタンと募集文が同じメッセージ。自動〆でボタンを無効化するために保存する
+        sentMessage.id,
     );
 
     // DBに参加者情報を登録

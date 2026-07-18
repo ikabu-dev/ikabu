@@ -136,7 +136,8 @@ model Recruit {
   recruitType     Int       @map("recruit_type")
   option          String?
   createdAt       DateTime  @default(now()) @map("created_at")
-  // 自動締切の期限。null は自動締切を行わない募集(バイト・レイダース・プラベ・別ゲー)。
+  // 自動締切の期限。null はスケジュール終了時刻を持たない募集(バイト・レイダース・プラベ・別ゲー)で、
+  // その場合は作成から RECRUIT_FALLBACK_TTL_DAYS 経過をもって自動締切される。
   closeAt         DateTime? @map("close_at")
   // 自動締切時に無効化する参加ボタンのメッセージID。募集カード本体とは別メッセージ。
   buttonMessageId String?   @map("button_message_id")
