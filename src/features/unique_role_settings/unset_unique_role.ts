@@ -38,7 +38,7 @@ export async function unsetUniqueRoleCommand(
 
         if (!deleted) {
             await interaction.editReply({
-                content: '設定の解除に失敗したでし！',
+                content: 'その項目は既に解除されていたでし！',
             });
             return;
         }

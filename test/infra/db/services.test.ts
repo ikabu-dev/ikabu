@@ -102,6 +102,14 @@ describe('DBサービスは失敗を呼び出し側に伝える', () => {
             false,
         );
     });
+
+    it('ユニークロールの解除は、解除できたかを boolean で返す', async () => {
+        mocks.uniqueRole.deleteMany.mockResolvedValue({ count: 1 });
+        await expect(UniqueRoleService.delete('g', RoleKeySet.Developer.key)).resolves.toBe(true);
+
+        mocks.uniqueRole.deleteMany.mockResolvedValue({ count: 0 });
+        await expect(UniqueRoleService.delete('g', RoleKeySet.Developer.key)).resolves.toBe(false);
+    });
 });
 
 describe('締切対象の募集スキャン', () => {
