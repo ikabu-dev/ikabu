@@ -170,7 +170,7 @@ export async function handleHelp(interaction: ChatInputCommandInteraction<CacheT
                             value: '```サーモンラン情報を表示して募集```',
                         },
                         {
-                            name: '/レイダース募集 recruit',
+                            name: '/レイダース募集 raiders',
                             value: '```スプラトゥーン レイダースの募集```',
                         },
                         {
