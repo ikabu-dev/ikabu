@@ -212,18 +212,20 @@ export async function availableRecruitString(guild: Guild, channelId: string) {
     return result;
 }
 
+/**
+ * 募集専用チャンネルを持つ種別(プラベ・別ゲー)について、その sticky チャンネルIDを返す。
+ * それ以外の種別は専用チャンネルを持たないため undefined を返す。
+ */
 export async function getStickyChannelId(recruit: Recruit) {
-    const privateRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
-        recruit.guildId,
-        ChannelKeySet.PrivateRecruit.key,
-    );
-    const otherGamesRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
-        recruit.guildId,
-        ChannelKeySet.OtherGamesRecruit.key,
-    );
     if (recruit.recruitType === RecruitType.PrivateRecruit) {
-        return privateRecruitChannelId;
+        return await UniqueChannelService.getChannelIdByKey(
+            recruit.guildId,
+            ChannelKeySet.PrivateRecruit.key,
+        );
     } else if (recruit.recruitType === RecruitType.OtherGameRecruit) {
-        return otherGamesRecruitChannelId;
+        return await UniqueChannelService.getChannelIdByKey(
+            recruit.guildId,
+            ChannelKeySet.OtherGamesRecruit.key,
+        );
     }
 }

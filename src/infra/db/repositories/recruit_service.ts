@@ -1,4 +1,5 @@
 import { ObjectValueList } from '@/config/constants/constant_common';
+import { RECRUIT_CLOSE_SCAN_LIMIT, RECRUIT_FALLBACK_TTL_DAYS } from '@/config/constants/recruit';
 import { prisma } from '@/infra/db/prisma';
 
 export const RecruitType = {
@@ -31,7 +32,8 @@ export class RecruitService {
         eventId: string | null,
         recruitType: number,
         option?: string | null,
-        // 自動締切を行う募集のみ。null なら定期ジョブのスキャン対象にならない
+        // スケジュール終了時刻を持つ募集のみ設定する。null の場合、定期ジョブは
+        // 作成から RECRUIT_FALLBACK_TTL_DAYS 経過をもって締切扱いにする(スキャン対象外にはならない)
         closeAt?: Date | null,
         buttonMessageId?: string | null,
     ) {
@@ -53,13 +55,43 @@ export class RecruitService {
         });
     }
 
-    /** 自動締切の期限を過ぎた募集を返す。 */
-    static async getExpiredRecruits(now: Date) {
-        return await prisma.recruit.findMany({
-            where: {
-                closeAt: { not: null, lte: now },
-            },
+    /**
+     * 締切の期限を過ぎた募集を返す。
+     *
+     * 期限は closeAt。closeAt を持たない募集(バイト・レイダース・プラベ・別ゲー)は
+     * スケジュール終了時刻が無いため、作成から RECRUIT_FALLBACK_TTL_DAYS 経過を期限とみなす。
+     * つまり期限は closeAt ?? createdAt + TTL。
+     *
+     * closeAt 側は通常運用の自動締切そのものなので上限を設けずに全件返す。
+     * TTL 側(closeAt: null の掃除)だけ 1回に返す件数の上限を設ける。
+     * 作成日時が古い(=期限をより過ぎている)行から優先して拾い、溢れた分は次のスキャンで拾う。
+     * この上限に達したかどうかは ttlScanCapped で呼び出し側に伝える。
+     */
+    static async getRecruitsToClose(now: Date) {
+        const ttlThreshold = new Date(
+            now.getTime() - RECRUIT_FALLBACK_TTL_DAYS * 24 * 60 * 60 * 1000,
+        );
+
+        const closeAtRecruits = await prisma.recruit.findMany({
+            where: { closeAt: { not: null, lte: now } },
         });
+
+        // 上限ちょうどで割り切れた(=溢れが無い)ケースを誤って capped 扱いしないよう、
+        // 上限+1件を取得し、実際に溢れていたかを件数で判定する。
+        const ttlRecruitsWithExtra = await prisma.recruit.findMany({
+            where: { closeAt: null, createdAt: { lte: ttlThreshold } },
+            orderBy: { createdAt: 'asc' },
+            take: RECRUIT_CLOSE_SCAN_LIMIT + 1,
+        });
+        const ttlScanCapped = ttlRecruitsWithExtra.length > RECRUIT_CLOSE_SCAN_LIMIT;
+        const ttlRecruits = ttlScanCapped
+            ? ttlRecruitsWithExtra.slice(0, RECRUIT_CLOSE_SCAN_LIMIT)
+            : ttlRecruitsWithExtra;
+
+        return {
+            recruits: [...closeAtRecruits, ...ttlRecruits],
+            ttlScanCapped,
+        };
     }
 
     /**
@@ -97,6 +129,28 @@ export class RecruitService {
             },
             data: {
                 condition: condition,
+            },
+        });
+    }
+
+    /**
+     * 募集にボタンメッセージIDを紐付ける。
+     *
+     * プラベ・別ゲーはボタンを募集登録の後に送るため、登録時点では ID が無い。
+     * 自動〆はこの ID からボタンメッセージを引いて無効化する。
+     */
+    static async updateButtonMessageId(
+        guildId: string,
+        messageId: string,
+        buttonMessageId: string,
+    ) {
+        await prisma.recruit.updateMany({
+            where: {
+                guildId: guildId,
+                messageId: messageId,
+            },
+            data: {
+                buttonMessageId: buttonMessageId,
             },
         });
     }
