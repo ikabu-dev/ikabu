@@ -8,3 +8,4 @@ ikabu.sqlite3
 ikabu.sqlite3-journal
 build/
 .specstory
+docs/superpowers/

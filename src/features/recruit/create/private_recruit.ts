@@ -128,6 +128,8 @@ export async function privateRecruit(interaction: ChatInputCommandInteraction<'c
         });
         // 募集文を削除してもボタンが動くように、bot投稿メッセージのメッセージIDでボタン作る
         await sentMessage.edit({ components: [recruitActionRow(embedMessage)] });
+        // 自動〆でボタンを無効化できるように、ボタンメッセージのIDを保存する
+        await RecruitService.updateButtonMessageId(guild.id, embedMessage.id, sentMessage.id);
         const deleteButtonMsg = await recruitChannel.send({
             components: [embedRecruitDeleteButton(sentMessage, embedMessage)],
         });
