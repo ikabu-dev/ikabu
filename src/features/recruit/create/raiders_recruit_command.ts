@@ -17,7 +17,7 @@ const raidersMatch = new SlashCommandBuilder()
     .setDescription('スプラトゥーン レイダース募集コマンド')
     .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
         subcommand
-            .setName('recruit')
+            .setName('raiders')
             .setDescription('スプラトゥーン レイダースの募集をたてます。')
             .addIntegerOption((option: SlashCommandIntegerOption) =>
                 option

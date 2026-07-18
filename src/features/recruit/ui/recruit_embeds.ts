@@ -16,7 +16,7 @@ const recruit_command = {
     バンカラ募集: '`/バンカラ募集 now` or `/バンカラ募集 next`',
     フェス募集: '`/〇〇陣営 now` or `/〇〇陣営 next`',
     サーモン募集: '`/サーモンラン募集 run`',
-    レイダース募集: '`/レイダース募集 recruit`',
+    レイダース募集: '`/レイダース募集 raiders`',
     別ゲー募集:
         '`/別ゲー募集 apex` or `/別ゲー募集 overwatch` or `/別ゲー募集 mhw` or `/別ゲー募集 valo` or `/別ゲー募集 other`',
 };

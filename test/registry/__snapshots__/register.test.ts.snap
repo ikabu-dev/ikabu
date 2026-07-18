@@ -2032,7 +2032,7 @@ exports[`コマンド定義 > 登録するSlash CommandのJSON表現を維持す
       {
         "description": "スプラトゥーン レイダースの募集をたてます。",
         "description_localizations": undefined,
-        "name": "recruit",
+        "name": "raiders",
         "name_localizations": undefined,
         "options": [
           {
