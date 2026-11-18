@@ -4,10 +4,13 @@ import { RecruitParam } from '@/config/constants/button_id';
 import { ErrorTexts } from '@/config/constants/error_texts';
 import { StickyKey } from '@/config/constants/sticky_key';
 import { memberListText } from '@/features/recruit/common/member_list';
-import { availableRecruitString } from '@/features/recruit/sticky/recruit_sticky_messages';
+import {
+    availableRecruitString,
+    sendRecruitSticky,
+} from '@/features/recruit/sticky/recruit_sticky_messages';
 import { RecruitOpCode, regenerateCanvas } from '@/features/recruit/ui/canvases/regenerate_canvas';
 import { ParticipantMember, ParticipantService } from '@/infra/db/repositories/participant_service';
-import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { RecruitService, RecruitType } from '@/infra/db/repositories/recruit_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { assertExistCheck, exists, notExists } from '@/shared/assert';
@@ -133,7 +136,9 @@ export async function confirmJoinRequest(
 
         const recruitChannel = await searchChannelById(guild, recruitChannelId);
 
-        if (exists(recruitChannel) && recruitChannel.isTextBased()) {
+        if (recruitData.recruitType === RecruitType.XMatchRecruit) {
+            await sendRecruitSticky({ channelOpt: { guild, channelId: recruitChannelId } });
+        } else if (exists(recruitChannel) && recruitChannel.isTextBased()) {
             await sendStickyMessage(guild, recruitChannelId, StickyKey.AvailableRecruit, {
                 content: await availableRecruitString(guild, recruitChannel.id),
                 flags: MessageFlags.SuppressNotifications,

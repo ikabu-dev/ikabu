@@ -34,7 +34,8 @@ export async function arrangeCommandRecruitData(
         ChannelType.GuildVoice,
         ChannelType.GuildStageVoice,
     ]);
-    const recruitNum = options.getInteger('募集人数', true);
+    const recruitNum =
+        recruitType === RecruitType.XMatchRecruit ? 1 : options.getInteger('募集人数', true);
     const condition = options.getString('参加条件') ?? 'なし';
 
     const recruiter = await searchDBMemberById(guild, interactionMember.id);

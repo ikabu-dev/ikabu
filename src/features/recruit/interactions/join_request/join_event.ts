@@ -110,14 +110,31 @@ export async function join(
                 return;
             }
 
-            // recruitテーブルにデータ追加
-            await ParticipantService.registerParticipant(
-                guild.id,
-                image1MsgId,
-                member.userId,
-                2,
-                new Date(),
-            );
+            if (recruitData.recruitType === RecruitType.XMatchRecruit) {
+                const joined = await ParticipantService.registerXMatchPartner(
+                    guild.id,
+                    image1MsgId,
+                    member.userId,
+                );
+                if (!joined) {
+                    await interaction.followUp({
+                        content: '相方が決まったか、募集が終了したでし！',
+                        flags: MessageFlags.Ephemeral,
+                    });
+                    await interaction.editReply({
+                        components: recoveryThinkingButton(interaction, '参加'),
+                    });
+                    return;
+                }
+            } else {
+                await ParticipantService.registerParticipant(
+                    guild.id,
+                    image1MsgId,
+                    member.userId,
+                    2,
+                    new Date(),
+                );
+            }
 
             const recruitChannel = interaction.channel;
 

@@ -6,6 +6,7 @@ import {
     checkBigRun,
     checkTeamContest,
     getEventData,
+    getXMatchList,
     inFallbackMode,
 } from '@/infra/external/splatoon3-ink/splatoon3_ink';
 import { Sp3Schedule } from '@/infra/external/splatoon3-ink/types/schedule';
@@ -40,6 +41,20 @@ export async function checkRecruitSchedule(
                 return {
                     canRecruit: false,
                     recruitDateErrorMessage: await getFestPeriodAlertText(guildId),
+                };
+            }
+            break;
+
+        case RecruitType.XMatchRecruit:
+            if (
+                inFallbackMode ||
+                checkFes(schedule, type) ||
+                !getXMatchList(schedule)[type]?.xMatchSetting
+            ) {
+                return {
+                    canRecruit: false,
+                    recruitDateErrorMessage:
+                        '選んだ時間帯のXマッチのルールを取得できなかったでし！',
                 };
             }
             break;

@@ -34,7 +34,9 @@ const dbFile = path.join(
 // RecruitService の import より先に差し替える必要がある。
 process.env['DATABASE_URL'] = `file:${dbFile}`;
 
+let ParticipantService: typeof import('@/infra/db/repositories/participant_service').ParticipantService;
 let RecruitService: typeof import('@/infra/db/repositories/recruit_service').RecruitService;
+let RecruitType: typeof import('@/infra/db/repositories/recruit_service').RecruitType;
 let seedDb: Database.Database;
 
 /**
@@ -95,7 +97,8 @@ beforeAll(async () => {
     seedDb = new Database(dbFile);
     createSchema(seedDb);
 
-    ({ RecruitService } = await import('@/infra/db/repositories/recruit_service'));
+    ({ RecruitService, RecruitType } = await import('@/infra/db/repositories/recruit_service'));
+    ({ ParticipantService } = await import('@/infra/db/repositories/participant_service'));
     // prisma CLI の起動を含むため既定の 5 秒では足りない
 }, 60_000);
 
@@ -249,4 +252,35 @@ describe('getRecruitsToClose — 混在', () => {
 
         expect(recruits).toEqual([]);
     });
+});
+
+it('Xマッチ募集は同時の参加でも1枠までで、取り消すと空き枠に戻る', async () => {
+    const id = seedRecruit({ createdAt: now, closeAt: null });
+    seedDb
+        .prepare('UPDATE recruit SET recruit_type = ? WHERE guild_id = ? AND message_id = ?')
+        .run(RecruitType.XMatchRecruit, 'g1', id);
+    const insertMember = seedDb.prepare(
+        'INSERT INTO member (guild_id, user_id, display_name, mention, icon_url) VALUES (?, ?, ?, ?, ?)',
+    );
+    const candidates = ['candidate1', 'candidate2'];
+    for (const userId of candidates) insertMember.run('g1', userId, userId, userId, '');
+
+    const results = await Promise.all(
+        candidates.map((userId) => ParticipantService.registerXMatchPartner('g1', id, userId)),
+    );
+    expect(results.filter(Boolean)).toHaveLength(1);
+
+    const [partner] = await ParticipantService.getAllParticipants('g1', id);
+    await ParticipantService.deleteParticipant('g1', id, partner.userId);
+    const otherCandidate = candidates[results.indexOf(false)];
+    expect(await ParticipantService.registerXMatchPartner('g1', id, otherCandidate)).toBe(true);
+
+    await ParticipantService.deleteParticipant('g1', id, otherCandidate);
+    seedDb
+        .prepare('UPDATE recruit SET close_at = ? WHERE guild_id = ? AND message_id = ?')
+        .run('2000-01-01T00:00:00.000+00:00', 'g1', id);
+    expect(await ParticipantService.registerXMatchPartner('g1', id, partner.userId)).toBe(false);
+
+    await RecruitService.deleteRecruit('g1', id);
+    expect(await ParticipantService.registerXMatchPartner('g1', id, partner.userId)).toBe(false);
 });

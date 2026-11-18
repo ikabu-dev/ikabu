@@ -61,8 +61,9 @@ export async function sendRecruitCanvas(
         ruleMessage = await recruitChannel.send({ files: [rule] });
     }
 
+    const roleMention = recruitRoleId ? `<@&${recruitRoleId}> ` : '';
     let buttonMessage = await recruitChannel.send({
-        content: `<@&${recruitRoleId}> ボタンを押して参加表明するでし！\n${getMemberMentions(
+        content: `${roleMention}ボタンを押して参加表明するでし！\n${getMemberMentions(
             recruitData.recruitNum,
             [],
         )}`,
