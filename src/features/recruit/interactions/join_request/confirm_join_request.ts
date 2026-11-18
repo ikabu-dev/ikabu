@@ -126,7 +126,11 @@ export async function confirmJoinRequest(
             );
             assertExistCheck(memberListMessage, 'memberListMessage');
             await memberListMessage.edit({
-                content: await memberListText(interaction, recruitMessageId),
+                content: await memberListText(
+                    interaction,
+                    recruitMessageId,
+                    memberListMessage.content,
+                ),
             });
         }
 
