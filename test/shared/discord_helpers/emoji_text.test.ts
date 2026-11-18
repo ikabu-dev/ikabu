@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 import Canvas from 'canvas';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
     EmojiTextToken,
@@ -122,5 +122,25 @@ describe('drawWrappedTextWithEmoji', () => {
         const expected = expectedCanvas.getContext('2d').getImageData(0, 0, 100, 60).data;
         expect(actual.some((value) => value !== 0)).toBe(true);
         expect(Buffer.from(actual).equals(Buffer.from(expected))).toBe(true);
+    });
+
+    it('読み込みに失敗した絵文字は、次の呼び出しで読み直す', async () => {
+        // キャッシュの影響を受けないよう、ほかのテストで読んでいない絵文字を使う
+        const opts = { x: 10, y: 40, width: 200, lineHeight: 40, maxLines: 1, emojiSize: 30 };
+        const readFile = vi
+            .spyOn(fs.promises, 'readFile')
+            .mockRejectedValueOnce(new Error('一時的な失敗'));
+        try {
+            await expect(
+                drawWrappedTextWithEmoji(Canvas.createCanvas(100, 60).getContext('2d'), '🎮', opts),
+            ).rejects.toThrow('一時的な失敗');
+
+            const canvas = Canvas.createCanvas(100, 60);
+            await drawWrappedTextWithEmoji(canvas.getContext('2d'), '🎮', opts);
+            const data = canvas.getContext('2d').getImageData(0, 0, 100, 60).data;
+            expect(data.some((value) => value !== 0)).toBe(true);
+        } finally {
+            readFile.mockRestore();
+        }
     });
 });

@@ -133,6 +133,8 @@ function loadTwemojiImage(svgPath: string): Promise<Image> {
                 Canvas.loadImage(Buffer.from(svg.replace('<svg ', '<svg width="72" height="72" '))),
             );
         svgImageCache.set(svgPath, image);
+        // 一時的な失敗を残すと、再起動するまで同じ絵文字の描画が失敗し続ける
+        image.catch(() => svgImageCache.delete(svgPath));
     }
     return image;
 }
