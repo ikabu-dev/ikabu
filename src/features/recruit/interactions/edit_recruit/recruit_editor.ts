@@ -7,7 +7,7 @@ import {
     TextInputStyle,
 } from 'discord.js';
 
-import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { RecruitService, RecruitType } from '@/infra/db/repositories/recruit_service';
 import { log4js_obj } from '@/infra/logging/log4js';
 import { sendErrorLogs } from '@/infra/logging/send_error_logs';
 import { notExists } from '@/shared/assert';
@@ -43,13 +43,13 @@ export async function createRecruitEditor(
             return;
         }
 
-        await interaction.showModal(createRecruitEditorModal(messageId));
+        await interaction.showModal(createRecruitEditorModal(messageId, recruitData.recruitType));
     } catch (error) {
         await sendErrorLogs(logger, error);
     }
 }
 
-function createRecruitEditorModal(messageId: string) {
+function createRecruitEditorModal(messageId: string, recruitType: number) {
     const modalParams = new URLSearchParams();
     modalParams.append('recm', 'recedit');
     modalParams.append('mid', messageId);
@@ -74,6 +74,7 @@ function createRecruitEditorModal(messageId: string) {
 
     const row1 = new ActionRowBuilder<TextInputBuilder>().addComponents(remainingNumInput);
     const row2 = new ActionRowBuilder<TextInputBuilder>().addComponents(conditionInput);
-    modal.addComponents(row1, row2);
+    if (recruitType !== RecruitType.XMatchRecruit) modal.addComponents(row1);
+    modal.addComponents(row2);
     return modal;
 }

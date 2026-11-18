@@ -16,6 +16,13 @@ export function validateRecruitNum(
     attendee2: Member | null,
     attendee3: Member | null,
 ): number {
+    if (recruitType === RecruitType.XMatchRecruit) {
+        if (recruitNum !== 1 || exists(attendee1) || exists(attendee2) || exists(attendee3)) {
+            throw new RecruitConditionError('Xマッチ募集は募集主と相方の2人まででし！');
+        }
+        return 2;
+    }
+
     if (Number.isNaN(recruitNum)) {
         throw new RecruitConditionError(RecruitAlertTexts.RecruitNumIsNaN);
     }

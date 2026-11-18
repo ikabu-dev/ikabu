@@ -45,7 +45,10 @@ export async function arrangeModalRecruitData(
         ? (([...voiceChannelCollection.values()][0] as VoiceBasedChannel) ?? null)
         : null;
 
-    const recruitNum = Number(interaction.fields.getTextInputValue('rNum'));
+    const recruitNum =
+        recruitType === RecruitType.XMatchRecruit
+            ? 1
+            : Number(interaction.fields.getTextInputValue('rNum'));
     let condition = interaction.fields.getTextInputValue('condition');
     if (isEmpty(condition)) condition = 'なし';
 

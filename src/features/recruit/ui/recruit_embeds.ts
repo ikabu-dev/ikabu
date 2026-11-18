@@ -14,6 +14,7 @@ const recruit_command = {
     イベマ募集: '`/イベマ募集 event`',
     ナワバリ募集: '`/ナワバリ募集 now` or `/ナワバリ募集 next`',
     バンカラ募集: '`/バンカラ募集 now` or `/バンカラ募集 next`',
+    Xマッチ募集: '`/xマッチ募集 now` or `/xマッチ募集 next`',
     フェス募集: '`/〇〇陣営 now` or `/〇〇陣営 next`',
     サーモン募集: '`/サーモンラン募集 run`',
     レイダース募集: '`/レイダース募集 raiders`',
@@ -35,6 +36,9 @@ export async function getCommandHelpEmbed(guild: Guild, channelName: string) {
             break;
         case 'バンカラ募集':
             commandMessage = recruit_command.バンカラ募集;
+            break;
+        case ChannelKeySet.XMatchRecruit.name:
+            commandMessage = recruit_command.Xマッチ募集;
             break;
         case 'フウカ募集':
         case 'ウツホ募集':

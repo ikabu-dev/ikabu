@@ -15,3 +15,4 @@ export const RECRUIT_FALLBACK_TTL_DAYS = 7;
  * スキャンは毎分なので、上限を超えた分は次の tick で拾えばよい。
  */
 export const RECRUIT_CLOSE_SCAN_LIMIT = 50;
+export const X_POWER_BANDS = ['2000未満', '2000以上'] as const;

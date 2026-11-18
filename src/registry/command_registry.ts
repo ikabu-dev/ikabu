@@ -26,6 +26,7 @@ import { privateRecruitCommand } from '@/features/recruit/create/private_recruit
 import { raidersRecruitCommand } from '@/features/recruit/create/raiders_recruit_command';
 import { regularRecruitCommand } from '@/features/recruit/create/regular_recruit_command';
 import { salmonRecruitCommand } from '@/features/recruit/create/salmon_recruit_command';
+import { xMatchRecruitCommand } from '@/features/recruit/create/x_match_recruit_command';
 import { closeRecruitCommand } from '@/features/recruit/interactions/close_recruit/close_command';
 import { recruitEditorCommand } from '@/features/recruit/interactions/edit_recruit/recruit_editor_command';
 import { shutdownCommand } from '@/features/shutdown/shutdown_command';
@@ -80,6 +81,7 @@ export const commands: CommandModule[] = [
     regularRecruitCommand,
     eventRecruitCommand,
     anarchyRecruitCommand,
+    xMatchRecruitCommand,
     salmonRecruitCommand,
     raidersRecruitCommand,
     fesACommand,
