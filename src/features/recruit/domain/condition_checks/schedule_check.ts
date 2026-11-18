@@ -46,11 +46,13 @@ export async function checkRecruitSchedule(
             break;
 
         case RecruitType.XMatchRecruit:
-            if (
-                inFallbackMode ||
-                checkFes(schedule, type) ||
-                !getXMatchList(schedule)[type]?.xMatchSetting
-            ) {
+            if (!inFallbackMode && checkFes(schedule, type)) {
+                return {
+                    canRecruit: false,
+                    recruitDateErrorMessage: await getFestPeriodAlertText(guildId),
+                };
+            }
+            if (inFallbackMode || !getXMatchList(schedule)[type]?.xMatchSetting) {
                 return {
                     canRecruit: false,
                     recruitDateErrorMessage:
