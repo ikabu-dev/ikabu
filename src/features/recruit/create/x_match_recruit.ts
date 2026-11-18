@@ -18,10 +18,13 @@ import { RecruitType } from '@/infra/db/repositories/recruit_service';
 import { UniqueChannelService } from '@/infra/db/repositories/unique_channel_service';
 import { UniqueRoleService } from '@/infra/db/repositories/unique_role_service';
 import { getXMatchData } from '@/infra/external/splatoon3-ink/splatoon3_ink';
+import { log4js_obj } from '@/infra/logging/log4js';
 import { assertExistCheck } from '@/shared/assert';
 import { rule2image } from '@/shared/splatoon/rule_image';
 
 type XPowerBand = (typeof X_POWER_BANDS)[number];
+
+const logger = log4js_obj.getLogger('recruit');
 
 const spec: RecruitSpec<XPowerBand> = {
     recruitName: ChannelKeySet.XMatchRecruit.name,
@@ -29,20 +32,26 @@ const spec: RecruitSpec<XPowerBand> = {
     autoClose: true,
 
     prepare: async (interaction) => {
-        const band = interaction.isChatInputCommand()
+        const selectedBand = interaction.isChatInputCommand()
             ? interaction.options.getString('xp帯', true)
             : interaction.fields.getStringSelectValues('xPowerBand')[0];
-        if (band !== X_POWER_BANDS[0] && band !== X_POWER_BANDS[1]) {
+        const band = X_POWER_BANDS.find((option) => option === selectedBand);
+        if (band === undefined) {
             await interaction.editReply('Xパワー帯を選択するでし！');
             return null;
         }
 
+        const recruitRoleId = await UniqueRoleService.getRoleIdByKey(
+            interaction.guildId,
+            RoleKeySet.XMatchRecruit.key,
+        );
+        if (recruitRoleId === null) {
+            logger.warn(`Xマッチ募集ロールが未設定です [guildId: ${interaction.guildId}]`);
+        }
+
         return {
             recruitType: RecruitType.XMatchRecruit,
-            recruitRoleId: await UniqueRoleService.getRoleIdByKey(
-                interaction.guildId,
-                RoleKeySet.XMatchRecruit.key,
-            ),
+            recruitRoleId,
             context: band,
         };
     },
@@ -69,7 +78,7 @@ const spec: RecruitSpec<XPowerBand> = {
         return {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
-            messageDetail: `**${match.rule}** ｜ Xパワー ${band} ｜ @1`,
+            messageDetail: `**${match.rule}** ｜ Xパワー ${band}`,
             scheduleStartTime: match.startTime,
             scheduleEndTime: match.endTime,
             option: band,
