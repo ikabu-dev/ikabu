@@ -21,6 +21,7 @@
     "@prisma/adapter-better-sqlite3": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@snazzah/davey": "^0.1.8",
+    "@twemoji/svg": "^15.0.0",
     "axios": "^1.16.0",
     "better-sqlite3": "^12.5.0",
     "canvas": "^3.2.0",

@@ -5,14 +5,16 @@ import Canvas from 'canvas';
 
 import { modalRecruit } from '@/config/constants/images';
 import { RecruitOpCode } from '@/features/recruit/ui/canvases/regenerate_canvas';
+import { drawVoiceChannelName } from '@/features/recruit/ui/canvases/voice_channel_label';
 import { MatchInfo } from '@/infra/external/splatoon3-ink/splatoon3_ink';
-import { exists, notExists } from '@/shared/assert';
+import { exists } from '@/shared/assert';
 import { dateformat, formatDatetime } from '@/shared/datetime/convert_datetime';
 import {
     createRoundRect,
     drawArcImage,
     fillTextWithStroke,
 } from '@/shared/discord_helpers/canvas_components';
+import { drawWrappedTextWithEmoji } from '@/shared/discord_helpers/emoji_text';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',
@@ -144,26 +146,12 @@ export async function recruitRegularCanvas(
         75,
     );
 
-    let channelString;
-    if (notExists(channelName)) {
-        channelString = '🔉 VC指定なし';
-    } else {
-        channelString = '🔉 ' + channelName;
-    }
-
-    recruitCtx.save();
-    recruitCtx.textAlign = 'right';
-    fillTextWithStroke(
-        recruitCtx,
-        channelString,
-        '33px "Splatfont"',
-        '#FFFFFF',
-        '#2D3130',
-        1,
-        680,
-        70,
-    );
-    recruitCtx.restore();
+    await drawVoiceChannelName(recruitCtx, channelName, {
+        fontSize: 33,
+        x: 680,
+        y: 70,
+        align: 'right',
+    });
 
     fillTextWithStroke(
         recruitCtx,
@@ -211,37 +199,16 @@ export async function recruitRegularCanvas(
     );
 
     recruitCtx.font = '31px "Genshin", "SEGUI"';
-    const width = 603;
-    const size = 40;
-    const columnNum = 3;
-    const column = [''];
-    let line = 0;
     condition = condition.replace(/\\n/g, '\n');
 
-    // 幅に合わせて自動改行
-    for (let i = 0; i < condition.length; i++) {
-        const char = condition.charAt(i);
-
-        if (char == '\n') {
-            line++;
-            column[line] = '';
-        } else if (recruitCtx.measureText(column[line] + char).width > width) {
-            line++;
-            column[line] = char;
-        } else {
-            column[line] += char;
-        }
-    }
-
-    if (column.length > columnNum) {
-        column[columnNum - 1] += '…';
-    }
-
-    for (let j = 0; j < column.length; j++) {
-        if (j < columnNum) {
-            recruitCtx.fillText(column[j], 65, 415 + size * j);
-        }
-    }
+    await drawWrappedTextWithEmoji(recruitCtx, condition, {
+        x: 65,
+        y: 415,
+        width: 603,
+        lineHeight: 40,
+        maxLines: 3,
+        emojiSize: 31,
+    });
 
     if (opCode === RecruitOpCode.cancel) {
         recruitCtx.save();
