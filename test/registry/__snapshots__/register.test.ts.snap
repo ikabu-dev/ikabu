@@ -3299,7 +3299,7 @@ exports[`コマンド定義 > 登録するSlash CommandのJSON表現を維持す
                 "value": "ROLE_ID_RECRUIT_ANARCHY",
               },
               {
-                "name": "Xマッチ募集通知",
+                "name": "Xマッチ募集",
                 "name_localizations": undefined,
                 "value": "ROLE_ID_RECRUIT_X_MATCH",
               },
@@ -3424,7 +3424,7 @@ exports[`コマンド定義 > 登録するSlash CommandのJSON表現を維持す
                 "value": "ROLE_ID_RECRUIT_ANARCHY",
               },
               {
-                "name": "Xマッチ募集通知",
+                "name": "Xマッチ募集",
                 "name_localizations": undefined,
                 "value": "ROLE_ID_RECRUIT_X_MATCH",
               },
