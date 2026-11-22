@@ -2,13 +2,22 @@ import path from 'path';
 
 import Canvas, { CanvasRenderingContext2D, Image } from 'canvas';
 
+import { log4js_obj } from '@/infra/logging/log4js';
 import { fillTextWithStroke } from '@/shared/discord_helpers/canvas_components';
+
+const logger = log4js_obj.getLogger('VoiceChannelLabel');
 
 let vcIconImage: Promise<Image> | undefined;
 
 function loadVcIcon(): Promise<Image> {
     // フォントと同じく、カレントディレクトリがリポジトリのルートであることを前提にしている
-    vcIconImage ??= Canvas.loadImage(path.resolve('./images/recruit/vc_icon.svg'));
+    vcIconImage ??= Canvas.loadImage(path.resolve('./images/recruit/vc_icon.svg')).catch(
+        (error: unknown) => {
+            // 一度の失敗を残すと、再起動するまで全種類の募集画像のアイコンが読めなくなる
+            vcIconImage = undefined;
+            throw error;
+        },
+    );
     return vcIconImage;
 }
 
@@ -20,7 +29,7 @@ function loadVcIcon(): Promise<Image> {
  * @param opts.x align が left ならアイコンの左端、right なら文字列の右端の x 座標
  * @param opts.y 文字列のベースラインの y 座標
  * @param opts.align 揃える向き
- * @returns 描いたアイコンの左上の位置と一辺
+ * @returns アイコンを置く左上の位置と一辺 (読み込みに失敗して描かなかった場合も同じ値)
  */
 export async function drawVoiceChannelName(
     ctx: CanvasRenderingContext2D,
@@ -56,6 +65,11 @@ export async function drawVoiceChannelName(
         iconX = opts.x - textWidth - gap - iconSize;
     }
 
-    ctx.drawImage(await loadVcIcon(), iconX, iconY, iconSize, iconSize);
+    try {
+        ctx.drawImage(await loadVcIcon(), iconX, iconY, iconSize, iconSize);
+    } catch (error) {
+        // アイコンが読めなくても募集画像は作れるよう、アイコンを省いて文字だけにする
+        logger.warn('VC のアイコンを読めないため省いて描く', error);
+    }
     return { x: iconX, y: iconY, size: iconSize };
 }

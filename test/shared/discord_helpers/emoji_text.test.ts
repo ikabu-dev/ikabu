@@ -61,13 +61,13 @@ describe('isEmojiGrapheme', () => {
 });
 
 describe('toEmojiTextTokens', () => {
-    it('書記素ごとに分け、絵文字に印を付ける', () => {
+    it('書記素ごとに分け、絵文字に SVG のパスを付ける', () => {
         expect(toEmojiTextTokens('A👨‍👩‍👧🇯🇵\nB')).toEqual([
-            { text: 'A', emoji: false },
-            { text: '👨‍👩‍👧', emoji: true },
-            { text: '🇯🇵', emoji: true },
-            { text: '\n', emoji: false },
-            { text: 'B', emoji: false },
+            { text: 'A', svgPath: null },
+            { text: '👨‍👩‍👧', svgPath: expect.stringMatching(/1f468-200d-1f469-200d-1f467\.svg$/) },
+            { text: '🇯🇵', svgPath: expect.stringMatching(/1f1ef-1f1f5\.svg$/) },
+            { text: '\n', svgPath: null },
+            { text: 'B', svgPath: null },
         ]);
     });
 });
@@ -124,21 +124,72 @@ describe('drawWrappedTextWithEmoji', () => {
         expect(Buffer.from(actual).equals(Buffer.from(expected))).toBe(true);
     });
 
-    it('読み込みに失敗した絵文字は、次の呼び出しで読み直す', async () => {
+    it('絵文字の画像は、x から絵文字 1 つ分の幅とベースラインの近くに収まる', async () => {
+        const canvas = Canvas.createCanvas(100, 60);
+        await drawWrappedTextWithEmoji(canvas.getContext('2d'), '🔉', {
+            x: 10,
+            y: 40,
+            width: 200,
+            lineHeight: 40,
+            maxLines: 1,
+            emojiSize: 30,
+        });
+
+        const data = canvas.getContext('2d').getImageData(0, 0, 100, 60).data;
+        let left = Infinity;
+        let right = -Infinity;
+        let top = Infinity;
+        let bottom = -Infinity;
+        for (let py = 0; py < 60; py++) {
+            for (let px = 0; px < 100; px++) {
+                if (data[(py * 100 + px) * 4 + 3] !== 0) {
+                    left = Math.min(left, px);
+                    right = Math.max(right, px + 1);
+                    top = Math.min(top, py);
+                    bottom = Math.max(bottom, py + 1);
+                }
+            }
+        }
+
+        expect(left).toBeGreaterThanOrEqual(10);
+        expect(right).toBeLessThanOrEqual(10 + 30 * 1.2);
+        expect(top).toBeGreaterThanOrEqual(40 - 30);
+        expect(bottom).toBeLessThanOrEqual(40 + 30 * 0.3);
+        expect(right - left).toBeGreaterThanOrEqual(20);
+        expect(bottom - top).toBeGreaterThanOrEqual(20);
+    });
+
+    it('読み込みに失敗した絵文字は文字として描き、次の呼び出しでは画像で描く', async () => {
         // キャッシュの影響を受けないよう、ほかのテストで読んでいない絵文字を使う
         const opts = { x: 10, y: 40, width: 200, lineHeight: 40, maxLines: 1, emojiSize: 30 };
+        const font = '30px sans-serif';
+        const pixelsOf = (canvas: Canvas.Canvas) =>
+            Buffer.from(canvas.getContext('2d').getImageData(0, 0, 100, 60).data);
+
+        const textCanvas = Canvas.createCanvas(100, 60);
+        const textCtx = textCanvas.getContext('2d');
+        textCtx.font = font;
+        textCtx.fillText('🎮', 10, 40);
+        const textPixels = pixelsOf(textCanvas);
+
         const readFile = vi
             .spyOn(fs.promises, 'readFile')
             .mockRejectedValueOnce(new Error('一時的な失敗'));
         try {
-            await expect(
-                drawWrappedTextWithEmoji(Canvas.createCanvas(100, 60).getContext('2d'), '🎮', opts),
-            ).rejects.toThrow('一時的な失敗');
+            const fallbackCanvas = Canvas.createCanvas(100, 60);
+            const fallbackCtx = fallbackCanvas.getContext('2d');
+            fallbackCtx.font = font;
+            await drawWrappedTextWithEmoji(fallbackCtx, '🎮', opts);
+            expect(pixelsOf(fallbackCanvas).equals(textPixels)).toBe(true);
 
-            const canvas = Canvas.createCanvas(100, 60);
-            await drawWrappedTextWithEmoji(canvas.getContext('2d'), '🎮', opts);
-            const data = canvas.getContext('2d').getImageData(0, 0, 100, 60).data;
-            expect(data.some((value) => value !== 0)).toBe(true);
+            const imageCanvas = Canvas.createCanvas(100, 60);
+            const imageCtx = imageCanvas.getContext('2d');
+            imageCtx.font = font;
+            await drawWrappedTextWithEmoji(imageCtx, '🎮', opts);
+            const imagePixels = pixelsOf(imageCanvas);
+            expect(imagePixels.some((value) => value !== 0)).toBe(true);
+            expect(imagePixels.equals(textPixels)).toBe(false);
+            expect(readFile).toHaveBeenCalledTimes(2);
         } finally {
             readFile.mockRestore();
         }

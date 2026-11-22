@@ -3,8 +3,12 @@ import path from 'path';
 
 import Canvas, { CanvasRenderingContext2D, Image } from 'canvas';
 
-/** 書記素 1 つ (改行は '\n') と、それを Twemoji の画像で描くかどうか */
-export type EmojiTextToken = { text: string; emoji: boolean };
+import { log4js_obj } from '@/infra/logging/log4js';
+
+const logger = log4js_obj.getLogger('EmojiText');
+
+/** 書記素 1 つ (改行は '\n') と、それを描く Twemoji の SVG のパス。文字として描くなら null */
+export type EmojiTextToken = { text: string; svgPath: string | null };
 
 // フォント (path.resolve('./fonts/...')) と同じく、カレントディレクトリがリポジトリのルートであることを前提にしている
 const TWEMOJI_SVG_DIR = path.resolve('./node_modules/@twemoji/svg');
@@ -65,16 +69,18 @@ export function findTwemojiSvgPath(grapheme: string): string | null {
 }
 
 /**
- * 文字列を書記素に分け、Twemoji の画像で描くものに印を付ける
+ * 文字列を書記素に分け、Twemoji の画像で描くものに SVG のパスを付ける
  * @param text 文字列
  */
 export function toEmojiTextTokens(text: string): EmojiTextToken[] {
     return Array.from(graphemeSegmenter.segment(text), ({ segment }) => {
         if (segment === '\n' || segment === '\r\n') {
-            return { text: '\n', emoji: false };
+            return { text: '\n', svgPath: null };
         }
-        const emoji = isEmojiGrapheme(segment) && findTwemojiSvgPath(segment) !== null;
-        return { text: segment, emoji };
+        return {
+            text: segment,
+            svgPath: isEmojiGrapheme(segment) ? findTwemojiSvgPath(segment) : null,
+        };
     });
 }
 
@@ -93,9 +99,9 @@ export function layoutEmojiTextLines(
 ): EmojiTextToken[][] {
     // 絵文字を含まない入力では、従来の折り返し (measureText(行 + 文字) > width) と同じ位置で折り返す
     const lineWidth = (line: EmojiTextToken[]) => {
-        const emojiCount = line.filter((token) => token.emoji).length;
+        const emojiCount = line.filter((token) => token.svgPath !== null).length;
         const text = line
-            .filter((token) => !token.emoji)
+            .filter((token) => token.svgPath === null)
             .map((token) => token.text)
             .join('');
         return emojiCount * opts.emojiWidth + measureText(text);
@@ -103,7 +109,7 @@ export function layoutEmojiTextLines(
 
     const lines: EmojiTextToken[][] = [[]];
     for (const token of tokens) {
-        if (!token.emoji && token.text === '\n') {
+        if (token.svgPath === null && token.text === '\n') {
             lines.push([]);
             continue;
         }
@@ -117,7 +123,7 @@ export function layoutEmojiTextLines(
 
     if (lines.length > opts.maxLines) {
         const visible = lines.slice(0, opts.maxLines);
-        visible[opts.maxLines - 1].push({ text: '…', emoji: false });
+        visible[opts.maxLines - 1].push({ text: '…', svgPath: null });
         return visible;
     }
     return lines;
@@ -185,13 +191,21 @@ export async function drawWrappedTextWithEmoji(
         };
 
         for (const token of line) {
-            const svgPath = token.emoji ? findTwemojiSvgPath(token.text) : null;
-            if (svgPath === null) {
+            if (token.svgPath === null) {
+                pendingText += token.text;
+                continue;
+            }
+            let image: Image;
+            try {
+                image = await loadTwemojiImage(token.svgPath);
+            } catch (error) {
+                // 絵文字 1 つが読めないだけで募集画像の生成ごと失敗させないよう、文字として描く。
+                // 折り返しは画像の幅で計算済みなので、この行の幅は少しずれる
+                logger.warn(`絵文字の画像を読めないため文字で描く: ${token.text}`, error);
                 pendingText += token.text;
                 continue;
             }
             flushText();
-            const image = await loadTwemojiImage(svgPath);
             ctx.drawImage(
                 image,
                 cx + gap,
