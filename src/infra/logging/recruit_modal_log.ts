@@ -41,7 +41,7 @@ export async function sendRecruitModalLog(interaction: ModalSubmitInteraction<'r
     embed.addFields([
         {
             name: '募集パラメータ',
-            value: commandLog,
+            value: commandLog.trim() || 'なし',
             inline: true,
         },
         {

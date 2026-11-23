@@ -34,7 +34,9 @@ const dbFile = path.join(
 // RecruitService の import より先に差し替える必要がある。
 process.env['DATABASE_URL'] = `file:${dbFile}`;
 
+let ParticipantService: typeof import('@/infra/db/repositories/participant_service').ParticipantService;
 let RecruitService: typeof import('@/infra/db/repositories/recruit_service').RecruitService;
+let RecruitType: typeof import('@/infra/db/repositories/recruit_service').RecruitType;
 let seedDb: Database.Database;
 
 /**
@@ -61,7 +63,7 @@ function toDbDate(date: Date) {
 }
 
 let seq = 0;
-function seedRecruit(options: { createdAt: Date; closeAt: Date | null }) {
+function seedRecruit(options: { createdAt: Date; closeAt: Date | null; recruitType?: number }) {
     seq += 1;
     const messageId = `m${seq}`;
     seedDb
@@ -78,7 +80,7 @@ function seedRecruit(options: { createdAt: Date; closeAt: Date | null }) {
             'a1',
             1,
             'なし',
-            1,
+            options.recruitType ?? RecruitType.PrivateRecruit,
             toDbDate(options.createdAt),
             options.closeAt === null ? null : toDbDate(options.closeAt),
         );
@@ -95,7 +97,8 @@ beforeAll(async () => {
     seedDb = new Database(dbFile);
     createSchema(seedDb);
 
-    ({ RecruitService } = await import('@/infra/db/repositories/recruit_service'));
+    ({ RecruitService, RecruitType } = await import('@/infra/db/repositories/recruit_service'));
+    ({ ParticipantService } = await import('@/infra/db/repositories/participant_service'));
     // prisma CLI の起動を含むため既定の 5 秒では足りない
 }, 60_000);
 
@@ -104,7 +107,7 @@ afterAll(() => {
 });
 
 beforeEach(() => {
-    seedDb.exec('DELETE FROM recruit');
+    seedDb.exec('DELETE FROM participant; DELETE FROM recruit');
 });
 
 describe('掃除の仕様', () => {
@@ -248,5 +251,80 @@ describe('getRecruitsToClose — 混在', () => {
         const { recruits } = await RecruitService.getRecruitsToClose(now);
 
         expect(recruits).toEqual([]);
+    });
+});
+
+describe('registerXMatchPartner', () => {
+    const authorId = 'a1';
+    const candidates = ['candidate1', 'candidate2'];
+
+    beforeAll(() => {
+        const insertMember = seedDb.prepare(
+            'INSERT INTO member (guild_id, user_id, display_name, mention, icon_url) VALUES (?, ?, ?, ?, ?)',
+        );
+        for (const userId of [authorId, ...candidates]) {
+            insertMember.run('g1', userId, userId, userId, '');
+        }
+    });
+
+    it('期限内は募集主の行があっても相方1人を登録でき、取り消すと枠が空く', async () => {
+        const createdAt = new Date();
+        const id = seedRecruit({
+            createdAt,
+            closeAt: new Date(createdAt.getTime() + minute),
+            recruitType: RecruitType.XMatchRecruit,
+        });
+        await ParticipantService.registerParticipant('g1', id, authorId, 0, createdAt);
+
+        // better-sqlite3 は同一接続で直列に実行する。ここでは満員判定を検証し、
+        // 同時実行時の安全性は枠の確認と登録を同じ SQL 文で行うことで担保する。
+        expect(await ParticipantService.registerXMatchPartner('g1', id, candidates[0])).toBe(true);
+        expect(await ParticipantService.registerXMatchPartner('g1', id, candidates[1])).toBe(false);
+
+        const participants = await ParticipantService.getAllParticipants('g1', id);
+        expect(participants.map(({ userId, userType }) => [userId, userType])).toEqual([
+            [authorId, 0],
+            [candidates[0], 2],
+        ]);
+
+        await ParticipantService.deleteParticipant('g1', id, candidates[0]);
+        expect(await ParticipantService.registerXMatchPartner('g1', id, candidates[1])).toBe(true);
+    });
+
+    it('募集主は相方として登録できない', async () => {
+        const id = seedRecruit({
+            createdAt: now,
+            closeAt: null,
+            recruitType: RecruitType.XMatchRecruit,
+        });
+        expect(await ParticipantService.registerXMatchPartner('g1', id, authorId)).toBe(false);
+    });
+
+    it('Xマッチ以外の募集には相方を登録できない', async () => {
+        const id = seedRecruit({
+            createdAt: now,
+            closeAt: null,
+            recruitType: RecruitType.AnarchyRecruit,
+        });
+        expect(await ParticipantService.registerXMatchPartner('g1', id, candidates[0])).toBe(false);
+    });
+
+    it('期限切れと削除済みの募集には相方を登録できない', async () => {
+        const id = seedRecruit({
+            createdAt: now,
+            closeAt: new Date(Date.now() - minute),
+            recruitType: RecruitType.XMatchRecruit,
+        });
+        expect(await ParticipantService.registerXMatchPartner('g1', id, candidates[0])).toBe(false);
+
+        const deletedId = seedRecruit({
+            createdAt: now,
+            closeAt: null,
+            recruitType: RecruitType.XMatchRecruit,
+        });
+        await RecruitService.deleteRecruit('g1', deletedId);
+        expect(await ParticipantService.registerXMatchPartner('g1', deletedId, candidates[0])).toBe(
+            false,
+        );
     });
 });

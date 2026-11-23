@@ -1,7 +1,7 @@
 import { Member } from '@prisma/client';
 
 import { prisma } from '@/infra/db/prisma';
-import { RecruitService } from '@/infra/db/repositories/recruit_service';
+import { RecruitService, RecruitType } from '@/infra/db/repositories/recruit_service';
 
 export type ParticipantMember = {
     member: Member;
@@ -10,6 +10,25 @@ export type ParticipantMember = {
     userType: number;
 };
 export class ParticipantService {
+    static async registerXMatchPartner(guildId: string, messageId: string, userId: string) {
+        // 空き枠の確認と登録を1文で行い、同時に押されても相方は1人までにする。
+        const inserted = await prisma.$executeRaw`
+            INSERT INTO participant (guild_id, message_id, user_id, user_type)
+            SELECT guild_id, message_id, ${userId}, 2
+            FROM recruit
+            WHERE guild_id = ${guildId}
+              AND message_id = ${messageId}
+              AND recruit_type = ${RecruitType.XMatchRecruit}
+              AND author_id <> ${userId}
+              AND (close_at IS NULL OR julianday(close_at) > julianday('now'))
+              AND NOT EXISTS (
+                  SELECT 1 FROM participant
+                  WHERE guild_id = ${guildId} AND message_id = ${messageId} AND user_type <> 0
+              )
+        `;
+        return inserted === 1;
+    }
+
     static async registerParticipant(
         guildId: string,
         messageId: string,

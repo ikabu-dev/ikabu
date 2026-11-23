@@ -32,7 +32,7 @@ export async function validateSchedule(
     const schedule = await getSchedule();
     if (notExists(schedule)) {
         throw new RecruitConditionError(
-            getDeveloperMention(guild.id) + RecruitAlertTexts.ScheduleLoadError,
+            (await getDeveloperMention(guild.id)) + RecruitAlertTexts.ScheduleLoadError,
         );
     }
 

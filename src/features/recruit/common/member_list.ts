@@ -26,12 +26,13 @@ export function getMemberMentions(recruitNum: number, participants: ParticipantM
 export async function memberListText(
     interaction: ButtonInteraction<'cached' | 'raw'>,
     messageId: string,
+    currentContent = interaction.message.content,
 ) {
     const guild = await getGuildByInteraction(interaction);
     const recruit = await RecruitService.getRecruit(guild.id, messageId);
     if (notExists(recruit)) return;
     const participants = await ParticipantService.getAllParticipants(guild.id, messageId);
     const memberList = getMemberMentions(recruit.recruitNum, participants);
-    const msgFirstRow = interaction.message.content.split('\n')[0];
+    const msgFirstRow = currentContent.split('\n')[0];
     return msgFirstRow + '\n' + memberList;
 }

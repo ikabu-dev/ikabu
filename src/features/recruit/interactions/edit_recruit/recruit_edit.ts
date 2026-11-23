@@ -2,7 +2,10 @@ import { BaseGuildTextChannel, MessageFlags, ModalSubmitInteraction } from 'disc
 
 import { ErrorTexts } from '@/config/constants/error_texts';
 import { StickyKey } from '@/config/constants/sticky_key';
-import { availableRecruitString } from '@/features/recruit/sticky/recruit_sticky_messages';
+import {
+    availableRecruitString,
+    sendRecruitSticky,
+} from '@/features/recruit/sticky/recruit_sticky_messages';
 import { RecruitOpCode, regenerateCanvas } from '@/features/recruit/ui/canvases/regenerate_canvas';
 import { regenerateEmbed } from '@/features/recruit/ui/embeds/regenerate_embed';
 import { ParticipantService } from '@/infra/db/repositories/participant_service';
@@ -34,18 +37,18 @@ export async function recruitEdit(
             return interaction.editReply('募集データが存在しないでし！');
         }
 
-        let remaining = interaction.fields.getTextInputValue('remaining');
-        remaining = remaining.replace(/\s+/g, '');
-        remaining = remaining.replace(/　+/g, '');
-
+        const isXMatch = oldRecruitData.recruitType === RecruitType.XMatchRecruit;
         let replyMessage = '';
-        if (remaining !== '' && !isNaN(Number(remaining))) {
-            replyMessage += await editRecruitNum(
-                guild.id,
-                messageId,
-                oldRecruitData.recruitType,
-                Number(remaining),
-            );
+        if (!isXMatch) {
+            const remaining = interaction.fields.getTextInputValue('remaining').replace(/\s+/g, '');
+            if (remaining !== '' && !isNaN(Number(remaining))) {
+                replyMessage += await editRecruitNum(
+                    guild.id,
+                    messageId,
+                    oldRecruitData.recruitType,
+                    Number(remaining),
+                );
+            }
         }
 
         const conditionStr = interaction.fields.getTextInputValue('condition');
@@ -71,6 +74,7 @@ export async function recruitEdit(
         switch (oldRecruitData.recruitType) {
             case RecruitType.RegularRecruit:
             case RecruitType.AnarchyRecruit:
+            case RecruitType.XMatchRecruit:
             case RecruitType.EventRecruit:
             case RecruitType.SalmonRecruit:
             case RecruitType.FestivalRecruit:
@@ -91,7 +95,9 @@ export async function recruitEdit(
 
         await sendEditRecruitLog(guild, oldRecruitData, newRecruitData, interaction.createdAt);
 
-        if (interaction.channel instanceof BaseGuildTextChannel) {
+        if (isXMatch) {
+            await sendRecruitSticky({ channelOpt: { guild, channelId } });
+        } else if (interaction.channel instanceof BaseGuildTextChannel) {
             await sendStickyMessage(guild, channelId, StickyKey.AvailableRecruit, {
                 content: await availableRecruitString(guild, interaction.channel.id),
                 flags: MessageFlags.SuppressNotifications,

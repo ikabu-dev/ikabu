@@ -69,7 +69,7 @@ export async function cancelButtonHandler(
         if (confirmedMemberIDList.includes(member.userId)) {
             await cancelRecruit(interaction, guild, recruitData, image1MsgId);
         } else if (applicantIdList.includes(member.userId)) {
-            await cancelRequest(interaction, guild, member, recruiter, attendeeList, image1MsgId);
+            await cancelRequest(interaction, guild, member, recruiter, attendeeList, recruitData);
         } else {
             await interaction.followUp({
                 content: '他人の募集は勝手にキャンセルできないでし！！',

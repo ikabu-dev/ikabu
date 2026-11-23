@@ -51,6 +51,10 @@ export async function sendRecruitSticky(stickyOptions: StickyOptions) {
             guild.id,
             ChannelKeySet.AnarchyRecruit.key,
         );
+        const xMatchRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
+            guild.id,
+            ChannelKeySet.XMatchRecruit.key,
+        );
         const regularRecruitChannelId = await UniqueChannelService.getChannelIdByKey(
             guild.id,
             ChannelKeySet.RegularRecruit.key,
@@ -89,6 +93,8 @@ export async function sendRecruitSticky(stickyOptions: StickyOptions) {
             channelName = null;
         } else if (channelId === anarchyRecruitChannelId) {
             channelName = 'バンカラ募集';
+        } else if (channelId === xMatchRecruitChannelId) {
+            channelName = ChannelKeySet.XMatchRecruit.name;
         } else if (channelId === regularRecruitChannelId) {
             channelName = 'ナワバリ募集';
         } else if (channelId === eventRecruitChannelId) {
@@ -129,11 +135,17 @@ export async function sendCloseEmbedSticky(guild: Guild, channel: Channel) {
         !channel.isVoiceBased()
     ) {
         const content = await availableRecruitString(guild, channel.id);
-        const helpEmbed = await getCommandHelpEmbed(guild, channel.name);
+        const xMatchChannelId = await UniqueChannelService.getChannelIdByKey(
+            guild.id,
+            ChannelKeySet.XMatchRecruit.key,
+        );
+        const channelName =
+            channel.id === xMatchChannelId ? ChannelKeySet.XMatchRecruit.name : channel.name;
+        const helpEmbed = await getCommandHelpEmbed(guild, channelName);
         await sendStickyMessage(guild, channel.id, StickyKey.AvailableRecruit, {
             content: content,
             embeds: [helpEmbed],
-            components: [createNewRecruitButton(channel.name)],
+            components: [createNewRecruitButton(channelName)],
             flags: MessageFlags.SuppressNotifications,
         });
     }
