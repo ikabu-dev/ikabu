@@ -78,7 +78,6 @@ const spec: RecruitSpec<XPowerBand> = {
         return {
             imageBuffers: { recruitBuffer, ruleBuffer },
             eventImage: ruleBuffer,
-            messageDetail: `**${match.rule}** ｜ Xパワー ${band}`,
             scheduleStartTime: match.startTime,
             scheduleEndTime: match.endTime,
             option: band,

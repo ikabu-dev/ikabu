@@ -34,8 +34,6 @@ export type RecruitBuild = {
     imageBuffers: RecruitImageBuffers | RecruitImageBuffersWithoutRule;
     /** VC予約イベントのサムネイルに使う画像 */
     eventImage: Buffer;
-    /** 募集カードと一緒に投稿するルールや募集条件の要約 */
-    messageDetail?: string;
     /**
      * この募集が対象とするスケジュール（now / next）の開始・終了時刻。
      * VC予約イベントの開始・終了時刻と、自動締切の期限に使う。
@@ -109,9 +107,7 @@ export async function createRecruit<TContext>(
     const recruitMessageList = await sendRecruitCanvas(
         interaction,
         preparation.recruitRoleId,
-        build.messageDetail
-            ? { ...recruitData, txt: `${recruitData.txt}\n${build.messageDetail}` }
-            : recruitData,
+        recruitData,
         build.imageBuffers,
     );
 

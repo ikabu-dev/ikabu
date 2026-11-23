@@ -276,7 +276,7 @@ describe('Xマッチ募集のモーダル', () => {
         expect(mock.getXMatchData).toHaveBeenCalledWith({}, 1);
         expect(input.editReply).toHaveBeenCalledWith(
             expect.objectContaining({
-                content: expect.stringContaining('ガチアサリ** ｜ Xパワー 2000未満'),
+                content: expect.not.stringContaining('Xパワー'),
             }),
         );
         expect(input.channel.send).toHaveBeenNthCalledWith(
