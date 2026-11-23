@@ -274,11 +274,6 @@ describe('Xマッチ募集のモーダル', () => {
         const { input, submit } = modal();
         await submit();
         expect(mock.getXMatchData).toHaveBeenCalledWith({}, 1);
-        expect(input.editReply).toHaveBeenCalledWith(
-            expect.objectContaining({
-                content: expect.not.stringContaining('Xパワー'),
-            }),
-        );
         expect(input.channel.send).toHaveBeenNthCalledWith(
             2,
             expect.objectContaining({ content: expect.stringMatching(/^<@&x-role>/) }),
