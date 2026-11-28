@@ -3,6 +3,7 @@ import { URLSearchParams } from 'url';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 
 import { RecruitParam } from '@/config/constants/button_id';
+import { ChannelKeySet } from '@/config/constants/channel_key';
 import { env } from '@/config/env';
 import { exists } from '@/shared/assert';
 
@@ -105,6 +106,7 @@ export function createNewRecruitButton(channelName: string) {
     const allowedChannel = [
         'ナワバリ募集',
         'バンカラ募集',
+        ChannelKeySet.XMatchRecruit.name,
         'イベマ募集',
         'サーモン募集',
         'レイダース募集',

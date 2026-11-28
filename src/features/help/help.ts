@@ -141,6 +141,14 @@ export async function handleHelp(interaction: ChatInputCommandInteraction<CacheT
                             name: '/バンカラ募集 next',
                             value: '```次回のバンカラ情報を表示して募集```',
                         },
+                        {
+                            name: '/xマッチ募集 now',
+                            value: '```現在のXマッチで相方を1人募集```',
+                        },
+                        {
+                            name: '/xマッチ募集 next',
+                            value: '```次回のXマッチで相方を1人募集```',
+                        },
                         // {
                         //     name: '/リグマ募集 now',
                         //     value: '```現在のリグマ情報を表示して募集```',

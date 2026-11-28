@@ -7,6 +7,7 @@ const names = [
     'dividerInitialMessage',
     'regularRecruit',
     'anarchyRecruit',
+    'xMatchRecruit',
     'eventRecruit',
     'salmonRecruit',
     'raidersRecruit',
@@ -48,6 +49,7 @@ const mocks = vi.hoisted(
                 'dividerInitialMessage',
                 'regularRecruit',
                 'anarchyRecruit',
+                'xMatchRecruit',
                 'eventRecruit',
                 'salmonRecruit',
                 'raidersRecruit',
@@ -111,6 +113,9 @@ vi.mock('@/features/recruit/interactions/close_recruit/close_by_command', () => 
 }));
 vi.mock('@/features/recruit/create/anarchy_recruit', () => ({
     anarchyRecruit: mocks.anarchyRecruit,
+}));
+vi.mock('@/features/recruit/create/x_match_recruit', () => ({
+    xMatchRecruit: mocks.xMatchRecruit,
 }));
 vi.mock('@/features/recruit/create/button_recruit', () => ({
     buttonRecruit: mocks.buttonRecruit,
@@ -179,6 +184,7 @@ const cases: [string, string][] = [
     ['チーム分け', 'dividerInitialMessage'],
     ['ナワバリ募集', 'regularRecruit'],
     ['バンカラ募集', 'anarchyRecruit'],
+    ['xマッチ募集', 'xMatchRecruit'],
     ['イベマ募集', 'eventRecruit'],
     ['サーモンラン募集', 'salmonRecruit'],
     ['レイダース募集', 'raidersRecruit'],

@@ -54,6 +54,7 @@ export async function regenerateCanvas(
                 await regenEventCanvas(message, recruit, participantsData, applicantNum, opCode);
                 break;
             case RecruitType.AnarchyRecruit:
+            case RecruitType.XMatchRecruit:
                 await regenAnarchyCanvas(message, recruit, participantsData, applicantNum, opCode);
                 break;
             case RecruitType.SalmonRecruit:
@@ -215,6 +216,7 @@ async function regenAnarchyCanvas(
         condition,
         rank,
         channelName,
+        recruit.recruitType === RecruitType.XMatchRecruit ? 'xMatch' : 'anarchy',
     );
     const recruitImage = new AttachmentBuilder(recruitBuffer, {
         name: 'ikabu_recruit.png',

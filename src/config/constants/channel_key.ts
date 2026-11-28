@@ -18,6 +18,7 @@ export const ChannelKeySet = {
     PrivateRecruit: { name: 'プラベ募集', key: 'CHANNEL_ID_RECRUIT_PRIVATE' },
     RegularRecruit: { name: 'ナワバリ募集', key: 'CHANNEL_ID_RECRUIT_REGULAR' },
     AnarchyRecruit: { name: 'バンカラ募集', key: 'CHANNEL_ID_RECRUIT_ANARCHY' },
+    XMatchRecruit: { name: 'Xマッチ募集', key: 'CHANNEL_ID_RECRUIT_X_MATCH' },
     EventRecruit: { name: 'イベマ募集', key: 'CHANNEL_ID_RECRUIT_EVENT' },
     SalmonRecruit: { name: 'サーモン募集', key: 'CHANNEL_ID_RECRUIT_SALMON' },
     RaidersRecruit: { name: 'レイダース募集', key: 'CHANNEL_ID_RECRUIT_RAIDERS' },

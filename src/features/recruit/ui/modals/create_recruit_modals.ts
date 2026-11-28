@@ -1,11 +1,13 @@
 import { ButtonInteraction } from 'discord.js';
 
+import { ChannelKeySet } from '@/config/constants/channel_key';
 import { createAnarchyModal } from '@/features/recruit/ui/modals/create_anarchy_modal';
 import { createEventModal } from '@/features/recruit/ui/modals/create_event_modal';
 import { createFestModal } from '@/features/recruit/ui/modals/create_fest_modal';
 import { createRaidersModal } from '@/features/recruit/ui/modals/create_raiders_modal';
 import { createRegularModal } from '@/features/recruit/ui/modals/create_regular_modal';
 import { createSalmonModal } from '@/features/recruit/ui/modals/create_salmon_modal';
+import { createXMatchModal } from '@/features/recruit/ui/modals/create_x_match_modal';
 
 export async function handleCreateModal(
     interaction: ButtonInteraction<'cached' | 'raw'>,
@@ -21,6 +23,9 @@ export async function handleCreateModal(
             break;
         case 'バンカラ募集':
             await createAnarchyModal(interaction);
+            break;
+        case ChannelKeySet.XMatchRecruit.name:
+            await createXMatchModal(interaction);
             break;
         case 'フウカ募集':
         case 'ウツホ募集':

@@ -41,7 +41,9 @@ export async function recruitAnarchyCanvas(
     condition: string,
     rank: string | null,
     channelName: string | null,
+    mode: 'anarchy' | 'xMatch' = 'anarchy',
 ) {
+    const isXMatch = mode === 'xMatch';
     const blankAvatarUrl =
         'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/blank_avatar.png'; // blankのアバター画像URL
 
@@ -56,17 +58,19 @@ export async function recruitAnarchyCanvas(
     recruitCtx.lineWidth = 4;
     recruitCtx.stroke();
 
-    const anarchyIcon = await Canvas.loadImage(
-        'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/anarchy_icon.png',
+    const matchIcon = await Canvas.loadImage(
+        isXMatch
+            ? path.resolve('./images/recruit/x_match_icon.png')
+            : 'https://raw.githubusercontent.com/shngmsw/ikabu/main/images/recruit/anarchy_icon.png',
     );
-    recruitCtx.drawImage(anarchyIcon, 18, 15, 86, 86);
+    recruitCtx.drawImage(matchIcon, 18, 15, 86, 86);
 
     fillTextWithStroke(
         recruitCtx,
-        'バンカラマッチ',
+        isXMatch ? 'Xマッチ' : 'バンカラマッチ',
         '51px Splatfont',
         '#000000',
-        '#F14400',
+        isXMatch ? '#19D18F' : '#F14400',
         3,
         115,
         80,
@@ -191,7 +195,7 @@ export async function recruitAnarchyCanvas(
     recruitCtx.textAlign = 'right';
     fillTextWithStroke(
         recruitCtx,
-        '募集ウデマエ: ' + (rank ?? 'ERROR'),
+        (isXMatch ? 'Xパワー: ' : '募集ウデマエ: ') + (rank ?? 'ERROR'),
         '38px "Splatfont"',
         '#FFFFFF',
         '#2D3130',

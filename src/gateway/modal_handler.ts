@@ -9,6 +9,7 @@ import { festRecruit } from '@/features/recruit/create/fest_recruit';
 import { raidersRecruit } from '@/features/recruit/create/raiders_recruit';
 import { regularRecruit } from '@/features/recruit/create/regular_recruit';
 import { salmonRecruit } from '@/features/recruit/create/salmon_recruit';
+import { xMatchRecruit } from '@/features/recruit/create/x_match_recruit';
 import { recruitEdit } from '@/features/recruit/interactions/edit_recruit/recruit_edit';
 import { MemberService } from '@/infra/db/repositories/member_service';
 import { log4js_obj } from '@/infra/logging/log4js';
@@ -44,6 +45,9 @@ async function dispatch(interaction: ModalSubmitInteraction<CacheType>) {
                     break;
                 case 'anarec':
                     await anarchyRecruit(interaction);
+                    break;
+                case 'xrec':
+                    await xMatchRecruit(interaction);
                     break;
                 case 'salrec':
                     await salmonRecruit(interaction);
