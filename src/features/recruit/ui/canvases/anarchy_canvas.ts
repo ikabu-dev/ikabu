@@ -5,14 +5,16 @@ import Canvas from 'canvas';
 
 import { modalRecruit } from '@/config/constants/images';
 import { RecruitOpCode } from '@/features/recruit/ui/canvases/regenerate_canvas';
+import { drawVoiceChannelName } from '@/features/recruit/ui/canvases/voice_channel_label';
 import { MatchInfo } from '@/infra/external/splatoon3-ink/splatoon3_ink';
-import { exists, notExists } from '@/shared/assert';
+import { exists } from '@/shared/assert';
 import { dateformat, formatDatetime } from '@/shared/datetime/convert_datetime';
 import {
     createRoundRect,
     drawArcImage,
     fillTextWithStroke,
 } from '@/shared/discord_helpers/canvas_components';
+import { drawWrappedTextWithEmoji } from '@/shared/discord_helpers/emoji_text';
 
 Canvas.registerFont(path.resolve('./fonts/Splatfont.ttf'), {
     family: 'Splatfont',
@@ -171,55 +173,23 @@ export async function recruitAnarchyCanvas(
     );
 
     recruitCtx.font = '30px "Genshin", "SEGUI"';
-    const width = 600;
-    const size = 40;
-    const columnNum = 4;
-    const column = [''];
-    let line = 0;
     condition = condition.replace(/\\n/g, '\n');
 
-    // 幅に合わせて自動改行
-    for (let i = 0; i < condition.length; i++) {
-        const char = condition.charAt(i);
+    await drawWrappedTextWithEmoji(recruitCtx, condition, {
+        x: 65,
+        y: 345,
+        width: 600,
+        lineHeight: 40,
+        maxLines: 4,
+        emojiSize: 30,
+    });
 
-        if (char == '\n') {
-            line++;
-            column[line] = '';
-        } else if (recruitCtx.measureText(column[line] + char).width > width) {
-            line++;
-            column[line] = char;
-        } else {
-            column[line] += char;
-        }
-    }
-
-    if (column.length > columnNum) {
-        column[columnNum - 1] += '…';
-    }
-
-    for (let j = 0; j < column.length; j++) {
-        if (j < columnNum) {
-            recruitCtx.fillText(column[j], 65, 345 + size * j);
-        }
-    }
-
-    let channelString;
-    if (notExists(channelName)) {
-        channelString = '🔉 VC指定なし';
-    } else {
-        channelString = '🔉 ' + channelName;
-    }
-
-    fillTextWithStroke(
-        recruitCtx,
-        channelString,
-        '37px "Splatfont"',
-        '#FFFFFF',
-        '#2D3130',
-        1,
-        30,
-        520,
-    );
+    await drawVoiceChannelName(recruitCtx, channelName, {
+        fontSize: 37,
+        x: 30,
+        y: 520,
+        align: 'left',
+    });
 
     recruitCtx.save();
     recruitCtx.textAlign = 'right';

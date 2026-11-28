@@ -43,6 +43,7 @@ export default tseslint.config(
                         'test/features/experience/*.ts',
                         'test/features/omikuji/*.ts',
                         'test/features/recruit/*.ts',
+                        'test/features/recruit/ui/canvases/*.ts',
                         'scripts/*.ts',
                         'test/infra/db/*.ts',
                         'test/infra/external/splatoon3-ink/*.ts',

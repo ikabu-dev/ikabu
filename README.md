@@ -127,6 +127,12 @@ push 時に自動で ESLint/Prettier が実行されます。自動修正が発�
 lefthook install
 ```
 
+## クレジット
+
+募集画像の絵文字と VC のアイコンには、[Twemoji](https://github.com/jdecked/twemoji) の画像を使っています。Twemoji の画像は Twitter, Inc and other contributors によるもので、[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) のもとで公開されています。画像は npm パッケージ [@twemoji/svg](https://github.com/boywithkeyboard/twemoji_svg) から読み込みます。
+
+VC のアイコン (`images/recruit/vc_icon.svg`) は、Twemoji の 🔊 (U+1F50A) から一番外側の音の波を除き、色を白に変えたものです。
+
 ## ライセンス
 
 このプロジェクトは MIT ライセンスのもとで公開されます。詳細については、LICENSE ファイルを参照してください。
